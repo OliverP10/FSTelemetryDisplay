@@ -1,0 +1,144 @@
+<div class="container" #container>
+
+    <div class="item">
+        <fa-icon
+            class="lock"
+            (click)="armControlsEnabled= !armControlsEnabled"
+            [icon]="(armControlsEnabled) ? faLockOpen:faLock">
+        </fa-icon>
+    </div>
+
+    <div class="item">
+        <div class="text">
+            <h3>Yaw</h3>
+        </div>
+        <!-- (input)="update()" -->
+        <mat-slider 
+            class="slider"
+            [thumbLabel]="true"
+            [ngStyle]="styleObj"
+            [min]="arm.yaw.min"
+            [max]="arm.yaw.max"
+            [disabled]="!armControlsEnabled"
+            [(ngModel)]="arm.yaw.value"
+            
+            (input)="arm.yaw.value=change($event)">
+        </mat-slider>
+        <mat-form-field class="numberInput">
+            <input matInput 
+                class="number"
+                type="number"
+                [min]="arm.yaw.min"
+                [max]="arm.yaw.max"
+                placeholder="Yaw"
+                autocomplete="off"
+                [(ngModel)]="arm.yaw.value"
+                [disabled]="!armControlsEnabled"
+                (change)="update()">
+        </mat-form-field>
+    </div>
+
+    <div class="item">
+        <div class="text">
+            <h3>Pitch 1</h3>
+        </div>
+
+        <mat-slider 
+            class="slider"
+            [thumbLabel]="true"
+            [ngStyle]="styleObj"
+            [min]="arm.pitch1.min"
+            [max]="arm.pitch1.max"
+            [disabled]="!armControlsEnabled"
+            [(ngModel)]="arm.pitch1.value"
+            
+            (input)="arm.pitch1.value=change($event)">
+        </mat-slider>
+        <mat-form-field class="numberInput">
+            <input matInput 
+                class="number"
+                type="number"
+                [min]="arm.pitch1.min"
+                [max]="arm.pitch1.max"
+                placeholder="Pitch1"
+                autocomplete="off"
+                [(ngModel)]="arm.pitch1.value"
+                [disabled]="!armControlsEnabled"
+                (change)="update()">
+        </mat-form-field>
+    </div>
+
+    <div class="item">
+        <div class="text">
+            <h3>Pitch 2</h3>
+        </div>
+        <mat-slider 
+            class="slider"
+            [thumbLabel]="true"
+            [ngStyle]="styleObj"
+            [min]="arm.pitch2.min"
+            [max]="arm.pitch2.max"
+            [disabled]="!armControlsEnabled"
+            [(ngModel)]="arm.pitch2.value"
+            
+            (input)="arm.pitch2.value=change($event)">
+        </mat-slider>
+        <mat-form-field class="numberInput">
+            <input matInput 
+                class="number"
+                type="number"
+                [min]="arm.pitch2.min"
+                [max]="arm.pitch2.max"
+                placeholder="Pitch2"
+                autocomplete="off"
+                [(ngModel)]="arm.pitch2.value"
+                [disabled]="!armControlsEnabled"
+                (change)="update()">
+        </mat-form-field>
+    </div>
+
+    <div class="item">
+        <div class="text">
+            <h3>Claw</h3>
+        </div>
+        <mat-slider 
+            class="slider"
+            [thumbLabel]="true"
+            [ngStyle]="styleObj"
+            [min]="arm.claw.min"
+            [max]="arm.claw.max"
+            [disabled]="!armControlsEnabled"
+            [(ngModel)]="arm.claw.value"
+            
+            (input)="arm.claw.value=change($event)">
+        </mat-slider>
+        <mat-form-field class="numberInput">
+            <input matInput 
+                class="number"
+                type="number"
+                [min]="arm.claw.min"
+                [max]="arm.claw.max"
+                placeholder="Claw"
+                autocomplete="off"
+                [(ngModel)]="arm.claw.value"
+                [disabled]="!armControlsEnabled"
+                (change)="update()">
+        </mat-form-field>
+    </div>
+
+    <div class="item">
+        <button mat-flat-button 
+            color="warn"
+            (click)="toggleArmed()"
+            [ngStyle]="(armed) ? {'background-color': 'rgb(244,67,54)'} : {'background-color': 'rgb(28, 138, 55)'}">
+        {{(armed ? 'Armed' : 'Disarmed')}}
+        </button>
+        <button mat-flat-button 
+            color="warn"
+            (click)="toggleManualOverride()"
+            [ngStyle]="(manualOverride) ? {'background-color': 'rgb(244,67,54)'} : {'background-color': 'rgb(28, 138, 55)'}">
+        {{(manualOverride ? 'Manual override' : 'Limits Applied')}}
+        </button>
+    </div>
+
+</div>

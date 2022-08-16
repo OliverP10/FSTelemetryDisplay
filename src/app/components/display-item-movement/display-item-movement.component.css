@@ -1,0 +1,55 @@
+.mat-flat-button{
+    color: black !important;
+}
+
+/* .grid-item{
+    background-color:rgb(98, 108, 132);
+    border-radius: 4px;
+} */
+
+.vehicle-item{
+    background-color:rgb(98, 108, 132);
+}
+
+.lock {
+    color:rgb(255,215,64);
+    margin-left: 10px;
+}
+
+.number-input {
+    margin-top: 20px;
+}
+
+.mat-focused .mat-form-field-label {
+    /*change color of label*/
+    color: rgb(255,215,64) !important;
+}
+
+.mat-form-field-underline {
+/*change color of underline*/
+background-color: rgb(255,215,64) !important;
+} 
+
+.mat-form-field-ripple {
+/*change color of underline when focused*/
+    background-color: rgb(255,215,64) !important;
+}
+.mat-form-field-label{
+    color:rgb(255,215,64) !important;
+}
+
+.mat-input-element {
+    caret-color:rgb(255,215,64)
+}
+
+.mat-input-element {
+    color: rgb(255,215,64) !important;
+}
+
+.mat-form-field{
+    width:50px !important;
+}
+
+.mat-flat-button{
+color: black !important;
+}

@@ -1,0 +1,294 @@
+<div class="container">
+    <mat-grid-list cols="5" rows="7" rowHeight="4:1.8" [gutterSize]="'0px'"> 
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- up -->
+            <fa-icon
+                *ngIf="motors.motor_one.forwards&&motors.motor_one.speed>0&&motors.motor_one.enabled"
+                [icon]="faArrowUp"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- up -->
+            <fa-icon
+                *ngIf="motors.motor_two.forwards&&motors.motor_two.speed>0&&motors.motor_two.enabled"
+                [icon]="faArrowUp"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- speed -->
+            <fa-icon
+                *ngIf="!motors.motor_one.enabled"
+                [icon]="faLock"
+                [ngStyle]="{'color': 'rgb(0,0,0)'}"
+                size="2x">
+            </fa-icon>
+            <h1 *ngIf="motors.motor_one.enabled">
+                {{motors.motor_one.speed}}
+            </h1>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- wheel -->
+            <fa-icon 
+                [icon]="faSquare"
+                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="vehicle-item"
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- wheel -->
+            <fa-icon 
+                [icon]="faSquare"
+                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- speed -->
+            <fa-icon
+                *ngIf="!motors.motor_two.enabled"
+                [icon]="faLock"
+                [ngStyle]="{'color': 'rgb(0,0,0)'}"
+                size="2x">
+            </fa-icon>
+            <h1 *ngIf="motors.motor_two.enabled">
+                {{motors.motor_two.speed}}
+            </h1>
+        </mat-grid-tile>
+
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- down -->
+            <fa-icon
+                *ngIf="(!motors.motor_one.forwards)&&motors.motor_one.speed>0&&motors.motor_one.enabled"
+                [icon]="faArrowDown"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="vehicle-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <fa-icon
+                [icon]="faCircleArrowUp"
+                
+                size="2x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- down -->
+            <fa-icon
+                *ngIf="(!motors.motor_two.forwards)&&motors.motor_two.speed>0&&motors.motor_two.enabled"
+                [icon]="faArrowDown"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- up -->
+            <fa-icon
+                *ngIf="motors.motor_three.forwards&&motors.motor_three.speed>0&&motors.motor_three.enabled"
+                [icon]="faArrowUp"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="vehicle-item"
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- up -->
+            <fa-icon
+                *ngIf="motors.motor_four.forwards&&motors.motor_four.speed>0&&motors.motor_four.enabled"
+                [icon]="faArrowUp"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- speed -->
+            <fa-icon
+                *ngIf="!motors.motor_three.enabled"
+                [icon]="faLock"
+                [ngStyle]="{'color': 'rgb(0,0,0)'}"
+                size="2x">
+            </fa-icon>
+            <h1 *ngIf="motors.motor_three.enabled">
+                {{motors.motor_three.speed}}
+            </h1>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- wheel -->
+            <fa-icon 
+                [icon]="faSquare"
+                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="vehicle-item"
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- wheel -->
+            <fa-icon 
+                [icon]="faSquare"
+                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- speed -->
+            <fa-icon
+                *ngIf="!motors.motor_four.enabled"
+                [icon]="faLock"
+                [ngStyle]="{'color': 'rgb(0,0,0)'}"
+                size="2x">
+            </fa-icon>
+            <h1 *ngIf="motors.motor_four.enabled">
+                {{motors.motor_four.speed}}
+            </h1>
+        </mat-grid-tile>
+
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- down -->
+            <fa-icon
+                *ngIf="(!motors.motor_three.forwards)&&motors.motor_three.speed>0&&motors.motor_three.enabled"
+                [icon]="faArrowDown"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- input speed -->
+            <mat-form-field class="number-input">
+                <input matInput 
+                    class="number"
+                    type="number"
+                    [min]="0"
+                    [max]="1"
+                    step="0.01"
+                    placeholder="Speed"
+                    autocomplete="off"
+                    [ngModel]="speed"
+                    (change)="updateSpeed($event)">
+            </mat-form-field>
+
+            
+        </mat-grid-tile>
+        <mat-grid-tile
+            class="grid-item"
+            [colspan]="1"
+            [rowspan]="1">
+            <!-- down -->
+            <fa-icon
+                *ngIf="(!motors.motor_four.forwards)&&motors.motor_four.speed>0&&motors.motor_four.enabled"
+                [icon]="faArrowDown"
+                size="3x">
+            </fa-icon>
+        </mat-grid-tile>
+        <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+        </mat-grid-tile>
+        <mat-grid-tile
+            [colspan]="5"
+            [rowspan]="1">
+                <!-- armed -->
+                <button mat-flat-button 
+                    color="warn"
+                    (click)="toggleArmed()"
+                    [ngStyle]="(armed) ? {'background-color': 'rgb(244,67,54)'} : {'background-color': 'rgb(28, 138, 55)'}">
+                    {{(armed ? 'Armed' : 'Disarmed')}}
+                </button>
+        </mat-grid-tile>
+
+       
+    </mat-grid-list>
+</div>

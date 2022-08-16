@@ -1,0 +1,71 @@
+<div class="settings">
+
+    <div class="settings-row-one">
+        <fa-icon 
+            (click)="moveDisplay('left')"
+            class="btn-move-display"
+            [icon]="faAngleLeft">
+        </fa-icon>
+
+        <fa-icon 
+            (click)="removeDisplay(display)"
+            class="btn-remove"
+            [icon]="faTimes">
+        </fa-icon>
+
+        <fa-icon 
+            (click)="moveDisplay('right')"
+            class="btn-move-display"
+            [icon]="faAngleRight">
+        </fa-icon>
+    </div>
+
+    <div class="settings-row-two">
+        <fa-icon
+            (click)="resizeDisplay({display:display,axis:'horizontal',change:-1})"
+            class="btn-left-right-minus"
+            [icon]="faMinus">
+        </fa-icon>
+
+        <fa-icon
+            class="left-right"
+            [icon]="faLeftRight">
+        </fa-icon>
+
+        <fa-icon
+            (click)="resizeDisplay({display:display,axis:'horizontal',change:1})"
+            class="btn-left-right-plus"
+            [icon]="faPlus">
+        </fa-icon>
+
+
+        <fa-icon
+            (click)="resizeDisplay({display:display,axis:'vertical',change:-1})"
+            class="btn-up-down-minus"
+            [icon]="faMinus">
+        </fa-icon>
+
+        <fa-icon
+            class="up-down"
+            [icon]="faUpDown">
+        </fa-icon>
+
+        <fa-icon
+            (click)="resizeDisplay({display:display,axis:'vertical',change:1})"
+            class="btn-up-down-plus"
+            [icon]="faPlus">
+        </fa-icon>
+    </div>
+
+    <div class="settings-row-three" *ngIf="display.type=='graph'">
+        
+    </div>
+
+
+
+
+    
+
+
+
+</div>

@@ -1,0 +1,85 @@
+<header class="container">
+    
+    <div class="sidebar-button-container">
+        <fa-icon
+            (click)='toggleSidebar()'
+            class="fa-solid fa-bars fa-2x"
+            [icon]="faBars"
+            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+        </fa-icon>
+    </div>
+
+    <div class="add-button-container">
+        <fa-icon
+            (click)='toggleAddDisplay()'
+            class="fa-solid fa-plus fa-2x"
+            [icon]="faPlus"
+            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+        </fa-icon>
+    </div>
+
+    <div class="save-button-container">
+        <fa-icon
+            (click)='saveScreen()'
+            class="fa-solid fa-2x"
+            [icon]="faFloppyDisk"
+            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+        </fa-icon>
+    </div>
+
+    <div class="download-button-container">
+        <fa-icon
+            (click)='downloadLogs()'
+            class="fa-solid fa-2x"
+            [icon]="faDownload"
+            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+        </fa-icon>
+    </div>
+
+    <div class="mute-button-container">
+        <fa-icon
+            (click)="toggleMute()"
+            class="fa-solid fa-2x"
+            [icon]="volumeIcon"
+            [ngStyle]="{ 'color': 'rgb(230, 86, 46)', 'cursor':'pointer' }">
+        </fa-icon>
+    </div>
+
+    <div class="warning-status">
+        <fa-icon
+            class="fa-solid fa-triangle-exclamation fa-2x"
+            [icon]="faTriangleExclamation"
+            [ngStyle]="{ 'color': warningColor }">
+        </fa-icon>
+    </div>
+
+    <div class="vehicle-connection-status">
+        <fa-icon
+            class="fa-solid fa-2x"
+            [icon]="faTruckMonster"
+            [ngStyle]="{ 'color': vehicleConnectionColor }">
+        </fa-icon>
+    </div>
+
+    <div class="arduino-connection-status">
+        <fa-icon
+            class="fa-solid fa-2x"
+            [icon]="arduinoConnectionIcon"
+            [ngStyle]="{ 'color': arduinoConnectionColor }">
+        </fa-icon>
+    </div>
+
+    <div class="connection-status"> 
+        <fa-icon
+            class="fa-solid fa-signal fa-2x"
+            [icon]="faSignal"
+            [ngStyle]="{ 'color': connectionColor }">
+        </fa-icon>
+    </div>
+    
+    
+
+
+
+
+</header>

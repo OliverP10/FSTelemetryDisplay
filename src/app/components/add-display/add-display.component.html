@@ -1,0 +1,31 @@
+<mat-form-field id="search-form"class="search">
+    <input (keyup)="applyFilter($event)" matInput placeholder="Search..." autocomplete="off">
+</mat-form-field>
+
+<table mat-table [dataSource]="allDisplaysData" class="mat-elevation-z0">
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef class="table-header-title"> Title </th>
+      <td mat-cell *matCellDef="let element" class="table-title"> {{element.title}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef class="table-header-type"> Type </th>
+      <td mat-cell *matCellDef="let element" class="table-type"> {{element.type}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="dataLabels">
+      <th mat-header-cell *matHeaderCellDef class="table-header-dataLabels"> Data Labels </th>
+      <td mat-cell *matCellDef="let element" class="table-dataLabels"> {{element.dataLabels}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="addButton">
+      <th mat-header-cell *matHeaderCellDef class="table-header-button"></th>
+      <td mat-cell *matCellDef="let element" class="table-button">
+        <button class="btn" (click)="onClickAdd(element)">Add</button>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="tableColums"></tr>
+    <tr mat-row *matRowDef="let row; columns: tableColums;" ></tr>
+</table>

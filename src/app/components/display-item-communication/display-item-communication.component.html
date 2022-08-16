@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="item">
+        <fa-icon
+            [ngStyle]="(this.buttons.boxBtn) ? this.styleOn : this.styleOff"
+            [icon]="faCircle">
+        </fa-icon>
+        <button mat-button class="button" (click)="setButton('boxBtn')">Box</button>
+    </div>
+    <div class="item">
+        <fa-icon
+            [ngStyle]="(this.buttons.slowBtn) ? this.styleOn : this.styleOff"
+            [icon]="faCircle">
+        </fa-icon>
+        <button mat-button class="button" (click)="setButton('slowBtn')">Slow</button>
+    </div>
+    <div class="item">
+        <fa-icon
+            [ngStyle]="(this.buttons.pushBtn) ? this.styleOn : this.styleOff"
+            [icon]="faCircle">
+        </fa-icon>
+        <button mat-button class="button" (click)="setButton('pushBtn')">Push</button>
+    </div>
+
+</div>

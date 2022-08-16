@@ -1,0 +1,66 @@
+.settings{
+
+}
+
+.settings-row-one{
+    display: flex;
+    justify-content: center;
+}
+
+.settings-row-two{
+    display: flex;
+    justify-content: center;
+}
+
+.settings-row-three{
+    display: flex;
+    justify-content: center;
+}
+
+.btn-remove{
+    margin: 5px;
+    color: red;
+    cursor: pointer;
+}
+
+.btn-move-display{
+    margin: 5px;
+    cursor: pointer;
+    color: rgb(51, 145, 245)
+}
+
+.left-right{
+    margin: 5px;
+    color: rgb(179, 179, 179);
+}
+
+.btn-left-right-plus{
+    margin: 5px;
+    margin-right: 10px;
+    color: rgb(51, 145, 245);
+    cursor: pointer;
+}
+
+.btn-left-right-minus{
+    margin: 5px;
+    color: rgb(51, 145, 245);
+    cursor: pointer;
+}
+
+.up-down{
+    margin: 5px;
+    color: rgb(179, 179, 179);
+}
+
+.btn-up-down-plus{
+    margin: 5px;
+    color: rgb(51, 145, 245);
+    cursor: pointer;
+}
+
+.btn-up-down-minus{
+    margin: 5px;
+    margin-left: 10px;
+    color: rgb(51, 145, 245);
+    cursor: pointer;
+}

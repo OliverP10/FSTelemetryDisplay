@@ -1,0 +1,29 @@
+<div class="container" #container>
+    <app-header 
+        [allDisplays]="allDisplays"
+        (onAddDisplay)="addDisplay($event)"
+        (onSaveScreen)="saveScreen()">
+    </app-header>
+    <div class="grid">
+        <mat-grid-list cols="4" rows="4" rowHeight="4:1.8" [gutterSize]="'10px'" [@expandContractList]="currentDisplays.length"> 
+            <mat-grid-tile
+            *ngFor="let display of currentDisplays"
+            [colspan]="display.colSize"
+            [rowspan]="display.rowSize"
+            >
+                <app-display-item
+                    class="display-item"
+                    [display]="display"
+                    (onDeleteDisplay)="deleteDisplay($event)"
+                    (onMoveDisplay)="moveDisplay($event)"
+                    (onResizeDisplay)="resizeDisplay($event)">
+                </app-display-item>
+        
+            </mat-grid-tile>
+           
+        </mat-grid-list>
+    </div>
+    
+</div>
+
+

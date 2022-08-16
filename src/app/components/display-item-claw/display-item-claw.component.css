@@ -1,0 +1,30 @@
+.container {
+    margin-left: 15px;
+    margin-right: 15px;
+    width: calc( 100% - 30px);
+    height:100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap:  wrap;
+    justify-content: center;
+    gap: 20px;
+    row-gap: 0px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px
+}
+
+.button {
+    background-color: rgb(255,215,64);
+    color: black
+}
+
+.mat-flat-button{
+    color: black !important;
+}

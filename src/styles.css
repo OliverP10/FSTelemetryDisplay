@@ -1,0 +1,31 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-dialog-container {
+    background-color: rgb(91, 107, 128);
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 2px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    
+    background: rgb(77, 84, 101); 
+    border-radius: 2px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(71, 78, 93); 
+}
+

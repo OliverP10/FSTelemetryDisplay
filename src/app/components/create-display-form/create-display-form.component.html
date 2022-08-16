@@ -1,0 +1,231 @@
+
+<div class="container"> 
+    <div class="sidebar-button-container">
+        <fa-icon
+            (click)='toggleSideBar()'
+            class="fa-solid fa-bars fa-2x"
+            [icon]="faBars"
+            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+        </fa-icon>
+    </div>
+
+    <form *ngIf="type=='graph'" [formGroup]="graphForm" class="form" (ngSubmit)="submitFormGraph()">
+
+        <mat-form-field>
+            <div class="field">
+                <mat-select matInput placeholder="Type" formControlName="type" (selectionChange)="loadType($event)">
+                    <mat-option matInput value="graph">Graph</mat-option>
+                    <mat-option matInput value="radial">Radial</mat-option>
+                    <mat-option matInput value="linear">Linear</mat-option>
+                </mat-select>
+            </div>
+            
+            <mat-error *ngIf="graphType?.invalid && graphType?.touched">
+                Select chart type
+            </mat-error>
+            
+        </mat-form-field>
+
+        <mat-form-field>
+            <div class="field">
+                <input matInput placeholder="Title" formControlName="title">
+            </div>
+            <mat-hint>Your title should be unique</mat-hint>
+            <mat-error *ngIf="graphTitle?.invalid && graphTitle?.touched">
+                Must be greater than two characters
+            </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field >
+            <div class="field">
+                <input matInput type="number" min="1" max="4" placeholder="Width" formControlName="colSize">
+            </div>
+            <mat-error *ngIf="graphWidth?.invalid && graphWidth?.touched">
+                Size should be between 1 and 4
+            </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <div class="field">
+                <input matInput type="number" min="1" max="4" placeholder="Height" formControlName="rowSize">
+            </div>
+            <mat-error *ngIf="graphHeight?.invalid && graphHeight?.touched">
+                Size should be between 1 and 4
+            </mat-error>
+        </mat-form-field>
+
+        <div class="label-selection">
+            <div formArrayName="dataLabels">
+                <div *ngFor="let label of graphDatalabels.controls; let i=index">
+                    <div [formGroupName]="i">
+                        <input class="checkbox" type="checkbox" formControlName={{recivedLabels[i]}}>
+                        {{recivedLabels[i]}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input class="btn" type="submit" value="Submit">
+ 
+    </form>
+
+    <form *ngIf="type=='linear'||type=='radial'" [formGroup]="guageForm" class="form" (ngSubmit)="submitFormGuage()">
+
+        <mat-form-field>
+            <div class="field">
+                <mat-select matInput placeholder="Type" formControlName="type" (selectionChange)="loadType($event)">
+                    <mat-option matInput value="graph">Graph</mat-option>
+                    <mat-option matInput value="radial">Radial</mat-option>
+                    <mat-option matInput value="linear">Linear</mat-option>
+                </mat-select>
+            </div>
+            
+            <mat-error *ngIf="guageType?.invalid && guageType?.touched">
+                Select chart type
+            </mat-error>
+            
+        </mat-form-field>
+
+        <mat-form-field>
+            <div class="field">
+                <input matInput placeholder="Title" formControlName="title">
+            </div>
+            <mat-hint>Your title should be unique</mat-hint>
+            <mat-error *ngIf="guageTitle?.invalid && guageTitle?.touched">
+                Must be greater than two characters
+            </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field >
+            <div class="field">
+                <input matInput type="number" min="1" max="4" placeholder="Width" formControlName="colSize">
+            </div>
+            <mat-error *ngIf="guageWidth?.invalid && guageWidth?.touched">
+                Size should be between 1 and 4
+            </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field>
+            <div class="field">
+                <input matInput type="number" min="1" max="4" placeholder="Height" formControlName="rowSize">
+            </div>
+            <mat-error *ngIf="guageHeight?.invalid && guageHeight?.touched">
+                Size should be between 1 and 4
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <div class="field">
+                <input matInput placeholder="Units" formControlName="units">
+            </div>
+        </mat-form-field>
+        
+        
+        <mat-form-field>
+            <div class="field">
+                <input matInput type="number" placeholder="Min value" formControlName="minValue">
+            </div>
+        </mat-form-field>
+        
+        <mat-form-field>
+            <div class="field">
+                <input matInput type="number" placeholder="Max value" formControlName="maxValue">
+            </div>
+        </mat-form-field>
+
+        <h5 class="title">Major ticks</h5>
+        <div class="form-container">
+            <div formArrayName="majorTicks" class="form-flex">
+                <div *ngFor="let tick of majorTicks.controls; let i=index">
+                    <div [formGroupName]="i" class="form-item-flex">
+                        <mat-form-field>
+                            <input matInput type="number" placeholder="tick {{i}}:" formControlName="tick">
+                            <mat-error *ngIf="tick?.invalid && tick?.touched">
+                                Tick should be a number
+                            </mat-error>
+                        </mat-form-field>
+                        
+                        <fa-icon 
+                            (click)="removeMajorTick(i)"
+                            [icon]="faTimes"
+                            class="btn-remove">
+                        </fa-icon>
+                    </div>
+                </div>
+
+                <fa-icon 
+                    (click)="addMajorTick()"
+                    [icon]="faCirclePlus"
+                    class="btn-add">
+                </fa-icon>
+            </div>
+        </div>
+
+
+        
+        
+        <mat-form-field>
+            <div class="field">
+                <input matInput type="number" placeholder="Minor ticks" formControlName="minorTicks">
+            </div>
+        </mat-form-field>
+        
+        <h5 class="title">Hilights</h5>
+        <div class="form-container">
+            <div formArrayName="highlights" class="form-flex">
+                <div *ngFor="let highlight of highlights.controls; let i=index">
+                    <div [formGroupName]="i" class="form-item-flex">
+                        <mat-form-field class="input-small">
+                            <input matInput type="number" placeholder="From" formControlName="from">
+                            <mat-error *ngIf="highlight?.invalid && highlight?.touched">
+                                Hilight from should be a number
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="input-small">
+                            <input matInput type="number" placeholder="To" formControlName="to">
+                            <mat-error *ngIf="highlight?.invalid && highlight?.touched">
+                                Hilight to should be a number
+                            </mat-error>
+                        </mat-form-field>
+                        
+                        <mat-form-field class="input-small">
+                            <input matInput placeholder="Colour" formControlName="color">
+                            <mat-error *ngIf="highlight?.invalid && highlight?.touched">
+                                Colour should be specified
+                            </mat-error>
+                        </mat-form-field>
+                        
+                        
+                        <fa-icon 
+                            (click)="removeHighlight(i)"
+                            [icon]="faTimes"
+                            class="btn-remove">
+                        </fa-icon>
+                    </div>
+                </div>
+
+                <fa-icon 
+                    (click)="addHighlight()"
+                    [icon]="faCirclePlus"
+                    class="btn-add">
+                </fa-icon>
+            </div>
+        </div>
+
+        <div class="label-selection">
+            <div formArrayName="dataLabels">
+                <div *ngFor="let label of guageDatalabels.controls; let i=index">
+                    <div [formGroupName]="i">
+                        <input class="checkbox" type="checkbox" formControlName={{recivedLabels[i]}}>
+                        {{recivedLabels[i]}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input class="btn" type="submit" value="Submit">
+ 
+        
+    </form>
+</div>

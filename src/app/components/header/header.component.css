@@ -1,0 +1,43 @@
+.container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    background-color: rgb(55, 63, 82);
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.add-button-container{
+
+}
+
+.sidebar-button-container {
+    margin-left: 10px;
+}
+
+.mute-button-container {
+    
+}
+
+.item{
+    flex:none;
+}
+
+.warning-status {
+    margin-left: auto;
+    color: rgb(62, 71, 90);
+}
+
+.arduino-connection-status{
+    
+}
+
+.connection-status {
+    
+    margin-right: 10px;
+}

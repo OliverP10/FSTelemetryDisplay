@@ -1,0 +1,12 @@
+<div class="container">
+
+    <h2 *ngIf="loadingError"
+        class="no-video">
+        NO VIDEO
+    </h2>
+        
+    <img *ngIf="!loadingError" 
+        class="camera" 
+        src="{{url}}"
+        (error)="imgError()">
+</div>

@@ -1,0 +1,27 @@
+<div class="display" #container>
+    <!-- bit scuffed implementaition interms of location - fix -->
+    <input class="graph-controller" [ngModel]="viewSize" (input)="setViewSize($event)" type="number" max=185 min=1> 
+    
+    <div #container class="graph-container">
+        <canvas #chartCanvas></canvas>
+    </div>
+
+    <mat-slider 
+        #slider
+        class="slider"
+        [thumbLabel]="true"
+        [ngStyle]="styleObj"
+        [min]="0"
+        [max]="(carData !== undefined) ? carData[timeLabel]?.length : 1"
+        (input)="setStartFrom($event)"
+        [(ngModel)]="startFrom">
+    </mat-slider>
+
+    <fa-icon
+        (click)="toggleShowLive()"
+        [ngStyle]="{color:'rgba(234, 184, 3)', cursor:'pointer'}"
+        [icon]="showLiveIcon">
+    </fa-icon>
+</div>
+
+

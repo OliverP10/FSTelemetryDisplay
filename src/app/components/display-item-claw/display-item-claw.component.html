@@ -1,0 +1,25 @@
+<div class="container">
+
+    <div class="item">
+        <fa-icon
+            *ngIf="state=='closeing'"
+            [icon]="faMinimize"
+            size="2x">
+        </fa-icon>
+        <fa-icon
+            *ngIf="state=='opening'"
+            [icon]="faMaximize"
+            size="2x">
+        </fa-icon>
+    </div>
+
+    <div class="item">
+        <button mat-flat-button
+            color="warn"
+            (click)="toggleArmed()"
+            [ngStyle]="(armed) ? {'background-color': 'rgb(244,67,54)'} : {'background-color': 'rgb(28, 138, 55)'}">
+            {{(armed ? 'Armed' : 'Disarmed')}}
+        </button>
+    </div>
+    
+</div>

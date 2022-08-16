@@ -1,0 +1,19 @@
+.container{
+    margin: 0;
+    padding-top: 1px;
+    border: 1px;
+    color: rgb(238, 238, 238);
+    background-color: rgb(91, 107, 128);
+    background-color: rgb(91, 107, 128);
+    height: 100vh;
+    width: 100%;
+}
+
+.box {
+    margin: 10%;
+}
+
+.btn-home{
+    margin-top: 10px;
+    margin-left: 10px;
+}

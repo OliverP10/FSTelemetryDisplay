@@ -1,0 +1,128 @@
+<mat-sidenav-container>
+    <mat-sidenav [(opened)]="showSidebar">
+        <img src="/assets/logo.png" class="logo" alt="Logo">
+
+        <div class="nav-item-list">
+
+            <button 
+                class="list-item" 
+                (click)="setView('dashboard')"
+                routerLink=""
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-plus fa-2x"
+                        [icon]="faHouse"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+                    </fa-icon>
+                    Dashboard
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
+                (click)="setView('controlsystems')"
+                routerLink=""
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-signal-stream fa-2x"
+                        [icon]="faRss"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Control Systems
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
+                (click)="setView('car')"
+                routerLink=""
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid faCar fa-2x"
+                        [icon]="faCar"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Car
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
+                (click)="setView('performance')"
+                routerLink=""
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid faGaugeHigh fa-2x"
+                        [icon]="faGaugeHigh"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Performance
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
+                (click)="setView('engine')"
+                routerLink=""
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid faRocket fa-2x"
+                        [icon]="faRocket"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Engine
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
+                routerLink="/create-display"
+                (click)="toggleSideBar()"
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-signal-stream fa-2x"
+                        [icon]="faSquarePlus"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Create display
+                </div>
+            </button>
+
+            <button 
+                class="list-item about"
+                routerLink="/about"
+                (click)="toggleSideBar()"
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-signal-stream fa-2x"
+                        [icon]="faCircleInfo"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    About
+                </div>
+            </button>
+            
+
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div class="container">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

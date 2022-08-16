@@ -1,0 +1,83 @@
+.search {
+   position: absolute;
+   margin-left: calc(50% - 150px);
+   margin-top: -20px;
+   width: 100px;
+}
+
+table {
+    width: 100%;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: transparent;
+}
+
+th {
+    text-align: left;
+    font-weight: bold;
+    font-size: 15px;
+    color: black;
+}
+
+td {
+    background-color: rgb(74, 88, 107);
+    color: orangered;
+    padding: 0px 15px;
+}
+
+tr.mat-header-row{
+    height: 20px !important;
+    padding: 5px;
+}
+
+td.mat-cell {
+    padding: 5px;
+    padding-right: 15px;
+}
+
+.table-title {
+    border-bottom-left-radius: 6px;
+    border-top-left-radius: 6px;
+}
+
+.table-button {
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
+    text-align: right;
+}
+
+td.mat-cell:last-of-type {
+    padding-right: 7px;
+}
+
+.btn{
+    background-color: orangered;
+    border-radius: 4px;
+    color:black;
+    padding:5px;
+    padding-inline: 15px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+button:active{
+    background:rgb(194, 69, 23);
+}
+
+button:focus{       
+    border: none;
+    outline: 0px;
+}
+
+tr.mat-row {
+    height: 50px
+}
+
+table.mat-table {
+    border-spacing: 0 10px;
+}
+
+
+
