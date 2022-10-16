@@ -1,6 +1,10 @@
 import { Component, AfterViewInit, Input, Output, EventEmitter, SimpleChanges, ViewChild, ElementRef, OnChanges, OnInit, HostListener } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft, faAngleRight, faLeftRight, faUpDown } from '@fortawesome/free-solid-svg-icons';
+
 import { settingDropDown } from 'src/app/animations/animations';
 import { ScreenItem } from 'src/app/interfaces/Screen';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -17,9 +21,15 @@ export class ScreenItemComponent implements AfterViewInit, OnChanges, OnInit {
     @Output() onDeleteScreenItem: EventEmitter<ScreenItem> = new EventEmitter();
     @Output() onMoveScreenItem: EventEmitter<MoveScreenItem> = new EventEmitter();
     @Output() onResizeScreenItem: EventEmitter<ResizeScreenItem> = new EventEmitter();
-    @ViewChild('container') containerElement: ElementRef;
+    @ViewChild('menu') matMenuTrigger: ElementRef;
 
     dropDownIcon = faCaretDown;
+    faTrashCan = faTrashCan;
+    faAngleLeft = faAngleLeft;
+    faAngleRight = faAngleRight;
+    faLeftRight = faLeftRight;
+    faUpDown = faUpDown;
+
     showSettings: boolean = false;
 
     constructor(private settingsService: SettingsService) {}
@@ -46,9 +56,11 @@ export class ScreenItemComponent implements AfterViewInit, OnChanges, OnInit {
 
     moveScreenItem(moveScreenItem: MoveScreenItem): void {
         this.onMoveScreenItem.emit(moveScreenItem);
+        console.log('run');
     }
 
-    resizeScreenItem(resizeScreenItem: ResizeScreenItem): void {
+    resizeScreenItem(resizeScreenItem: ResizeScreenItem, event: any): void {
+        event.stopPropagation();
         this.onResizeScreenItem.emit(resizeScreenItem);
     }
 }

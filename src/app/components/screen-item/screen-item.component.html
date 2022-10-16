@@ -1,20 +1,22 @@
-<h3 class="title">{{screenItem.display.title}}</h3>
+<h3 class="title"
+    cdkDrag
+    cdkDragRootElement="app-screen-item"
+    cdkDragHandle
+    [matMenuTriggerFor]="menu">
+    {{screenItem.display.title}}
+</h3>
 
-<fa-icon 
-    (click)="toggleDropDown()"
-    class="btn-drop-down"
-    [icon]="dropDownIcon">
-</fa-icon>
-
-
-<app-display-item-settings
-    *ngIf="showSettings"
-    [@settingDropDown]
-    (onDeleteScreenItem)="removeScreenItem($event)"
-    (onMoveScreenItem)="moveScreenItem($event)"
-    (onResizeScreenItem)="resizeScreenItem($event)"
-    [screenItem]="screenItem">
-</app-display-item-settings>
+<mat-menu #menu="matMenu" class="menu"> 
+    <ng-template matMenuContent>
+      <button mat-menu-item class="menu-delete" (click)="removeScreenItem(screenItem)"><fa-icon [icon]="faTrashCan" class="menu-icon"></fa-icon>Remove</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:1}, $event)"><fa-icon [icon]="faLeftRight" class="menu-icon"></fa-icon>Increase width</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:-1}, $event)"><fa-icon [icon]="faLeftRight" class="menu-icon"></fa-icon>Decrese width</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'vertical',change:1}, $event)"><fa-icon [icon]="faUpDown" class="menu-icon" ></fa-icon>Increase height</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'vertical',change:-1}, $event)"><fa-icon [icon]="faUpDown" class="menu-icon"></fa-icon>Decrese height</button>
+      <button mat-menu-item class="menu-button" (click)="moveScreenItem({screenItem: this.screenItem,direction:'left'})"><fa-icon [icon]="faAngleLeft" class="menu-icon"></fa-icon>Move left</button>
+      <button mat-menu-item class="menu-button" (click)="moveScreenItem({screenItem: this.screenItem,direction:'right'})"><fa-icon [icon]="faAngleRight" class="menu-icon"></fa-icon>Move right</button>
+    </ng-template> 
+</mat-menu>
 
 <div [ngSwitch]="screenItem.display.type" class="container" #container>
     <ng-template ngSwitchCase="graphDepricated">
@@ -108,11 +110,3 @@
 
 
     
-
-
-
-
-
-
-
-

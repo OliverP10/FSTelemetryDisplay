@@ -1,11 +1,25 @@
-.btn-drop-down {
-    cursor: pointer;
-    display: table;
-    margin: 0 auto;
-    margin-top: auto;
-    margin-bottom: 0;
-    color: rgb(230, 86, 46);
+::ng-deep .menu {
+    background-color: rgb(84, 91, 101) !important;
+}
 
+.menu-button {
+    color: rgb(51, 145, 245);
+}
+
+.menu-delete {
+    color: rgb(236, 16, 16)
+}
+
+.menu-button:hover {
+    color: rgb(56, 152, 255);
+}
+
+.menu-delete:hover {
+    color: red
+}
+
+.menu-icon {
+    padding-right: 10px;
 }
 
 .title {
@@ -13,12 +27,14 @@
     text-align: left;
     position: absolute;
     margin-left: 10px;
-    margin-top: 10px;
+    margin-top: 6px;
     color: gainsboro;
+    z-index: 1;
 }
 
 .container{
-    height: calc(100% - 20px);;
+    padding-top: 14px;
+    height: calc(100% - 14px);;
     width: 100%;
 }
 

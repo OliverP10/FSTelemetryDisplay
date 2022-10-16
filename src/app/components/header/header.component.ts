@@ -17,10 +17,6 @@ import { TelemetryBoolean } from 'src/app/interfaces/Telemetry';
     styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-    @Input() displays: Display[];
-    @Output() onAddDisplay: EventEmitter<Display> = new EventEmitter();
-    @Output() onSaveScreen: EventEmitter<Display> = new EventEmitter();
-
     private ngUnsubscribe = new Subject<void>();
     readonly URL = environment.ROOT_URL + environment.API_PORT;
 
@@ -66,21 +62,7 @@ export class HeaderComponent implements OnInit {
     }
 
     toggleAddDisplay(): void {
-        const ref = this.dialogRef.open(AddDisplayComponent, {
-            height: '80%',
-            width: '50%',
-            data: {
-                displays: this.displays
-            }
-        });
-
-        const sub = ref.componentInstance.onAddDisplay.subscribe((display: Display) => {
-            this.addDisplay(display);
-        });
-    }
-
-    addDisplay(display: Display): void {
-        this.onAddDisplay.emit(display);
+        this.settingsService.toggleAddDisplay();
     }
 
     toggleSidebar() {
@@ -88,7 +70,7 @@ export class HeaderComponent implements OnInit {
     }
 
     saveScreen() {
-        this.onSaveScreen.emit();
+        this.settingsService.saveScreens();
     }
 
     downloadLogs() {

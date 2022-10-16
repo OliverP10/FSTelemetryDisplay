@@ -36,6 +36,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { DisplayItemMapComponent } from './components/display-item-map/display-item-map.component';
 import { DisplayItemWarningsComponent } from './components/display-item-warnings/display-item-warnings.component';
@@ -111,7 +114,10 @@ const config: SocketIoConfig = {
         HttpClientModule,
         MatSliderModule,
         HighchartsChartModule,
-        DragDropModule
+        DragDropModule,
+        MatMenuModule,
+        MatIconModule,
+        MatToolbarModule
     ],
     providers: [],
     bootstrap: [AppComponent]

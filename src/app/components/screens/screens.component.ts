@@ -1,8 +1,8 @@
-import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { Display, MoveScreenItem, ResizeScreenItem } from '../../interfaces/Display';
 import { SettingsService } from 'src/app/services/settings.service';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SocketService } from 'src/app/services/socket.service';
 import { expandContractList } from 'src/app/animations/animations';
@@ -10,6 +10,8 @@ import { environment } from 'src/environments/environment';
 import { DBScreenItem, Screen, ScreenItem } from 'src/app/interfaces/Screen';
 import { objectListToMap } from 'src/shared/utils/formatter';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { AddDisplayComponent } from '../add-display/add-display.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-screens',
@@ -17,17 +19,28 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
     styleUrls: ['./screens.component.css'],
     animations: [expandContractList]
 })
-export class ScreensComponent implements OnInit, AfterViewInit {
+export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     readonly URL = environment.ROOT_URL + environment.API_PORT;
     screens: Map<string, Screen> = new Map<string, Screen>(); //key is a screen and value is a list of display ids
     displays: Display[] = []; //All saved displays on server
     screenItems: ScreenItem[] = []; //Displays being show
     key_presses = new Set<string>();
 
-    constructor(private http: HttpClient, private settingsService: SettingsService, private socketService: SocketService, private snackBar: MatSnackBar) {
-        settingsService.onSetView().subscribe((view) => {
-            this.loadScreen(view);
-        });
+    private ngUnsubscribe = new Subject<void>();
+
+    constructor(private http: HttpClient, private settingsService: SettingsService, private socketService: SocketService, private snackBar: MatSnackBar, private dialogRef: MatDialog) {
+        this.settingsService
+            .onSetView()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((view) => this.loadScreen(view));
+        this.settingsService
+            .onToggleAddDispplay()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(() => this.toggleAddDisplay());
+        this.settingsService
+            .onSaveScreen()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(() => this.saveScreen());
     }
 
     ngOnInit(): void {
@@ -90,10 +103,24 @@ export class ScreensComponent implements OnInit, AfterViewInit {
         } else if (resizeScreenItem.axis == 'horizontal' && this.screenItems[index].colSize + resizeScreenItem.change <= 4 && this.screenItems[index].colSize + resizeScreenItem.change > 0) {
             this.screenItems[index].colSize += resizeScreenItem.change;
         }
+        this.settingsService.resizeEvent();
+    }
+
+    toggleAddDisplay(): void {
+        const ref = this.dialogRef.open(AddDisplayComponent, {
+            height: '80%',
+            width: '50%',
+            data: {
+                displays: this.displays
+            }
+        });
+
+        const sub = ref.componentInstance.onAddDisplay.subscribe((display: Display) => {
+            this.addScreenItem(display);
+        });
     }
 
     saveScreen() {
-        //need proper backend to do a put request for now just post
         if (this.settingsService.view == 'custom') {
             return;
         }
@@ -108,6 +135,11 @@ export class ScreensComponent implements OnInit, AfterViewInit {
                 });
             }
         });
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     @HostListener('document:keydown', ['$event'])

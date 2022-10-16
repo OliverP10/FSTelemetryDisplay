@@ -1,8 +1,9 @@
-
-
 .container{
     overflow-y:auto;
     background-color: rgb(45, 52, 62);
+    
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .logo {

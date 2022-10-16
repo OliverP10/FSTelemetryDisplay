@@ -9,6 +9,8 @@ export class SettingsService {
     private resizeSubject = new Subject<any>();
     private sidebarSubject = new Subject<any>();
     private viewSubject = new Subject<any>();
+    private toggleAddDisplaySubject = new Subject<any>();
+    private saveScreenSubject = new Subject<any>();
 
     view: string = 'dashboard';
 
@@ -37,5 +39,21 @@ export class SettingsService {
 
     onSetView(): Observable<any> {
         return this.viewSubject.asObservable();
+    }
+
+    toggleAddDisplay(): void {
+        this.toggleAddDisplaySubject.next(null);
+    }
+
+    onToggleAddDispplay(): Observable<any> {
+        return this.toggleAddDisplaySubject.asObservable();
+    }
+
+    saveScreens(): void {
+        this.saveScreenSubject.next(null);
+    }
+
+    onSaveScreen(): Observable<any> {
+        return this.saveScreenSubject.asObservable();
     }
 }
