@@ -1,261 +1,210 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormControl, Validators, Form } from '@angular/forms';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
-import { Post } from "../../Display"
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Post } from '../../interfaces/Display';
 import { catchError, Observable, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { faTimes, faCirclePlus, faBars } from '@fortawesome/free-solid-svg-icons';
 import { SettingsService } from 'src/app/services/settings.service';
 import { Router } from '@angular/router';
-import { ROOT_URL } from '../../Display';
-
+import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-create-display-form',
-  templateUrl: './create-display-form.component.html',
-  styleUrls: ['./create-display-form.component.css']
+    selector: 'app-create-display-form',
+    templateUrl: './create-display-form.component.html',
+    styleUrls: ['./create-display-form.component.css']
 })
 export class CreateDisplayFormComponent implements OnInit {
-  faTimes=faTimes
-  faCirclePlus=faCirclePlus
-  faBars=faBars
-  
+    faTimes = faTimes;
+    faCirclePlus = faCirclePlus;
+    faBars = faBars;
 
-  readonly URL = ROOT_URL+':3200'
-  graphForm: FormGroup
-  graphDatalabels:FormArray = new FormArray([])
-  guageForm: FormGroup
-  guageDatalabels:FormArray = new FormArray([])
+    readonly URL = environment.ROOT_URL + environment.API_PORT;
+    graphForm: FormGroup;
+    graphDatalabels: FormArray = new FormArray([]);
+    guageForm: FormGroup;
+    guageDatalabels: FormArray = new FormArray([]);
 
-  majorTicks:FormArray = new FormArray([])
-  highlights:FormArray = new FormArray([])
+    majorTicks: FormArray = new FormArray([]);
+    highlights: FormArray = new FormArray([]);
 
-  type:string = "graph"
-  recivedLabels:string[] = []
+    type: string = 'graph';
+    recivedLabels: string[] = [];
 
+    constructor(private http: HttpClient, private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router, private settingsService: SettingsService) {
+        this.graphForm = this.fb.group({
+            type: ['', [Validators.required]],
+            title: ['', [Validators.required, Validators.minLength(3)]],
+            colSize: ['', [Validators.required, Validators.min(1), Validators.max(4)]],
+            rowSize: ['', [Validators.required, Validators.min(1), Validators.max(4)]],
+            dataLabels: this.graphDatalabels
+        });
 
-  constructor(private http: HttpClient,private fb: FormBuilder,private snackBar: MatSnackBar,private router: Router, private settingsService: SettingsService) { 
-    this.graphForm = this.fb.group({
-      type: ['', [
-        Validators.required
-      ]],
-      title: ['', [
-        Validators.required,
-        Validators.minLength(3)
-      ]],
-      colSize: ['', [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(4)
-      ]],
-      rowSize: ['', [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(4)
-      ]],
-      dataLabels: this.graphDatalabels,
-    });
-
-    this.guageForm = this.fb.group({
-      type: ['', [
-        Validators.required
-      ]],
-      title: ['', [
-        Validators.required,
-        Validators.minLength(3)
-      ]],
-      colSize: ['', [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(4)
-      ]],
-      rowSize: ['', [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(4)
-      ]],
-      units: ['', [
-        Validators.required,
-      ]],
-      minValue: ['', [
-        Validators.required,
-      ]],
-      maxValue: ['', [
-        Validators.required,
-      ]],
-      majorTicks: this.majorTicks,
-      minorTicks: ['', [
-        Validators.required,
-      ]],
-      highlights: this.highlights,
-      dataLabels: this.guageDatalabels,
-    });
-
-  }
-
-  ngOnInit(): void {
-    this.getDataLabels();
-  }
-
-  loadType(event:any) {
-    this.type = event.value
-    this.graphForm.get('type')?.setValue(this.type)
-    this.guageForm.get('type')?.setValue(this.type)
-  }
-
-  getDataLabels() {
-    this.http.get<Post>(this.URL+'/datalabels').subscribe((data: Post) => {
-      this.showDatalabels(data.datalabels);
-    });
-  }
-
-  showDatalabels(datalabels:string[]) {
-    this.recivedLabels = datalabels;
-    for(let item of datalabels){
-      this.graphDatalabels.push(this.fb.group({
-        [item]:  ['', [
-          
-        ]],
-      }));
-
-      this.guageDatalabels.push(this.fb.group({
-        [item]:  ['', [
-          
-        ]],
-      }));
+        this.guageForm = this.fb.group({
+            type: ['', [Validators.required]],
+            title: ['', [Validators.required, Validators.minLength(3)]],
+            colSize: ['', [Validators.required, Validators.min(1), Validators.max(4)]],
+            rowSize: ['', [Validators.required, Validators.min(1), Validators.max(4)]],
+            units: ['', [Validators.required]],
+            minValue: ['', [Validators.required]],
+            maxValue: ['', [Validators.required]],
+            majorTicks: this.majorTicks,
+            minorTicks: ['', [Validators.required]],
+            highlights: this.highlights,
+            dataLabels: this.guageDatalabels
+        });
     }
-  }
 
-  sucessResponseHandler(response:any) {
-    //this.graphForm.reset();
-    //this.guageForm.reset();
-    this.snackBar.open("Success!","Dismiss",{duration: 3000})
-  }
+    ngOnInit(): void {
+        this.getDataLabels();
+    }
 
-  errorResponseHandler(response:any) {
-    this.snackBar.open(response.error.errors[0].msg,"Dismiss")
-  }
+    loadType(event: any) {
+        this.type = event.value;
+        this.graphForm.get('type')?.setValue(this.type);
+        this.guageForm.get('type')?.setValue(this.type);
+    }
 
+    getDataLabels() {
+        this.http.get<Post>(this.URL + '/datalabels').subscribe((data: Post) => {
+            this.showDatalabels(data.datalabels);
+        });
+    }
 
-  async submitFormGraph() {
-    return this.http.post<any>(this.URL+"/create-display-graph", this.graphForm.value).subscribe({
-      next: (v) => this.sucessResponseHandler(v),
-      error: (e) => this.errorResponseHandler(e),
-  })
-  }
+    showDatalabels(datalabels: string[]) {
+        this.recivedLabels = datalabels;
+        for (let item of datalabels) {
+            this.graphDatalabels.push(
+                this.fb.group({
+                    [item]: ['', []]
+                })
+            );
 
-  async submitFormGuage() {
-    return this.http.post<any>(this.URL+"/create-display-guage", this.guageForm.value).subscribe({
-      next: (v) => this.sucessResponseHandler(v),
-      error: (e) => this.errorResponseHandler(e),
-  })
-  }
+            this.guageDatalabels.push(
+                this.fb.group({
+                    [item]: ['', []]
+                })
+            );
+        }
+    }
 
-  guageTextarea(event:any) {
+    sucessResponseHandler(response: any) {
+        //this.graphForm.reset();
+        //this.guageForm.reset();
+        this.snackBar.open('Success!', 'Dismiss', { duration: 3000 });
+    }
 
-  }
+    errorResponseHandler(response: any) {
+        this.snackBar.open(response.error.errors[0].msg, 'Dismiss');
+    }
 
-  addMajorTick() {
-    this.majorTicks.push(this.fb.group({
-      tick:  ['', [
-        Validators.required,
-      ]],
-    }));
-  }
+    async submitFormGraph() {
+        return this.http.post<any>(this.URL + '/create-display-graph', this.graphForm.value).subscribe({
+            next: (v) => this.sucessResponseHandler(v),
+            error: (e) => this.errorResponseHandler(e)
+        });
+    }
 
-  removeMajorTick(i:number) {
-    this.majorTicks.removeAt(i);
-  }
+    async submitFormGuage() {
+        return this.http.post<any>(this.URL + '/create-display-guage', this.guageForm.value).subscribe({
+            next: (v) => this.sucessResponseHandler(v),
+            error: (e) => this.errorResponseHandler(e)
+        });
+    }
 
-  addHighlight() {
-    this.highlights.push(this.fb.group({
-      from:  ['', [
-        Validators.required,
-      ]],
-      to:  ['', [
-        Validators.required,
-      ]],
-      color:  ['', [
-        Validators.required,
-      ]],
-    }));
-  }
+    guageTextarea(event: any) {}
 
-  removeHighlight(i:number) {
-    this.highlights.removeAt(i);
-  }
+    addMajorTick() {
+        this.majorTicks.push(
+            this.fb.group({
+                tick: ['', [Validators.required]]
+            })
+        );
+    }
 
-  toggleSideBar() {
-    this.settingsService.toggleSidebar();
-  }
+    removeMajorTick(i: number) {
+        this.majorTicks.removeAt(i);
+    }
 
-  get graphLabelsFormArray() {
-    return this.graphForm.controls['dataLabels'] as FormArray;
-  }
+    addHighlight() {
+        this.highlights.push(
+            this.fb.group({
+                from: ['', [Validators.required]],
+                to: ['', [Validators.required]],
+                color: ['', [Validators.required]]
+            })
+        );
+    }
 
-  get graphType() {
-    return this.graphForm.get('type')
-  }
+    removeHighlight(i: number) {
+        this.highlights.removeAt(i);
+    }
 
-  get graphTitle() {
-    return this.graphForm.get('title')
-  }
+    toggleSideBar() {
+        this.settingsService.toggleSidebar();
+    }
 
-  get graphWidth() {
-    return this.graphForm.get('colSize')
-  }
+    get graphLabelsFormArray() {
+        return this.graphForm.controls['dataLabels'] as FormArray;
+    }
 
-  get graphHeight() {
-    return this.graphForm.get('rowSize')
-  }
+    get graphType() {
+        return this.graphForm.get('type');
+    }
 
-  get guageLabelsFormArray() {
-    return this.guageForm.controls['dataLabels'] as FormArray;
-  }
+    get graphTitle() {
+        return this.graphForm.get('title');
+    }
 
-  get guageType() {
-    return this.guageForm.get('type')
-  }
+    get graphWidth() {
+        return this.graphForm.get('colSize');
+    }
 
-  get guageTitle() {
-    return this.guageForm.get('title')
-  }
+    get graphHeight() {
+        return this.graphForm.get('rowSize');
+    }
 
-  get guageWidth() {
-    return this.guageForm.get('colSize')
-  }
+    get guageLabelsFormArray() {
+        return this.guageForm.controls['dataLabels'] as FormArray;
+    }
 
-  get guageHeight() {
-    return this.guageForm.get('rowSize')
-  }
+    get guageType() {
+        return this.guageForm.get('type');
+    }
 
-  get guageUnits() {
-    return this.guageForm.get('units')
-  }
+    get guageTitle() {
+        return this.guageForm.get('title');
+    }
 
-  get guageMinValue() {
-    return this.guageForm.get('minValue')
-  }
+    get guageWidth() {
+        return this.guageForm.get('colSize');
+    }
 
-  get guageMaxValue() {
-    return this.guageForm.get('maxValue')
-  }
+    get guageHeight() {
+        return this.guageForm.get('rowSize');
+    }
 
-  get guageMajorTicks():FormArray {
-    return this.guageForm.controls['majorTicks'] as FormArray
-  }
+    get guageUnits() {
+        return this.guageForm.get('units');
+    }
 
-  get guageMinorticks() {
-    return this.guageForm.get('minorTicks')
-  }
+    get guageMinValue() {
+        return this.guageForm.get('minValue');
+    }
 
-  get guageHighlights() {
-    return this.guageForm.controls['highlights'] as FormArray
-  }
+    get guageMaxValue() {
+        return this.guageForm.get('maxValue');
+    }
 
+    get guageMajorTicks(): FormArray {
+        return this.guageForm.controls['majorTicks'] as FormArray;
+    }
 
-  
+    get guageMinorticks() {
+        return this.guageForm.get('minorTicks');
+    }
 
-
-
+    get guageHighlights() {
+        return this.guageForm.controls['highlights'] as FormArray;
+    }
 }

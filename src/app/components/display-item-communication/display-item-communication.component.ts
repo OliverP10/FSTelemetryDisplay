@@ -1,66 +1,62 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Display } from 'src/app/Display';
+import { Display } from 'src/app/interfaces/Display';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgStyle } from '@angular/common';
 import { SocketService } from 'src/app/services/socket.service';
 import { Subject, takeUntil } from 'rxjs';
-
+import { DataManagerService } from 'src/app/services/data-manager.service';
+import { ScreenItem } from 'src/app/interfaces/Screen';
 
 @Component({
-  selector: 'app-display-item-communication',
-  templateUrl: './display-item-communication.component.html',
-  styleUrls: ['./display-item-communication.component.css']
+    selector: 'app-display-item-communication',
+    templateUrl: './display-item-communication.component.html',
+    styleUrls: ['./display-item-communication.component.css']
 })
 export class DisplayItemCommunicationComponent implements OnInit, OnDestroy {
-  faCircle = faCircle
+    faCircle = faCircle;
 
-  @Input() display: Display;
+    @Input() screenItem: ScreenItem;
 
-  private ngUnsubscribe = new Subject<void>();
+    private ngUnsubscribe = new Subject<void>();
 
-  styleOff: any = {color:"rgb(62, 71, 90)"}
-  styleOn: any = {color:"rgb(29, 163, 52)"}
+    styleOff: any = { color: 'rgb(62, 71, 90)' };
+    styleOn: any = { color: 'rgb(29, 163, 52)' };
 
-  buttons = {
-    boxBtn: false,
-    slowBtn: false,
-    pushBtn: false,
-  }
+    buttons = {
+        boxBtn: false,
+        slowBtn: false,
+        pushBtn: false
+    };
 
-  constructor(private socketService: SocketService) {
-    socketService.onLiveData().pipe(takeUntil(this.ngUnsubscribe)).subscribe((data) => {this.updateButtons(data)})
-  }
+    constructor(private socketService: SocketService, private dataManagerService: DataManagerService) {}
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {}
 
-  setButton(button: string) {
-    for(let key in this.buttons) {
-      if(key==button) {
-        this.buttons[key as keyof typeof this.buttons] = !this.buttons[key as keyof typeof this.buttons];
-      } else {
-        this.buttons[key as keyof typeof this.buttons] = false;
-      }
+    setButton(button: string) {
+        for (let key in this.buttons) {
+            if (key == button) {
+                this.buttons[key as keyof typeof this.buttons] = !this.buttons[key as keyof typeof this.buttons];
+            } else {
+                this.buttons[key as keyof typeof this.buttons] = false;
+            }
+        }
+        this.socketService.sendControlFrame(this.buttons);
     }
-    this.socketService.sendControlFrame(this.buttons)
-  }
 
-  updateButtons(data:any) {
-    if(data.hasOwnProperty('boxBtn')) {
-      this.buttons.boxBtn = (data['boxBtn']) ? true : false
+    updateButtons(data: any) {
+        if (data.hasOwnProperty('boxBtn')) {
+            this.buttons.boxBtn = data['boxBtn'] ? true : false;
+        }
+        if (data.hasOwnProperty('slowBtn')) {
+            this.buttons.slowBtn = data['slowBtn'] ? true : false;
+        }
+        if (data.hasOwnProperty('pushBtn')) {
+            this.buttons.pushBtn = data['pushBtn'] ? true : false;
+        }
     }
-    if(data.hasOwnProperty('slowBtn')) {
-      this.buttons.slowBtn = (data['slowBtn']) ? true : false
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
-    if(data.hasOwnProperty('pushBtn')) {
-      this.buttons.pushBtn = (data['pushBtn']) ? true : false
-    }
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
-
 }

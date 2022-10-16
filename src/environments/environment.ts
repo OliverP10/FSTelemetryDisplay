@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+    production: false,
+    ROOT_URL: 'http://localhost', // 'http://' prefix is important for cors
+    API_PORT: ':3200',
+    SOCKET_PORT: ':3000',
+    ROVER_MODE: true
 };
 
 /*

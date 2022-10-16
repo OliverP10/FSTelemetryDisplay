@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DisplaysComponent } from './displays.component';
+import { DisplayGraphComponent } from './display-graph.component';
 
-describe('DisplaysComponent', () => {
-  let component: DisplaysComponent;
-  let fixture: ComponentFixture<DisplaysComponent>;
+describe('DisplayGraphComponent', () => {
+  let component: DisplayGraphComponent;
+  let fixture: ComponentFixture<DisplayGraphComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DisplaysComponent ]
+      declarations: [ DisplayGraphComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DisplaysComponent);
+    fixture = TestBed.createComponent(DisplayGraphComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

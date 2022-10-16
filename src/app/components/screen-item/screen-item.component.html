@@ -1,4 +1,4 @@
-<h3 class="title">{{display.title}}</h3>
+<h3 class="title">{{screenItem.display.title}}</h3>
 
 <fa-icon 
     (click)="toggleDropDown()"
@@ -10,90 +10,95 @@
 <app-display-item-settings
     *ngIf="showSettings"
     [@settingDropDown]
-    (onDeleteDisplay)="removeDisplay($event)"
-    (onMoveDisplay)="moveDisplay($event)"
-    (onResizeDisplay)="resizeDisplay($event)"
-    [display]="display">
+    (onDeleteScreenItem)="removeScreenItem($event)"
+    (onMoveScreenItem)="moveScreenItem($event)"
+    (onResizeScreenItem)="resizeScreenItem($event)"
+    [screenItem]="screenItem">
 </app-display-item-settings>
 
-
-<div [ngSwitch]="display.type" class="container" #container>
-    <ng-template ngSwitchCase="graph">
+<div [ngSwitch]="screenItem.display.type" class="container" #container>
+    <ng-template ngSwitchCase="graphDepricated">
         <app-display-item-graph 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-graph>
     </ng-template>
 
     <ng-template ngSwitchCase="radial">
         <app-display-item-radial 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-radial>
     </ng-template>
 
     <ng-template ngSwitchCase="linear">
         <app-display-item-linear 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-linear>
     </ng-template>
 
     <ng-template ngSwitchCase="map">
         <app-display-item-map 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-map>
     </ng-template>
 
     <ng-template ngSwitchCase="warnings">
         <app-display-item-warnings 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-warnings>
     </ng-template>
 
     <ng-template ngSwitchCase="camera">
         <app-display-item-camera 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-camera>
     </ng-template>
 
     <ng-template ngSwitchCase="communication">
         <app-display-item-communication 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-communication>
     </ng-template>
 
     <ng-template ngSwitchCase="arm">
         <app-display-item-arm 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-arm>
     </ng-template>
 
     <ng-template ngSwitchCase="data">
         <app-display-item-data 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-data>
     </ng-template>
 
     <ng-template ngSwitchCase="movement">
         <app-display-item-movement 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-movement>
     </ng-template>
 
     <ng-template ngSwitchCase="arm-modes">
         <app-display-item-arm-modes 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-arm-modes>
     </ng-template>
 
     <ng-template ngSwitchCase="claw">
         <app-display-item-claw 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-claw>
     </ng-template>
 
     <ng-template ngSwitchCase="console">
         <app-display-item-console 
-        [display]="display"
+        [screenItem]="screenItem"
         ></app-display-item-console>
+    </ng-template>
+
+    <ng-template ngSwitchCase="graph">
+        <app-display-graph 
+        [screenItem]="screenItem"
+        ></app-display-graph>
     </ng-template>
 </div>
 

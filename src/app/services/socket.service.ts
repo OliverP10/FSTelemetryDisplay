@@ -1,159 +1,88 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Socket } from 'ngx-socket-io';  
+import { Socket } from 'ngx-socket-io';
 import { Observable, Subject } from 'rxjs';
-import { ErrorData, ROVER_MODE } from '../Display';
 import { AudioService } from './audio.service';
+import { DataManagerService } from './data-manager.service';
+import { environment } from 'src/environments/environment';
+import { ObjectTelemetry, TelemetryAny } from '../interfaces/Telemetry';
+import { forkJoin } from 'rxjs';
 
 @Injectable({
-	providedIn: 'root'
+    providedIn: 'root'
 })
 export class SocketService {
-	private allDataSubject = new Subject<any>();
-	private liveDataSubject = new Subject<any>();
-	
-	private currentWarningsSubject = new Subject<any>();
-	private warningsSubject = new Subject<any>();
-	private logsSubject = new Subject<any>();
+    private serverConnected: boolean = false;
+    private vehicleConnected: boolean = false;
+    private dataReady = new Subject<TelemetryAny[]>();
 
-	data:any
-	logs:string[] = []
+    constructor(private socket: Socket, private dataManager: DataManagerService, private http: HttpClient, private audio: AudioService) {
+        this.socket.fromEvent('telemetry').subscribe((data: any) => this.dataManager.addTelemetry(data)); //for guages that only want the most recent
+        this.socket.fromEvent('events').subscribe((data: any) => this.dataManager.addEvents(data)); //for guages that only want the most recent
+        this.socket.fromEvent('connect').subscribe(() => this.setServerConnectionStatus(true));
+        this.socket.fromEvent('disconnect').subscribe(() => this.setServerConnectionStatus(false));
+        this.socket.fromEvent('vehicle-connection').subscribe((data: any) => this.setVehicleConnectionStatus(data));
+        this.socket.fromEvent('log').subscribe((data: any) => {
+            //this.appendLogs(data);
+        });
+    }
 
-	serverConnected:boolean = false;
-	arduinoConnected:boolean = true;
-	vehicleConnected:boolean = false;
-	errors:ErrorData[] = []
-	
-	currentWarnings: Boolean = false;
+    public onServerDisconect(): Observable<unknown> {
+        return this.socket.fromEvent('disconnect');
+    }
 
-	constructor(private socket: Socket, private audio: AudioService) { 
-		this.socket.fromEvent('all-data').subscribe((data: any) => this.loadData(data))	//for graphs that want all data
-		this.socket.fromEvent('live-data').subscribe((data: any) => this.appendLiveData(data));	//for guages that only want the most recent
-		this.socket.fromEvent('connect').subscribe(() => this.setConnectionStatus(true));
-    	this.socket.fromEvent('disconnect').subscribe(() => this.setConnectionStatus(false));
-		this.socket.fromEvent('serial-port').subscribe((data: any) => this.setArduinoConnectionStatus(data));
-		this.socket.fromEvent('vehicle-connection').subscribe((data: any) => this.setVehicleConnectionStatus(data));
-		this.socket.fromEvent('log').subscribe((data: any) => {this.appendLogs(data)});
-		
-	}
+    public onServerConnect(): Observable<unknown> {
+        return this.socket.fromEvent('connect');
+    }
 
-	loadData(_data:any) {
-		this.data = _data
-		this.allDataSubject.next(this.data);
-		
-	}
+    private setServerConnectionStatus(connected: boolean) {
+        if (connected) {
+            this.connected();
+        }
+        connected ? this.audio.playSound('telemRecovered') : this.audio.playSound('telemLost');
+        this.serverConnected = connected;
+    }
 
-	onNewData() {
-		return this.allDataSubject.asObservable();
-	}
+    private connected() {
+        this.socket.emit('setType', 'client');
 
-	onLiveData() {
-		return this.liveDataSubject.asObservable()
-	}
+        forkJoin({
+            latestTelemetry: this.http.get<ObjectTelemetry>(environment.ROOT_URL + environment.API_PORT + '/telemetry/getAllUniqueFromSessionStart'),
+            allTelemetry: this.http.get<ObjectTelemetry>(environment.ROOT_URL + environment.API_PORT + '/telemetry/getFromSessionStart')
+        }).subscribe((data: any) => {
+            let latestTelemetry: TelemetryAny[] = data.latestTelemetry.telemetry;
+            this.dataManager.fireAllTelemetrySubscriptions(latestTelemetry);
+            let allTelemetry: TelemetryAny[] = data.allTelemetry.telemetry;
+            this.dataManager.mergeTelemetry(allTelemetry);
+            this.dataReady.next(this.dataManager.telemetry);
+        });
+    }
 
-	requestAllData() {
-		this.socket.emit('all-data');
-	}
+    public get serverConnectionSatatus(): boolean {
+        return this.serverConnected;
+    }
 
-	onDisconect() {
-		return this.socket.fromEvent('disconnect');
-	}
+    public onDataReady(): Observable<TelemetryAny[]> {
+        return this.dataReady.asObservable();
+    }
 
-	onConnect() {
-		return this.socket.fromEvent('connect');
-	}
+    public onVehicleConnectionStatus(): Observable<boolean> {
+        return this.socket.fromEvent('vehicle-connection');
+    }
 
-	setConnectionStatus(connected:boolean) {
-		if(connected) {
-			this.socket.emit("setType", "client")
-			this.socket.emit("all-data")
-		}
-		(connected) ? this.audio.playSound("telemRecovered") : this.audio.playSound("telemLost")
-		this.serverConnected = connected;
-	}
+    private setVehicleConnectionStatus(connected: boolean) {
+        this.vehicleConnected = connected;
+    }
 
-	onArduinoConnectionStatus() {
-		return this.socket.fromEvent("serial-port")
-	}
+    public get vehicleConnectionSatatus(): boolean {
+        return this.vehicleConnected;
+    }
 
-	setArduinoConnectionStatus(connected:boolean) {
-		if(!connected) {
-			this.audio.playSound("arduinoFail")
-		}
-		this.arduinoConnected = connected
-	}
+    public sendKeyFrame(key: string) {
+        this.socket.emit('key-frame', key);
+    }
 
-	onVehicleConnectionStatus() {
-		return this.socket.fromEvent("vehicle-connection")
-	}
-
-	setVehicleConnectionStatus(connected:boolean) {
-		this.vehicleConnected = connected
-	}
-
-	getConnectionSatatus():boolean {
-		return this.serverConnected;
-	}
-
-	onCurrentWarnings() {
-		return this.currentWarningsSubject.asObservable();
-	}
-
-	onWarnings() {
-		return this.warningsSubject.asObservable();
-	}
-
-	appendLogs(data:any) {
-		this.logs.push(data)
-		this.logsSubject.next(data)
-	}
-
-	onLogs() {
-		return this.logsSubject.asObservable();
-	}
-
-	sendKeyFrame(key:string) {
-		this.socket.emit("key-frame", key)
-	}
-
-	sendControlFrame(frame: any) {
-		this.socket.emit("control-frame", frame)
-	}
-
-	private appendLiveData(_liveData:any) {
-		let timeLength = this.data["time_stamp"]?.length || 0
-		for(let key in _liveData) {
-			if(this.data.hasOwnProperty(key)){
-			  	this.data[key].push(_liveData[key]);
-			} else {
-				this.data[key] = Array(timeLength).fill(0)
-				this.data[key].push(_liveData[key]);
-			}
-		}
-		this.allDataSubject.next(this.data);
-		this.liveDataSubject.next(_liveData);
-		this.checkErrors(_liveData.errors);
-	}
-
-	private checkErrors(errors:ErrorData[]) {
-		this.currentWarningsSubject.next((errors.length==0) ? false : true);
-		
-		for(let error of errors) {		//loop through errors	
-			if(!this.updateErrors(error)) {	//if there are errors then
-				this.errors.push(error);
-				this.warningsSubject.next(this.errors);
-				(this.audio.isAudioPlaying()) ? this.audio.playSound("multiSenseError"): this.audio.playSound(error.type)
-			}
-		}
-	}
-
-	private updateErrors(error:ErrorData) {
-		for(let i=0;i<this.errors.length;i++) {		//if error in errors then update it, else add it
-			if ((this.errors[i].dataLabel == error.dataLabel) && (this.errors[i].type == error.type)) {
-				this.errors[i]=error
-				this.warningsSubject.next(this.errors);
-				return true
-			}
-		}
-		return false;
-	}
+    public sendControlFrame(frame: any) {
+        this.socket.emit('control-frame', frame);
+    }
 }

@@ -1,0 +1,38 @@
+<div class="container" #container>
+    <app-header 
+        [displays]="displays"
+        (onAddDisplay)="addScreenItem($event)"
+        (onSaveScreen)="saveScreen()">
+    </app-header>
+    <div class="grid">
+        <mat-grid-list 
+            cols="4"
+            rows="4"
+            rowHeight="4:1.8"
+            [gutterSize]="'10px'"
+            [@expandContractList]="screenItems.length"
+            cdkDropList
+            
+            (cdkDropListDropped)="drop($event)">
+
+                <mat-grid-tile
+                     
+                    *ngFor="let screenItem of screenItems"
+                    [colspan]="screenItem.colSize"
+                    [rowspan]="screenItem.rowSize">
+
+                        <app-screen-item
+                            cdkDrag
+                            class="display-item"
+                            [screenItem]="screenItem"
+                            (onDeleteScreenItem)="deleteScreenItem($event)"
+                            (onMoveScreenItem)="moveScreenItem($event)"
+                            (onResizeScreenItem)="resizeScreenItem($event)">
+                        </app-screen-item>
+
+                </mat-grid-tile>
+
+        </mat-grid-list>
+    </div>
+    
+</div>

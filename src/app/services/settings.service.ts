@@ -3,41 +3,39 @@ import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SettingsService {
-  private resizeSubject = new Subject<any>();
-  private sidebarSubject = new Subject<any>();
-  private viewSubject = new Subject<any>();
+    private resizeSubject = new Subject<any>();
+    private sidebarSubject = new Subject<any>();
+    private viewSubject = new Subject<any>();
 
-  view:string = "dashboard"
+    view: string = 'dashboard';
 
-  constructor() { }
+    constructor() {}
 
-  resizeEvent(): void {
-    setTimeout(()=> this.resizeSubject.next(null)); //https://stackoverflow.com/questions/38763248/angular-2-life-cycle-hook-after-all-children-are-initialized
-  }
+    resizeEvent(): void {
+        setTimeout(() => this.resizeSubject.next(null)); //https://stackoverflow.com/questions/38763248/angular-2-life-cycle-hook-after-all-children-are-initialized
+    }
 
-  onResizeEvent(): Observable<any> {
-    return this.resizeSubject.asObservable();
-  }
+    onResizeEvent(): Observable<any> {
+        return this.resizeSubject.asObservable();
+    }
 
-  toggleSidebar(): void {
-    this.sidebarSubject.next(null)
-  }
+    toggleSidebar(): void {
+        this.sidebarSubject.next(null);
+    }
 
-  onToggleSidebar(): Observable<any> {
-    return this.sidebarSubject.asObservable();
-  }
+    onToggleSidebar(): Observable<any> {
+        return this.sidebarSubject.asObservable();
+    }
 
-  setView(view: string): void {
-    this.view=view;
-    this.viewSubject.next(this.view)
-  }
+    setView(view: string): void {
+        this.view = view;
+        this.viewSubject.next(this.view);
+    }
 
-  onSetView(): Observable<any> {
-    return this.viewSubject.asObservable();
-  }
-
-
+    onSetView(): Observable<any> {
+        return this.viewSubject.asObservable();
+    }
 }
