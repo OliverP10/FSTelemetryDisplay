@@ -38,7 +38,7 @@
 
     <div class="mute-button-container">
         <fa-icon
-            (click)="toggleMute()"
+
             class="fa-solid fa-2x"
             [icon]="volumeIcon"
             [ngStyle]="{ 'color': 'rgb(230, 86, 46)', 'cursor':'pointer' }">
@@ -55,6 +55,7 @@
 
     <div class="vehicle-connection-status">
         <fa-icon
+            [matTooltip]="(socketService.vehicleConnectionSatatus) ? 'Rover connected' : 'Rover Disconected'"
             class="fa-solid fa-2x"
             [icon]="faTruckMonster"
             [ngStyle]="{ 'color': vehicleConnectionColor }">
@@ -69,8 +70,9 @@
         </fa-icon>
     </div>
 
-    <div class="connection-status"> 
+    <div class="connection-status">
         <fa-icon
+            [matTooltip]="(socketService.serverConnectionSatatus) ? 'Connected to server' : 'Disconnected from server'"
             class="fa-solid fa-signal fa-2x"
             [icon]="faServer"
             [ngStyle]="{ 'color': connectionColor }">

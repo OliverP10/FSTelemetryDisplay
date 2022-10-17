@@ -46,7 +46,7 @@ export class HeaderComponent implements OnInit {
     constructor(
         private dialogRef: MatDialog,
         private settingsService: SettingsService,
-        private socketService: SocketService,
+        public socketService: SocketService,
         private dataManager: DataManagerService,
         private audioService: AudioService
     ) {

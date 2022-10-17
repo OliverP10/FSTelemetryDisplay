@@ -1,7 +1,7 @@
 .container{
     overflow-y:auto;
     background-color: rgb(45, 52, 62);
-    
+    height: 100vh;
     padding-left: 10px;
     padding-right: 10px;
 }

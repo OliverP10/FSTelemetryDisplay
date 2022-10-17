@@ -29,3 +29,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 ::-webkit-scrollbar-thumb:hover {
     background: rgb(71, 78, 93); 
 }
+
+::-webkit-scrollbar-track-piece  {
+    background-color: rgb(45, 52, 62);
+}

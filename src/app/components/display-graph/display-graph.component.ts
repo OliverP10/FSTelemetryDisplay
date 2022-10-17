@@ -46,6 +46,11 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(private settingsService: SettingsService, private dataManagerService: DataManagerService, private socketService: SocketService) {}
 
     ngOnInit(): void {
+        Highcharts.setOptions({
+            lang: {
+                rangeSelectorZoom: ''
+            }
+        });
         this.chartOptions = {
             series: [],
             chart: {
@@ -108,15 +113,14 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
                     states: {
                         hover: {
                             stroke: 'none',
-                            style: {
-                                backgroundColor: 'rgb(98, 108, 132)'
-                            }
+                            fill: 'rgb(117, 117, 117)',
+                            style: {}
                         },
                         select: {
                             stroke: 'none',
                             fill: '#666666',
                             style: {
-                                color: '#fff'
+                                color: 'rgb(202, 208, 220)'
                             }
                         }
                     }
@@ -178,9 +182,6 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
                     turboThreshold: 0,
                     showInNavigator: true
                 }
-            },
-            lang: {
-                rangeSelectorZoom: 'f'
             },
             colors: this.CHARTCOLORS
         };

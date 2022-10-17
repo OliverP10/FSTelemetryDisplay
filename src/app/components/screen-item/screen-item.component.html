@@ -6,8 +6,8 @@
     {{screenItem.display.title}}
 </h3>
 
-<mat-menu #menu="matMenu" class="menu"> 
-    <ng-template matMenuContent>
+<mat-menu #menu="matMenu" class="menu" > 
+    <ng-template matMenuContent >
       <button mat-menu-item class="menu-delete" (click)="removeScreenItem(screenItem)"><fa-icon [icon]="faTrashCan" class="menu-icon"></fa-icon>Remove</button>
       <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:1}, $event)"><fa-icon [icon]="faLeftRight" class="menu-icon"></fa-icon>Increase width</button>
       <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:-1}, $event)"><fa-icon [icon]="faLeftRight" class="menu-icon"></fa-icon>Decrese width</button>

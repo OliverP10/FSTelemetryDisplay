@@ -39,6 +39,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { DisplayItemMapComponent } from './components/display-item-map/display-item-map.component';
 import { DisplayItemWarningsComponent } from './components/display-item-warnings/display-item-warnings.component';
@@ -117,7 +118,8 @@ const config: SocketIoConfig = {
         DragDropModule,
         MatMenuModule,
         MatIconModule,
-        MatToolbarModule
+        MatToolbarModule,
+        MatTooltipModule
     ],
     providers: [],
     bootstrap: [AppComponent]
