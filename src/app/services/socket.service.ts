@@ -12,9 +12,11 @@ import { forkJoin } from 'rxjs';
     providedIn: 'root'
 })
 export class SocketService {
-    private serverConnected: boolean = false;
-    private vehicleConnected: boolean = false;
+    public serverConnected: boolean = false;
+    public vehicleConnected: boolean = false;
+
     private dataReady = new Subject<TelemetryAny[]>();
+    private vehicleConnectionStatus = new Subject<boolean>();
 
     constructor(private socket: Socket, private dataManager: DataManagerService, private http: HttpClient, private audio: AudioService) {
         this.socket.fromEvent('telemetry').subscribe((data: any) => this.dataManager.addTelemetry(data)); //for guages that only want the most recent
@@ -38,6 +40,9 @@ export class SocketService {
     private setServerConnectionStatus(connected: boolean) {
         if (connected) {
             this.connected();
+        }
+        if (!connected) {
+            this.setVehicleConnectionStatus(false);
         }
         connected ? this.audio.playSound('telemRecovered') : this.audio.playSound('telemLost');
         this.serverConnected = connected;
@@ -67,15 +72,12 @@ export class SocketService {
     }
 
     public onVehicleConnectionStatus(): Observable<boolean> {
-        return this.socket.fromEvent('vehicle-connection');
+        return this.vehicleConnectionStatus.asObservable();
     }
 
     private setVehicleConnectionStatus(connected: boolean) {
         this.vehicleConnected = connected;
-    }
-
-    public get vehicleConnectionSatatus(): boolean {
-        return this.vehicleConnected;
+        this.vehicleConnectionStatus.next(connected);
     }
 
     public sendKeyFrame(key: string) {
