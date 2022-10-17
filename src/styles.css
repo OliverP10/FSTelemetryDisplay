@@ -31,5 +31,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 ::-webkit-scrollbar-track-piece  {
-    background-color: rgb(45, 52, 62);
+    background-color: rgb(55, 63, 82);
+    border-radius: 7px;
 }

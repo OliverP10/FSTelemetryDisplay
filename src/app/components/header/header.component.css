@@ -5,12 +5,14 @@
     justify-content: flex-start;
     align-items: flex-start;
     gap: 20px;
-    background-color: rgb(55, 63, 82);
+    background-color: rgb(74, 88, 107);
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     margin-top: 0px;
     margin-bottom: 10px;
     position: sticky;
+    top: 0;
+    z-index: 99;
 }
 
 .add-button-container{
