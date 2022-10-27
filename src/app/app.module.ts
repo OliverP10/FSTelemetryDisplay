@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { GaugesModule } from 'ng-canvas-gauges';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
-import { ViewSelectorComponent } from './components/view-selector/view-selector.component';
 import { ScreensComponent } from './components/screens/screens.component';
 import { AddDisplayComponent } from './components/add-display/add-display.component';
 import { DisplayItemGraphComponent } from './components/display-item-graph/display-item-graph.component';
@@ -24,7 +24,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreateDisplayFormComponent } from './components/create-display-form/create-display-form.component';
 import { HttpClientModule } from '@angular/common/http';
-import { HighchartsChartModule } from 'highcharts-angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { MatInputModule } from '@angular/material/input';
@@ -40,6 +39,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { DisplayItemMapComponent } from './components/display-item-map/display-item-map.component';
 import { DisplayItemWarningsComponent } from './components/display-item-warnings/display-item-warnings.component';
@@ -52,11 +52,15 @@ import { DisplayItemArmModesComponent } from './components/display-item-arm-mode
 import { DisplayItemClawComponent } from './components/display-item-claw/display-item-claw.component';
 import { DisplayItemConsoleComponent } from './components/display-item-console/display-item-console.component';
 import { DisplayGraphComponent } from './components/display-graph/display-graph.component';
+import { DisplayEventsComponent } from './components/display-events/display-events.component';
+import { DataAnalysisComponent } from './components/data-analysis/data-analysis.component';
+import { DisplayAnalysisGraphComponent } from './components/display-analysis-graph/display-analysis-graph.component';
 
 const appRoutes: Routes = [
     { path: '', component: ScreensComponent },
     { path: 'about', component: AboutComponent },
-    { path: 'create-display', component: CreateDisplayFormComponent }
+    { path: 'create-display', component: CreateDisplayFormComponent },
+    { path: 'data-analysis', component: DataAnalysisComponent }
 ];
 
 const config: SocketIoConfig = {
@@ -70,7 +74,6 @@ const config: SocketIoConfig = {
     declarations: [
         AppComponent,
         HeaderComponent,
-        ViewSelectorComponent,
         ScreensComponent,
         AddDisplayComponent,
         DisplayItemGraphComponent,
@@ -90,7 +93,10 @@ const config: SocketIoConfig = {
         DisplayItemArmModesComponent,
         DisplayItemClawComponent,
         DisplayItemConsoleComponent,
-        DisplayGraphComponent
+        DisplayGraphComponent,
+        DisplayEventsComponent,
+        DataAnalysisComponent,
+        DisplayAnalysisGraphComponent
     ],
     imports: [
         BrowserModule,
@@ -119,7 +125,8 @@ const config: SocketIoConfig = {
         MatMenuModule,
         MatIconModule,
         MatToolbarModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatPaginatorModule
     ],
     providers: [],
     bootstrap: [AppComponent]
