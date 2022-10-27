@@ -1,0 +1,77 @@
+<button 
+  mat-button 
+  class="mode-btn"
+  (click)="(mode=='All Events') ? showNewEventsOnly() : showAllEvents()"
+  >{{mode}}</button>
+
+<mat-form-field class="search-box" appearance="fill" >
+  <input matInput type="text" [(ngModel)]="searchText" autocomplete="off" placeholder="Search" (keyup)="applyFilter($event)">
+  <button *ngIf="searchText" matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''; clearFilter()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+
+<div class="event-table">
+  <table mat-table 
+    [dataSource]="dataSource"
+    matSort
+    matSortActive="timestamp"
+    matSortDirection="desc"
+    class="mat-elevation-z0">
+      <ng-container matColumnDef="symbol">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element" class="table-symbol">
+          <div [ngSwitch]="element.type">
+            <ng-template ngSwitchCase="warning">
+              <fa-icon
+                class="event-symbol fa-solid"
+                [styles]="{'color': 'yellow'}"
+                [icon]="faTriangleExclamation">
+              </fa-icon>
+            </ng-template>
+            <ng-template ngSwitchCase="critical warning">
+              <fa-icon
+                class="event-symbol fa-solid"
+                [styles]="{'color': 'red'}"
+                [icon]="faTriangleExclamation">
+              </fa-icon>
+            </ng-template>
+          </div>
+          
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="timestamp">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by time">
+            Timestamp
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element.timestamp}} </td>
+      </ng-container>
+      <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by type">
+            Type
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+      </ng-container>
+      <ng-container matColumnDef="trigger">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by trigger">
+            Trigger
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element.trigger}} </td>
+      </ng-container>
+      <ng-container matColumnDef="message">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by message">
+            Message
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element.message}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+<mat-paginator 
+  [length]="dataSource.data.length"
+  [pageSize]="pageSize"
+  (page)="setDefaultPageSize($event)"
+  [pageSizeOptions]="[3,5,10,20]">
+</mat-paginator>
+</div>

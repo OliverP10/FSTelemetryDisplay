@@ -12,7 +12,8 @@ export class SettingsService {
     private toggleAddDisplaySubject = new Subject<any>();
     private saveScreenSubject = new Subject<any>();
 
-    view: string = 'dashboard';
+    private view: string = 'dashboard';
+    private headerItems = new Set<string>();
 
     constructor() {}
 
@@ -32,13 +33,26 @@ export class SettingsService {
         return this.sidebarSubject.asObservable();
     }
 
+    getView(): string {
+        return this.view;
+    }
+
     setView(view: string): void {
         this.view = view;
-        this.viewSubject.next(this.view);
+        this.viewSubject.next(view);
     }
 
     onSetView(): Observable<any> {
         return this.viewSubject.asObservable();
+    }
+
+    setHeaderItems(items: string[]) {
+        this.headerItems.clear();
+        items.forEach((item) => this.headerItems.add(item));
+    }
+
+    getHeaderItems(): Set<string> {
+        return this.headerItems;
     }
 
     toggleAddDisplay(): void {

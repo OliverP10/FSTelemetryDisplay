@@ -1,8 +1,9 @@
 <mat-sidenav-container>
     <mat-sidenav [(opened)]="showSidebar">
-        <img src="/assets/logo.png" class="logo" alt="Logo">
 
         <div class="nav-item-list">
+
+            <img src="/assets/logo.png" class="logo" alt="Logo">
 
             <button 
                 class="list-item" 
@@ -86,6 +87,22 @@
 
             <button 
                 class="list-item"
+                routerLink="/data-analysis"
+                (click)="toggleSideBar()"
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-char-line fa-2x"
+                        [icon]="faChartLine"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Data Analysis
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
                 routerLink="/create-display"
                 (click)="toggleSideBar()"
                 mat-button>
@@ -99,6 +116,7 @@
                     Create display
                 </div>
             </button>
+
 
             <button 
                 class="list-item about"

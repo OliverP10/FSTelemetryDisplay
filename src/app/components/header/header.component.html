@@ -9,31 +9,37 @@
         </fa-icon>
     </div>
 
-    <div class="add-button-container">
-        <fa-icon
-            (click)='toggleAddDisplay()'
-            class="fa-solid fa-plus fa-2x"
-            [icon]="faPlus"
-            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
-        </fa-icon>
+    <div *ngIf="settingsService.getHeaderItems().has('add')">
+        <div class="add-button-container">
+            <fa-icon
+                (click)='toggleAddDisplay()'
+                class="fa-solid fa-plus fa-2x"
+                [icon]="faPlus"
+                [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+            </fa-icon>
+        </div>
+    </div>
+    
+    <div *ngIf="settingsService.getHeaderItems().has('save')">
+        <div class="save-button-container">
+            <fa-icon
+                (click)='saveScreen()'
+                class="fa-solid fa-2x"
+                [icon]="faFloppyDisk"
+                [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+            </fa-icon>
+        </div>
     </div>
 
-    <div class="save-button-container">
-        <fa-icon
-            (click)='saveScreen()'
-            class="fa-solid fa-2x"
-            [icon]="faFloppyDisk"
-            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
-        </fa-icon>
-    </div>
-
-    <div class="download-button-container">
-        <fa-icon
-            (click)='downloadLogs()'
-            class="fa-solid fa-2x"
-            [icon]="faDownload"
-            [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
-        </fa-icon>
+    <div *ngIf="settingsService.getHeaderItems().has('download')">
+        <div class="download-button-container">
+            <fa-icon
+                (click)='downloadLogs()'
+                class="fa-solid fa-2x"
+                [icon]="faDownload"
+                [ngStyle]="{ 'color':'rgb(230, 86, 46)', 'cursor':'pointer'}">
+            </fa-icon>
+        </div>
     </div>
 
     <div class="mute-button-container">
@@ -49,33 +55,25 @@
         <fa-icon
             class="fa-solid fa-triangle-exclamation fa-2x"
             [icon]="faTriangleExclamation"
-            [ngStyle]="{ 'color': warningColor }">
+            [ngStyle]="{ 'color': 'yellow' }">
         </fa-icon>
     </div>
 
     <div class="vehicle-connection-status">
         <fa-icon
-            [matTooltip]="(socketService.vehicleConnectionSatatus) ? 'Rover connected' : 'Rover Disconected'"
+            [matTooltip]="(socketService.vehicleConnected) ? 'Rover connected' : 'Rover Disconected'"
             class="fa-solid fa-2x"
             [icon]="faTruckMonster"
-            [ngStyle]="{ 'color': vehicleConnectionColor }">
+            [ngStyle]="{ 'color': (socketService.vehicleConnected) ? '#30ad1a' : 'red' }">
         </fa-icon>
     </div>
 
-    <div class="arduino-connection-status">
-        <fa-icon
-            class="fa-solid fa-2x"
-            [icon]="arduinoConnectionIcon"
-            [ngStyle]="{ 'color': arduinoConnectionColor }">
-        </fa-icon>
-    </div>
-
-    <div class="connection-status">
+    <div class="server-connection-status">
         <fa-icon
             [matTooltip]="(socketService.serverConnectionSatatus) ? 'Connected to server' : 'Disconnected from server'"
             class="fa-solid fa-signal fa-2x"
             [icon]="faServer"
-            [ngStyle]="{ 'color': connectionColor }">
+            [ngStyle]="{ 'color': (socketService.serverConnectionSatatus) ? '#30ad1a' : 'red' }">
         </fa-icon>
     </div>
 </header>

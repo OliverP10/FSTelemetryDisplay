@@ -14,6 +14,7 @@ export class AddDisplayComponent implements OnInit {
 
     allDisplaysData: MatTableDataSource<Display[]>;
     tableColums: string[];
+    searchText: string;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
         this.allDisplaysData = new MatTableDataSource(data.displays);

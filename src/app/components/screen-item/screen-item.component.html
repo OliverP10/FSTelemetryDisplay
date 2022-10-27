@@ -102,6 +102,18 @@
         [screenItem]="screenItem"
         ></app-display-graph>
     </ng-template>
+
+    <ng-template ngSwitchCase="events">
+        <app-display-events 
+        [screenItem]="screenItem"
+        ></app-display-events>
+    </ng-template>
+
+    <ng-template ngSwitchCase="analysis-graph">
+        <app-display-analysis-graph 
+            [screenItem]="screenItem"
+        ></app-display-analysis-graph>
+    </ng-template>
 </div>
 
 

@@ -1,4 +1,10 @@
 <div class="container" #container>
+    <div class="data-loader">
+        <div class="loaded-model">
+            {{socketService.getLoadLatest() ? 'Model: Current session': 'Model: Custom'}}
+        </div>
+        
+    </div>
     <div class="grid">
         <mat-grid-list 
             cols="4"

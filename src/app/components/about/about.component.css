@@ -4,15 +4,11 @@
     border: 1px;
     color: rgb(238, 238, 238);
     background-color: rgb(91, 107, 128);
-    height: 100vh;
+    height: 95%;
     width: 100%;
+    border-radius: 7px;
 }
 
 .box {
     margin: 10%;
-}
-
-.btn-home{
-    margin-top: 10px;
-    margin-left: 10px;
 }

@@ -13,8 +13,11 @@ export class DataManagerService {
     private logsSubject = new Subject<string>();
 
     public telemetry: TelemetryAny[] = [];
-    public logs: string[] = [];
     public events: Event[] = [];
+    public logs: string[] = [];
+
+    private telemetryReady = false;
+    private eventsReady = false;
 
     public telemetrySubjects = new Map<string, BehaviorSubject<TelemetryAny | null>>();
 
@@ -82,6 +85,14 @@ export class DataManagerService {
         this.telemetrySubjects.set('motorFourSpeed', this.motorFourSpeedSubject);
     }
 
+    public getTelemetryReady(): boolean {
+        return this.telemetryReady;
+    }
+
+    public getEventsReady(): boolean {
+        return this.eventsReady;
+    }
+
     public onTelemetry(): Observable<TelemetryAny> {
         return this.telemetrySubject.asObservable();
     }
@@ -92,6 +103,12 @@ export class DataManagerService {
 
     public onLogs(): Observable<string> {
         return this.logsSubject.asObservable();
+    }
+
+    public clearData() {
+        this.telemetry = [];
+        this.events = [];
+        this.logs = [];
     }
 
     public appendLogs(data: string) {
@@ -121,6 +138,19 @@ export class DataManagerService {
                 console.log('Telem mergerd');
             }
         }
+        this.telemetryReady = true;
+    }
+
+    public mergeEvents(events: Event[]) {
+        let tempEvents = [...this.events];
+        this.events = events;
+        for (let event of tempEvents) {
+            if (!this.events.includes(event)) {
+                this.events.push(event);
+                console.log('Events mergerd');
+            }
+        }
+        this.eventsReady = true;
     }
 
     public fireAllTelemetrySubscriptions(telemetry: TelemetryAny[]) {

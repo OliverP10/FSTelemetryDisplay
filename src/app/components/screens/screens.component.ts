@@ -44,13 +44,15 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.settingsService.setHeaderItems(['add', 'save']);
+
         forkJoin({
             displays: this.http.get<Display[]>(this.URL + '/display/get'),
             screens: this.http.get<Screen[]>(this.URL + '/screen/get')
         }).subscribe((data: any) => {
             this.displays = data.displays.display;
             this.screens = objectListToMap('name', data.screens.screen);
-            this.loadScreen(this.settingsService.view);
+            this.settingsService.setView('dashboard');
         });
     }
 
@@ -121,11 +123,11 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     saveScreen() {
-        if (this.settingsService.view == 'custom') {
+        if (this.settingsService.getView() == 'custom') {
             return;
         }
         let screensItems = this.screenItems.map((s: ScreenItem) => ({ display: s.display._id, colSize: s.colSize, rowSize: s.rowSize, options: s.options }));
-        this.http.patch<ScreenItem[]>(this.URL + '/screen/update/' + this.settingsService.view, { screenItems: screensItems }).subscribe({
+        this.http.patch<ScreenItem[]>(this.URL + '/screen/update/' + this.settingsService.getView(), { screenItems: screensItems }).subscribe({
             next: (v) => {
                 this.snackBar.open('Saved', 'Dismiss', { duration: 3000 });
             },

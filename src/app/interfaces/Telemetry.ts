@@ -14,6 +14,10 @@ export interface ObjectTelemetry {
     telemetry: TelemetryAny[];
 }
 
+export interface ObjectTelemetryLabels {
+    labels: string[];
+}
+
 export interface TelemetryNumber extends TelemetryAny {
     value: number;
 }

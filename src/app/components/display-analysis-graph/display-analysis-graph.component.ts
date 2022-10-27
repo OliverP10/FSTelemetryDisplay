@@ -6,17 +6,22 @@ import * as HighchartsBoost from 'highcharts/modules/boost';
 
 import { SettingsService } from 'src/app/services/settings.service';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { TelemetryAny } from 'src/app/interfaces/Telemetry';
+import { ObjectTelemetryLabels, TelemetryAny } from 'src/app/interfaces/Telemetry';
 import { SocketService } from 'src/app/services/socket.service';
 import { GraphData, SeriesOption } from 'src/app/interfaces/Graph';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { FormControl } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
-    selector: 'app-display-graph',
-    templateUrl: './display-graph.component.html',
-    styleUrls: ['./display-graph.component.css']
+    selector: 'app-display-analysis-graph',
+    templateUrl: './display-analysis-graph.component.html',
+    styleUrls: ['./display-analysis-graph.component.css']
 })
-export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DisplayAnalysisGraphComponent implements OnInit {
     @Input() screenItem: ScreenItem;
+
     private ngUnsubscribe = new Subject<void>();
 
     CHARTCOLORS = [
@@ -39,14 +44,21 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     chart: Highcharts.Chart;
     Highcharts: typeof Highcharts = Highcharts;
     chartOptions: Highcharts.Options;
-
     chartCallback: Highcharts.ChartCallbackFunction = (chart) => {
         this.chart = chart;
     };
 
-    constructor(private settingsService: SettingsService, private dataManagerService: DataManagerService, private socketService: SocketService) {}
+    labelsForm = new FormControl('');
+    allLabels: string[] = [];
+    selectedLabels: string[] = [];
+
+    constructor(private settingsService: SettingsService, private dataManagerService: DataManagerService, private socketService: SocketService, private http: HttpClient) {}
 
     ngOnInit(): void {
+        let labelsObj = this.http.get<ObjectTelemetryLabels>(environment.ROOT_URL + environment.API_PORT + '/telemetry/getAllLabelsFromSessionStart');
+        labelsObj.subscribe((telemLabelsObj) => {
+            this.allLabels = telemLabelsObj.labels;
+        });
         Highcharts.setOptions({
             lang: {
                 rangeSelectorZoom: ''
@@ -200,13 +212,13 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.resizeChart();
             });
 
-        this.socketService
-            .onTelemetryReady()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((telemetry) => {
-                this.loadTelemetry(telemetry);
-                this.subcribeToTelemLabels();
-            });
+        // this.socketService
+        //     .onTelemetryReady()
+        //     .pipe(takeUntil(this.ngUnsubscribe))
+        //     .subscribe((telemetry) => {
+        //         this.loadTelemetry(telemetry);
+        //         this.subcribeToTelemLabels();
+        //     });
     }
 
     ngAfterViewInit(): void {
@@ -217,12 +229,14 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     loadTelemetry(telemetry: TelemetryAny[]) {
+        while (this.chart.series.length) {
+            this.chart.series[0].remove();
+        }
         let series = new Map<string, SeriesOption>();
-        for (let label of this.screenItem.display.labels) {
+        for (let label of this.selectedLabels) {
             series.set(label, { name: label, data: [], type: 'line' });
         }
 
-        let pointCounter = 0;
         for (let i = telemetry.length - 1; i > 0; i--) {
             if (series.has(telemetry[i].metadata.label)) {
                 let s = series.get(telemetry[i].metadata.label);
@@ -230,12 +244,6 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
                     y: telemetry[i].value,
                     x: new Date(telemetry[i].timestamp).getTime()
                 });
-
-                if (pointCounter > this.maxPoints * this.screenItem.display.labels.length) {
-                    break;
-                } else {
-                    pointCounter++;
-                }
             }
         }
         for (let s of series.values()) {
@@ -252,6 +260,12 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.addTelemetry(telemetry);
             });
         }
+    }
+
+    setLabels(event: MatSelectChange) {
+        this.selectedLabels = event.value;
+        this.loadTelemetry(this.dataManagerService.telemetry);
+        this.chart.redraw();
     }
 
     addTelemetry(telemetry: TelemetryAny | null) {

@@ -1,0 +1,23 @@
+.container{
+    background-color: rgb(45, 52, 62);
+}
+
+.grid{
+    padding-bottom: 10px;
+}
+
+.data-loader{
+    width: 100%;
+    height: 50px;
+    background-color: rgb(55, 63, 82);
+    border-radius: 7px;
+    margin-bottom: 10px;
+}
+
+.loaded-model {
+    height: 100%;
+    width: 200px;
+    line-height: 47px;
+    margin-left: 20px;
+    color: gainsboro;
+}
