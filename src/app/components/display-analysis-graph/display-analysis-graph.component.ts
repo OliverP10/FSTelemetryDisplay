@@ -11,7 +11,6 @@ import { SocketService } from 'src/app/services/socket.service';
 import { GraphData, SeriesOption } from 'src/app/interfaces/Graph';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 
 @Component({
@@ -48,7 +47,6 @@ export class DisplayAnalysisGraphComponent implements OnInit {
         this.chart = chart;
     };
 
-    labelsForm = new FormControl('');
     allLabels: string[] = [];
     selectedLabels: string[] = [];
 

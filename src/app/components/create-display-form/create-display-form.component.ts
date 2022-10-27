@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, FormControl, Validators, Form } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormControl, Validators, Form } from '@angular/forms';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Post } from '../../interfaces/Display';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -20,18 +20,18 @@ export class CreateDisplayFormComponent implements OnInit {
     faBars = faBars;
 
     readonly URL = environment.ROOT_URL + environment.API_PORT;
-    graphForm: FormGroup;
-    graphDatalabels: FormArray = new FormArray([]);
-    guageForm: FormGroup;
-    guageDatalabels: FormArray = new FormArray([]);
+    graphForm: UntypedFormGroup;
+    graphDatalabels: UntypedFormArray = new UntypedFormArray([]);
+    guageForm: UntypedFormGroup;
+    guageDatalabels: UntypedFormArray = new UntypedFormArray([]);
 
-    majorTicks: FormArray = new FormArray([]);
-    highlights: FormArray = new FormArray([]);
+    majorTicks: UntypedFormArray = new UntypedFormArray([]);
+    highlights: UntypedFormArray = new UntypedFormArray([]);
 
     type: string = 'graph';
     recivedLabels: string[] = [];
 
-    constructor(private http: HttpClient, private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router, private settingsService: SettingsService) {
+    constructor(private http: HttpClient, private fb: UntypedFormBuilder, private snackBar: MatSnackBar, private router: Router, private settingsService: SettingsService) {
         this.graphForm = this.fb.group({
             type: ['', [Validators.required]],
             title: ['', [Validators.required, Validators.minLength(3)]],
@@ -145,7 +145,7 @@ export class CreateDisplayFormComponent implements OnInit {
     }
 
     get graphLabelsFormArray() {
-        return this.graphForm.controls['dataLabels'] as FormArray;
+        return this.graphForm.controls['dataLabels'] as UntypedFormArray;
     }
 
     get graphType() {
@@ -165,7 +165,7 @@ export class CreateDisplayFormComponent implements OnInit {
     }
 
     get guageLabelsFormArray() {
-        return this.guageForm.controls['dataLabels'] as FormArray;
+        return this.guageForm.controls['dataLabels'] as UntypedFormArray;
     }
 
     get guageType() {
@@ -196,8 +196,8 @@ export class CreateDisplayFormComponent implements OnInit {
         return this.guageForm.get('maxValue');
     }
 
-    get guageMajorTicks(): FormArray {
-        return this.guageForm.controls['majorTicks'] as FormArray;
+    get guageMajorTicks(): UntypedFormArray {
+        return this.guageForm.controls['majorTicks'] as UntypedFormArray;
     }
 
     get guageMinorticks() {
@@ -205,6 +205,6 @@ export class CreateDisplayFormComponent implements OnInit {
     }
 
     get guageHighlights() {
-        return this.guageForm.controls['highlights'] as FormArray;
+        return this.guageForm.controls['highlights'] as UntypedFormArray;
     }
 }

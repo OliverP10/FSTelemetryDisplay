@@ -2,7 +2,7 @@
 
     <mat-form-field class="label-selector" appearance="fill">
         <mat-label>Labels</mat-label>
-        <mat-select [formControl]="labelsForm" multiple (selectionChange)="setLabels($event)">
+        <mat-select multiple (selectionChange)="setLabels($event)">
           <mat-option *ngFor="let label of allLabels" [value]="label">{{label}}</mat-option>
         </mat-select>
     </mat-form-field>
