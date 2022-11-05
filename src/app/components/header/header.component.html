@@ -44,10 +44,10 @@
 
     <div class="mute-button-container">
         <fa-icon
-
             class="fa-solid fa-2x"
-            [icon]="volumeIcon"
-            [ngStyle]="{ 'color': 'rgb(230, 86, 46)', 'cursor':'pointer' }">
+            [icon]="(audioService.isMute()) ? faVolumeMute : faVolumeHigh"
+            [ngStyle]="{ 'color': 'rgb(230, 86, 46)', 'cursor':'pointer' }"
+            (click)="toggleMute()">
         </fa-icon>
     </div>
 
@@ -55,7 +55,16 @@
         <fa-icon
             class="fa-solid fa-triangle-exclamation fa-2x"
             [icon]="faTriangleExclamation"
-            [ngStyle]="{ 'color': 'yellow' }">
+            [ngStyle]="{ 'color': (warningService.getWarningState()==warningStateOn) ? 'yellow' : warningDefaultColor}">
+        </fa-icon>
+    </div>
+
+    <div class="master-warning-status">
+        <fa-icon
+            class="fa-solid fa-triangle-exclamation fa-2x"
+            [icon]="faTriangleExclamation"
+            [ngStyle]="{ 'color': masterWarningColor, 'cursor':'pointer'}"
+            (click)="acknoledgeMasterWarning()">
         </fa-icon>
     </div>
 

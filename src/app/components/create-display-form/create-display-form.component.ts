@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, FormControl, Validators, Form } from '@angular/forms';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Post } from '../../interfaces/Display';
+import { Post } from '../../Models/interfaces/Display';
 import { catchError, Observable, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { faTimes, faCirclePlus, faBars } from '@fortawesome/free-solid-svg-icons';

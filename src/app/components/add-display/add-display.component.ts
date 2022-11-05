@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Display } from 'src/app/interfaces/Display';
+import { Display } from 'src/app/Models/interfaces/Display';
 import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({

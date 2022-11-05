@@ -1,14 +1,14 @@
 import { Component, Input, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { defer, Subject, takeUntil } from 'rxjs';
 import * as Highcharts from 'highcharts/highstock';
 import * as HighchartsBoost from 'highcharts/modules/boost';
 
 import { SettingsService } from 'src/app/services/settings.service';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { TelemetryAny } from 'src/app/interfaces/Telemetry';
+import { TelemetryAny } from 'src/app/Models/interfaces/Telemetry';
 import { SocketService } from 'src/app/services/socket.service';
-import { GraphData, SeriesOption } from 'src/app/interfaces/Graph';
+import { GraphData, SeriesOption } from 'src/app/Models/interfaces/Graph';
 
 @Component({
     selector: 'app-display-graph',
@@ -18,6 +18,7 @@ import { GraphData, SeriesOption } from 'src/app/interfaces/Graph';
 export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() screenItem: ScreenItem;
     private ngUnsubscribe = new Subject<void>();
+    private ngUnsubscribeTelem = new Subject<void>();
 
     CHARTCOLORS = [
         'rgb(234, 184, 3)',
@@ -62,8 +63,7 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
                     fontSize: '10px'
                 },
                 animation: {
-                    duration: 0,
-                    easing: 'linear'
+                    duration: 0
                 }
             },
             title: {
@@ -217,6 +217,10 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     loadTelemetry(telemetry: TelemetryAny[]) {
+        while (this.chart.series.length) {
+            this.chart.series[0].remove();
+        }
+        this.chart.redraw();
         let series = new Map<string, SeriesOption>();
         for (let label of this.screenItem.display.labels) {
             series.set(label, { name: label, data: [], type: 'line' });
@@ -245,10 +249,12 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     subcribeToTelemLabels() {
+        this.ngUnsubscribeTelem.next();
+        this.ngUnsubscribeTelem.complete();
+        this.ngUnsubscribeTelem = new Subject<void>();
         let observables = this.dataManagerService.onCustomTelemetryAsList(this.screenItem.display.labels);
         for (let observable of observables) {
-            let self = this;
-            observable.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            observable.pipe(takeUntil(this.ngUnsubscribeTelem)).subscribe((telemetry) => {
                 this.addTelemetry(telemetry);
             });
         }
@@ -263,7 +269,7 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
             x: new Date(telemetry.timestamp).getTime()
         };
         let series = this.chart.series.find((series) => series.name == telemetry.metadata.label);
-        this.chart.series[0].data.length > this.maxPoints ? series!.addPoint(graphPlot, true, true) : series!.addPoint(graphPlot);
+        this.chart.series[0].data.length > this.maxPoints ? series!.addPoint(graphPlot, true, true, false) : series!.addPoint(graphPlot);
     }
 
     autoRemove() {
@@ -283,5 +289,7 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+        this.ngUnsubscribeTelem.next();
+        this.ngUnsubscribeTelem.complete();
     }
 }

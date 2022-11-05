@@ -1,10 +1,53 @@
 <div class="container" #container>
-    <div class="data-loader">
-        <div class="loaded-model">
+    
+    <form [formGroup]="form" class="data-loader" (ngSubmit)="onSubmit()">
+        <div class="loaded-model-container">
             {{socketService.getLoadLatest() ? 'Model: Current session': 'Model: Custom'}}
         </div>
-        
-    </div>
+
+        <div class="date-time-from-container">
+            <mat-form-field class="date-selector">
+                <mat-placeholder>From</mat-placeholder>
+                <mtx-datetimepicker 
+                    #datetimePickerFrom
+                    [type]="'datetime'"
+                    [mode]="'auto'"
+                    [multiYearSelector]="false"
+                    [startView]="'month'"
+                    [twelvehour]="true"
+                    [timeInterval]="1"
+                    [touchUi]="false">
+                </mtx-datetimepicker>
+                <input [mtxDatetimepicker]="datetimePickerFrom" matInput required formControlName="from" (dateChange)="loaded=false">
+                <mtx-datetimepicker-toggle [for]="datetimePickerFrom" matSuffix></mtx-datetimepicker-toggle>
+            </mat-form-field>
+        </div>
+
+        <div class="date-time-to-container">
+            <mat-form-field class="date-selector">
+                <mat-placeholder>To</mat-placeholder>
+                <mtx-datetimepicker
+                    #datetimePickerTo
+                    [type]="'datetime'"
+                    [mode]="'auto'"
+                    [multiYearSelector]="false"
+                    [startView]="'month'"
+                    [twelvehour]="true"
+                    [timeInterval]="1"
+                    [touchUi]="false">
+                </mtx-datetimepicker>
+                <input [mtxDatetimepicker]="datetimePickerTo" matInput required formControlName="to" (dateChange)="loaded=false">
+                <mtx-datetimepicker-toggle [for]="datetimePickerTo" matSuffix></mtx-datetimepicker-toggle>
+            </mat-form-field>
+        </div>
+
+        <div class="load-btn-contianer">
+            <button mat-button class='load-btn' [disabled]="form.invalid || loaded">Load</button>
+        </div>
+    </form>
+    
+    <mat-progress-bar mode="indeterminate" class="loading-spinner" *ngIf="showLoadingSpinner" [@settingDropDown]></mat-progress-bar>
+
     <div class="grid">
         <mat-grid-list 
             cols="4"

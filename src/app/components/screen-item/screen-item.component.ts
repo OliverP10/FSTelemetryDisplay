@@ -6,9 +6,9 @@ import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { faAngleLeft, faAngleRight, faLeftRight, faUpDown } from '@fortawesome/free-solid-svg-icons';
 
 import { settingDropDown } from 'src/app/animations/animations';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { SettingsService } from 'src/app/services/settings.service';
-import { Display, MoveScreenItem, ResizeScreenItem, Size } from '../../interfaces/Display';
+import { Display, MoveScreenItem, ResizeScreenItem, Size } from '../../Models/interfaces/Display';
 
 @Component({
     selector: 'app-screen-item',
@@ -56,7 +56,6 @@ export class ScreenItemComponent implements AfterViewInit, OnChanges, OnInit {
 
     moveScreenItem(moveScreenItem: MoveScreenItem): void {
         this.onMoveScreenItem.emit(moveScreenItem);
-        console.log('run');
     }
 
     resizeScreenItem(resizeScreenItem: ResizeScreenItem, event: any): void {

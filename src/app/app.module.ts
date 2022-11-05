@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { GaugesModule } from 'ng-canvas-gauges';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
+import { MtxNativeDatetimeModule } from '@ng-matero/extensions/core';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -41,6 +43,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { DisplayItemMapComponent } from './components/display-item-map/display-item-map.component';
 import { DisplayItemWarningsComponent } from './components/display-item-warnings/display-item-warnings.component';
@@ -127,7 +131,11 @@ const config: SocketIoConfig = {
         MatIconModule,
         MatToolbarModule,
         MatTooltipModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MtxDatetimepickerModule,
+        MtxNativeDatetimeModule,
+        MatProgressBarModule,
+        MatProgressSpinnerModule
     ],
     providers: [],
     bootstrap: [AppComponent]

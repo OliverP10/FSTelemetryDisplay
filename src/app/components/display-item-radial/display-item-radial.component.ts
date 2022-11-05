@@ -1,14 +1,14 @@
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, AfterContentInit, OnDestroy, OnInit } from '@angular/core';
-import { Display, Size } from '../../interfaces/Display';
+import { Display, Size } from '../../Models/interfaces/Display';
 import { RADIALGUAGEOPTIONS } from '../../../shared/utils/chart-options';
 import { RadialGauge } from 'canvas-gauges';
 import { SocketService } from 'src/app/services/socket.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { TelemetryNumber } from 'src/app/interfaces/Telemetry';
+import { TelemetryNumber } from 'src/app/Models/interfaces/Telemetry';
 import { jsonConcat } from 'src/shared/utils/formatter';
 
 @Component({
@@ -47,7 +47,7 @@ export class DisplayItemRadialComponent implements OnInit, AfterViewInit, OnDest
         needleCircleSize: 7,
         needleCircleOuter: true,
         needleCircleInner: false,
-        animationDuration: 50,
+        animationDuration: 60,
         animationRule: 'linear'
     };
 

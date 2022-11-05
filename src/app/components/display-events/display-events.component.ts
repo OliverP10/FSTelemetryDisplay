@@ -2,17 +2,20 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, AfterViewInit, ViewChi
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil, timestamp } from 'rxjs';
-import { Event, TableEvent } from 'src/app/interfaces/Events';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { Event, TableEvent } from 'src/app/Models/interfaces/Events';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { DataManagerService } from 'src/app/services/data-manager.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { MatPaginator } from '@angular/material/paginator';
+import { expandContract } from 'src/app/animations/animations';
+import { LoadingSatus } from 'src/app/Models/enumerations/Telemetry';
 
 @Component({
     selector: 'app-display-events',
     templateUrl: './display-events.component.html',
-    styleUrls: ['./display-events.component.css']
+    styleUrls: ['./display-events.component.css'],
+    animations: [expandContract]
 })
 export class DisplayEventsComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() screenItem: ScreenItem;
@@ -28,6 +31,7 @@ export class DisplayEventsComponent implements OnInit, AfterViewInit, OnDestroy 
     mode = 'All Events';
     searchText: string = '';
     pageSize: number = 3;
+    showLoadingSpinner: boolean = false;
 
     constructor(private socketService: SocketService, public dataManagerService: DataManagerService) {
         this.displayedColumns = ['symbol', 'timestamp', 'type', 'trigger', 'message'];
@@ -44,6 +48,10 @@ export class DisplayEventsComponent implements OnInit, AfterViewInit, OnDestroy 
             .subscribe((events) => {
                 this.addEvents(this.reformatEvent(events));
             });
+        this.socketService
+            .onEventsLoadingSubject()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((status: LoadingSatus) => (this.showLoadingSpinner = status == LoadingSatus.LOADING ? true : false));
     }
 
     ngOnInit(): void {
@@ -76,7 +84,7 @@ export class DisplayEventsComponent implements OnInit, AfterViewInit, OnDestroy 
     private addEvents(events: TableEvent[]) {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.dataSource.data.push(...events);
+        this.dataSource.data = [...this.dataSource.data, ...events]; //imutable
         this.table.renderRows();
     }
 
@@ -106,7 +114,6 @@ export class DisplayEventsComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     setDefaultPageSize(event: any) {
-        console.log('page change');
         this.screenItem.options['pageSize'] = event.pageSize;
     }
 

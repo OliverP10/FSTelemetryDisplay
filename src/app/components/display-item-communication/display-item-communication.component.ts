@@ -1,11 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Display } from 'src/app/interfaces/Display';
+import { Display } from 'src/app/Models/interfaces/Display';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgStyle } from '@angular/common';
 import { SocketService } from 'src/app/services/socket.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 
 @Component({
     selector: 'app-display-item-communication',

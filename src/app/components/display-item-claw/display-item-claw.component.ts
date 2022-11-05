@@ -1,11 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { Display } from 'src/app/interfaces/Display';
+import { Display } from 'src/app/Models/interfaces/Display';
 import { SocketService } from 'src/app/services/socket.service';
 import { faMaximize, faMinimize } from '@fortawesome/free-solid-svg-icons';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { TelemetryBoolean, TelemetryString } from 'src/app/interfaces/Telemetry';
+import { TelemetryBoolean, TelemetryString } from 'src/app/Models/interfaces/Telemetry';
 
 @Component({
     selector: 'app-display-item-claw',

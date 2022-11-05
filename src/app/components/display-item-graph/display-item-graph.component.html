@@ -9,10 +9,11 @@
     <mat-slider 
         #slider
         class="slider"
-        [thumbLabel]="true"
         [ngStyle]="styleObj"
-        [min]="0"
-        [max]="(carData !== undefined) ? carData[timeLabel]?.length : 1"
+        [min]="sliderMin"
+        [max]="sliderMax"
+        step="1000"
+        [displayWith]="formatLabel"
         (input)="setStartFrom($event)"
         [(ngModel)]="startFrom">
     </mat-slider>

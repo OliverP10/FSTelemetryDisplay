@@ -1,29 +1,60 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { SettingsService } from 'src/app/services/settings.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ScreenItem } from 'src/app/interfaces/Screen';
-import { Display, MoveScreenItem, ResizeScreenItem } from 'src/app/interfaces/Display';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
+import { Display, MoveScreenItem, ResizeScreenItem } from 'src/app/Models/interfaces/Display';
 import { AddDisplayComponent } from '../add-display/add-display.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
-import { DataManagerService } from 'src/app/services/data-manager.service';
 import { SocketService } from 'src/app/services/socket.service';
+import { UntypedFormControl, Validators } from '@angular/forms';
+import { MtxCalendarView, MtxDatetimepickerInput, MtxDatetimepickerInputEvent, MtxDatetimepickerMode, MtxDatetimepickerType } from '@ng-matero/extensions/datetimepicker';
+import { MTX_DATETIME_FORMATS } from '@ng-matero/extensions/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { DataManagerService } from 'src/app/services/data-manager.service';
+import { LoadingSatus } from 'src/app/Models/enumerations/Telemetry';
+import { expandContract } from 'src/app/animations/animations';
 
 @Component({
     selector: 'app-data-analysis',
     templateUrl: './data-analysis.component.html',
-    styleUrls: ['./data-analysis.component.css']
+    styleUrls: ['./data-analysis.component.css'],
+    animations: [expandContract],
+    providers: [
+        {
+            provide: MTX_DATETIME_FORMATS,
+            useValue: {
+                parse: {
+                    dateInput: 'YYYY-MM-DD',
+                    monthInput: 'MMMM',
+                    yearInput: 'YYYY',
+                    timeInput: 'HH:mm',
+                    datetimeInput: 'YYYY-MM-DD HH:mm'
+                },
+                display: {
+                    dateInput: 'YYYY-MM-DD',
+                    monthInput: 'MMMM',
+                    yearInput: 'YYYY',
+                    timeInput: 'HH:mm',
+                    datetimeInput: 'YYYY-MM-DD HH:mm',
+                    monthYearLabel: 'YYYY MMMM',
+                    dateA11yLabel: 'LL',
+                    monthYearA11yLabel: 'MMMM YYYY',
+                    popupHeaderDateLabel: 'MMM DD, ddd'
+                }
+            }
+        }
+    ]
 })
-export class DataAnalysisComponent implements OnInit, AfterViewInit {
+export class DataAnalysisComponent implements OnInit, AfterViewInit, OnDestroy {
     private ngUnsubscribe = new Subject<void>();
 
     private count: number = 1;
     screenItems: ScreenItem[] = [this.newAnalysisGraph()];
-
     displays: Display[] = [
         {
             _id: '',
-            title: 'Graph ',
+            title: 'Graph',
             type: 'analysis-graph',
             colSize: 2,
             rowSize: 2,
@@ -31,25 +62,50 @@ export class DataAnalysisComponent implements OnInit, AfterViewInit {
             options: {}
         }
     ];
+    form: FormGroup;
+    loaded: boolean = false;
+    showLoadingSpinner: boolean = false;
 
-    constructor(private settingsService: SettingsService, public socketService: SocketService, private dialogRef: MatDialog) {
+    constructor(private settingsService: SettingsService, public socketService: SocketService, private dialogRef: MatDialog, private fb: FormBuilder, private dataManagerService: DataManagerService) {
         this.settingsService.setHeaderItems(['add']);
         this.settingsService
             .onToggleAddDispplay()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(() => this.toggleAddDisplay());
+        this.socketService
+            .onTelemetryLoadingSubject()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((status: LoadingSatus) => (this.showLoadingSpinner = status == LoadingSatus.LOADING ? true : false));
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.form = this.fb.group({
+            from: ['', [Validators.required]],
+            to: ['', [Validators.required]]
+        });
+        this.dataManagerService.findUnqieLabels();
+    }
 
     ngAfterViewInit(): void {
         this.settingsService.resizeEvent(); //once everything is loaded call resize
     }
 
+    onSubmit() {
+        this.loaded = true;
+        try {
+            const from = this.form.value.from;
+            const to = this.form.value.to;
+            this.socketService.loadCustomModel(from, to);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     newAnalysisGraph(): ScreenItem {
+        this.count++;
         return {
             display: {
-                _id: '',
+                _id: this.count.toString(),
                 title: 'Graph',
                 type: 'analysis-graph',
                 colSize: 2,
@@ -64,10 +120,11 @@ export class DataAnalysisComponent implements OnInit, AfterViewInit {
     }
 
     addScreenItem(display: Display): void {
+        let newDisplay = Object.assign({}, display);
         let screenItem: ScreenItem = {
-            display: display,
-            colSize: display.colSize,
-            rowSize: display.rowSize,
+            display: newDisplay,
+            colSize: newDisplay.colSize,
+            rowSize: newDisplay.rowSize,
             options: {}
         };
         this.screenItems.push(screenItem);
@@ -116,5 +173,13 @@ export class DataAnalysisComponent implements OnInit, AfterViewInit {
             this.screenItems[index].colSize += resizeScreenItem.change;
         }
         this.settingsService.resizeEvent();
+    }
+
+    ngOnDestroy(): void {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+        if (!this.socketService.getLoadLatest()) {
+            this.socketService.loadLatestModel();
+        }
     }
 }

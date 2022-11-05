@@ -1,13 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AudioService } from './audio.service';
 import { DataManagerService } from './data-manager.service';
 import { environment } from 'src/environments/environment';
-import { ObjectTelemetry, TelemetryAny } from '../interfaces/Telemetry';
+import { ObjectTelemetry, TelemetryAny } from '../Models/interfaces/Telemetry';
 import { forkJoin } from 'rxjs';
-import { ObjectEvent, Event } from '../interfaces/Events';
+import { ObjectEvent, Event } from '../Models/interfaces/Events';
+import { LoadingSatus } from '../Models/enumerations/Telemetry';
 
 @Injectable({
     providedIn: 'root'
@@ -20,10 +21,12 @@ export class SocketService {
     private EventsReady = new Subject<Event[]>();
     private vehicleConnectionStatus = new Subject<boolean>();
 
+    private telemetryLoadingSubject = new Subject<LoadingSatus>();
+    private eventsLoadingSubject = new Subject<LoadingSatus>();
     private ngUnsubscribe = new Subject<void>();
     private loadLatest: boolean = true;
 
-    constructor(private socket: Socket, private dataManagerService: DataManagerService, private http: HttpClient, private audio: AudioService) {
+    constructor(private socket: Socket, private dataManagerService: DataManagerService, private http: HttpClient, private audioService: AudioService) {
         this.socket.fromEvent('connect').subscribe(() => this.setServerConnectionStatus(true));
         this.socket.fromEvent('disconnect').subscribe(() => this.setServerConnectionStatus(false));
         this.socket.fromEvent('vehicle-connection').subscribe((data: any) => this.setVehicleConnectionStatus(data));
@@ -40,11 +43,12 @@ export class SocketService {
     private setServerConnectionStatus(connected: boolean) {
         if (connected) {
             this.connected();
+            this.audioService.playTelemRecoverd();
         }
         if (!connected) {
             this.setVehicleConnectionStatus(false);
+            this.audioService.playTelemLost();
         }
-        connected ? this.audio.playSound('telemRecovered') : this.audio.playSound('telemLost');
         this.serverConnected = connected;
     }
 
@@ -57,34 +61,65 @@ export class SocketService {
 
     public loadLatestModel() {
         this.loadLatest = true;
+        this.stopLiveDataSubscriptions();
         this.startLiveDataSubscriptions();
         this.dataManagerService.clearData();
+        this.telemetryLoadingSubject.next(LoadingSatus.LOADING);
+        this.eventsLoadingSubject.next(LoadingSatus.LOADING);
         forkJoin({
             latestTelemetry: this.http.get<ObjectTelemetry>(environment.ROOT_URL + environment.API_PORT + '/telemetry/getAllUniqueFromSessionStart'),
             allTelemetry: this.http.get<ObjectTelemetry>(environment.ROOT_URL + environment.API_PORT + '/telemetry/getFromSessionStart')
-        }).subscribe((data: any) => {
-            let latestTelemetry: TelemetryAny[] = data.latestTelemetry.telemetry;
-            this.dataManagerService.fireAllTelemetrySubscriptions(latestTelemetry);
+        }).subscribe({
+            next: (data) => {
+                let latestTelemetry: TelemetryAny[] = data.latestTelemetry.telemetry;
+                this.dataManagerService.fireAllTelemetrySubscriptions(latestTelemetry);
 
-            let allTelemetry: TelemetryAny[] = data.allTelemetry.telemetry;
-            this.dataManagerService.mergeTelemetry(allTelemetry);
-            this.TelemetryReady.next(this.dataManagerService.telemetry);
+                let allTelemetry: TelemetryAny[] = data.allTelemetry.telemetry;
+                this.dataManagerService.mergeTelemetry(allTelemetry);
+                this.TelemetryReady.next(this.dataManagerService.telemetry);
+                this.telemetryLoadingSubject.next(LoadingSatus.LOADED);
+            },
+            error: (e: HttpErrorResponse) => {}
         });
 
         let allEventObs = this.http.get<ObjectEvent>(environment.ROOT_URL + environment.API_PORT + '/event/getFromSessionStart');
-        allEventObs.subscribe((eventObj) => {
-            this.dataManagerService.mergeEvents(eventObj.event);
-            this.EventsReady.next(this.dataManagerService.events);
+        allEventObs.subscribe({
+            next: (eventObj) => {
+                this.dataManagerService.mergeEvents(eventObj.event);
+                this.EventsReady.next(this.dataManagerService.events);
+                this.eventsLoadingSubject.next(LoadingSatus.LOADED);
+            },
+            error: (e: HttpErrorResponse) => {}
         });
     }
 
-    public loadCustomModel() {
-        if (this.loadLatest == false) {
-            return;
-        }
+    public loadCustomModel(from: Date, to: Date) {
         this.loadLatest = false;
         this.stopLiveDataSubscriptions();
         this.dataManagerService.clearData();
+
+        this.telemetryLoadingSubject.next(LoadingSatus.LOADING);
+        this.eventsLoadingSubject.next(LoadingSatus.LOADING);
+        let customeRangeTelemetry = this.http.get<ObjectTelemetry>(environment.ROOT_URL + environment.API_PORT + '/telemetry/getRange/' + from + '/' + to);
+        customeRangeTelemetry.subscribe({
+            next: (telemObj) => {
+                this.dataManagerService.setTelemetry(telemObj.telemetry);
+                this.dataManagerService.findUnqieLabels();
+                this.TelemetryReady.next(this.dataManagerService.telemetry);
+                this.telemetryLoadingSubject.next(LoadingSatus.LOADED);
+            },
+            error: (e: HttpErrorResponse) => {}
+        });
+
+        let customeRangeEvents = this.http.get<ObjectEvent>(environment.ROOT_URL + environment.API_PORT + '/event/getRange/' + from + '/' + to);
+        customeRangeEvents.subscribe({
+            next: (eventsObj) => {
+                this.dataManagerService.setEvents(eventsObj.event);
+                this.EventsReady.next(this.dataManagerService.events);
+                this.eventsLoadingSubject.next(LoadingSatus.LOADED);
+            },
+            error: (e: HttpErrorResponse) => {}
+        });
     }
 
     public getLoadLatest(): boolean {
@@ -99,7 +134,9 @@ export class SocketService {
         this.socket
             .fromEvent('events')
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((data: any) => this.dataManagerService.addEvents(data)); //for guages that only want the most recent
+            .subscribe((data: any) => {
+                this.dataManagerService.addEvents(data);
+            }); //for guages that only want the most recent
         this.socket
             .fromEvent('log')
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -111,6 +148,7 @@ export class SocketService {
     public stopLiveDataSubscriptions() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+        this.ngUnsubscribe = new Subject<void>();
     }
 
     public get serverConnectionSatatus(): boolean {
@@ -129,8 +167,16 @@ export class SocketService {
         return this.EventsReady.asObservable();
     }
 
+    public onEventsLoadingSubject(): Observable<LoadingSatus> {
+        return this.eventsLoadingSubject.asObservable();
+    }
+
     public onVehicleConnectionStatus(): Observable<boolean> {
         return this.vehicleConnectionStatus.asObservable();
+    }
+
+    public onTelemetryLoadingSubject(): Observable<LoadingSatus> {
+        return this.telemetryLoadingSubject.asObservable();
     }
 
     private setVehicleConnectionStatus(connected: boolean) {

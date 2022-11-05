@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { Event } from '../interfaces/Events';
-import { TelemetryAny, TelemetryBoolean, TelemetryLocation, TelemetryNumber, TelemetryString } from '../interfaces/Telemetry';
+import { Event } from '../Models/interfaces/Events';
+import { TelemetryAny, TelemetryBoolean, TelemetryLocation, TelemetryNumber, TelemetryString } from '../Models/interfaces/Telemetry';
 import { AudioService } from './audio.service';
+import { WarningService } from './warning.service';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,7 @@ export class DataManagerService {
 
     private telemetryReady = false;
     private eventsReady = false;
+    private uniqueLabels: string[] = [];
 
     public telemetrySubjects = new Map<string, BehaviorSubject<TelemetryAny | null>>();
 
@@ -56,7 +58,7 @@ export class DataManagerService {
     private motorFourForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     private motorFourSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
-    constructor(private audio: AudioService) {
+    constructor(private warningService: WarningService) {
         this.telemetrySubjects.set('ROLL', this.rollSubject);
         this.telemetrySubjects.set('PITCH', this.pitchSubject);
         this.telemetrySubjects.set('YAW', this.yawSubject);
@@ -111,6 +113,18 @@ export class DataManagerService {
         this.logs = [];
     }
 
+    public findUnqieLabels() {
+        let uniqueLabels = new Set<string>();
+        for (let telemetry of this.telemetry) {
+            uniqueLabels.add(telemetry.metadata.label);
+        }
+        this.uniqueLabels = Array.from(uniqueLabels);
+    }
+
+    public getUniqueLables(): string[] {
+        return this.uniqueLabels;
+    }
+
     public appendLogs(data: string) {
         this.logs.push(data);
         this.logsSubject.next(data);
@@ -118,6 +132,7 @@ export class DataManagerService {
 
     public addTelemetry(telemetry: TelemetryAny[]) {
         for (let telem of telemetry) {
+            telem.timestamp = new Date(telem.timestamp);
             this.telemetry.push(telem);
             this.telemetrySubject.next(telem);
             this.decodeTelemetry(telem);
@@ -125,13 +140,21 @@ export class DataManagerService {
     }
 
     public addEvents(events: Event[]) {
-        this.events.concat(events);
+        for (let event of events) {
+            this.events.push(event);
+            this.warningService.decodeEvent(event);
+        }
         this.eventSubject.next(events);
+    }
+
+    public setTelemetry(telemetry: TelemetryAny[]) {
+        this.telemetry = this.applyDates(telemetry);
     }
 
     public mergeTelemetry(telemetry: TelemetryAny[]) {
         let tempTelemetry = [...this.telemetry];
-        this.telemetry = telemetry;
+        tempTelemetry = tempTelemetry;
+        this.telemetry = this.applyDates(telemetry);
         for (let telem of tempTelemetry) {
             if (!this.telemetry.includes(telem)) {
                 this.telemetry.push(telem);
@@ -139,6 +162,10 @@ export class DataManagerService {
             }
         }
         this.telemetryReady = true;
+    }
+
+    public setEvents(events: Event[]) {
+        this.events = events;
     }
 
     public mergeEvents(events: Event[]) {
@@ -153,7 +180,15 @@ export class DataManagerService {
         this.eventsReady = true;
     }
 
+    applyDates(telemetry: TelemetryAny[]) {
+        for (let index = 0; index < telemetry.length; index++) {
+            telemetry[index].timestamp = new Date(telemetry[index].timestamp);
+        }
+        return telemetry;
+    }
+
     public fireAllTelemetrySubscriptions(telemetry: TelemetryAny[]) {
+        telemetry = this.applyDates(telemetry);
         for (let telem of telemetry) {
             this.decodeTelemetry(telem);
         }

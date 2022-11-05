@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, Input, ElementRef, ViewChild, OnDestroy, OnInit } from '@angular/core';
-import { CarData, Display, GraphOption } from '../../interfaces/Display';
+import { CarData, Display, GraphOption } from '../../Models/interfaces/Display';
 import { Chart } from 'chart.js';
 import { SocketService } from 'src/app/services/socket.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -7,7 +7,9 @@ import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSliderModule } from '@angular/material/slider';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
+import { TelemetryAny } from 'src/app/Models/interfaces/Telemetry';
+import { DataManagerService } from 'src/app/services/data-manager.service';
 
 @Component({
     selector: 'app-display-item-graph',
@@ -23,30 +25,9 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     faPlay = faPlay;
     faPause = faPause;
     private ngUnsubscribe = new Subject<void>();
+    private ngUnsubscribeTelem = new Subject<void>();
 
-    GRAPHOPTIONS: GraphOption = {
-        type: 'line',
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
-            stacked: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: null
-                }
-            },
-            animation: {
-                duration: 0
-            }
-        }
-    };
-
-    CHARTCOLORS = [
+    chartColors = [
         'rgba(234, 184, 3)',
         'rgba(235, 30, 190)',
         'rgba(237, 72, 31)',
@@ -63,28 +44,69 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     ];
 
     chart: Chart;
-    carData: any;
-    timeLabel: string = 'time_stamp';
-    viewSize: number = 20;
+    chartOptions: Chart.ChartConfiguration;
+    viewSize: number = 30000;
     startFrom: number = 0;
+
+    sliderMin: number = 0;
+    sliderMax: number = 1;
 
     showLive: boolean = true;
     showLiveIcon = faPause;
 
     styleObj: any = { width: 400 };
 
-    constructor(private socketService: SocketService, private settingService: SettingsService) {
-        //this.socketService.onNewData().pipe(takeUntil(this.ngUnsubscribe)).subscribe((data: any) => this.updateChartData(data));
+    constructor(private socketService: SocketService, private settingService: SettingsService, private dataManagerService: DataManagerService) {
+        this.chartOptions = {
+            type: 'line',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: null
+                    }
+                },
+                animation: {
+                    duration: 0
+                },
+                scales: {
+                    xAxes: [
+                        {
+                            display: false,
+                            type: 'time',
+                            ticks: {
+                                min: undefined,
+                                max: undefined
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+    }
+
+    ngOnInit(): void {
         this.settingService
             .onResizeEvent()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data: any) => this.resizeSlider());
+        this.socketService
+            .onTelemetryReady()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.loadTelemetry(telemetry);
+                this.subcribeToTelemLabels();
+            });
     }
-
-    ngOnInit(): void {}
 
     ngAfterViewInit(): void {
         this.createChart();
+        if (this.dataManagerService.getTelemetryReady()) {
+            this.loadTelemetry(this.dataManagerService.telemetry);
+            this.subcribeToTelemLabels();
+        }
     }
 
     setViewSize(event: any) {
@@ -97,96 +119,104 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     createChart() {
         Chart.defaults.global.defaultFontColor = '#e8e8e8';
         this.chart = new Chart(this.chartCanvas.nativeElement, {
-            type: this.GRAPHOPTIONS.type,
-            options: this.GRAPHOPTIONS.options
+            type: this.chartOptions.type,
+            options: this.chartOptions.options
         });
     }
 
-    loadChartData() {
-        let filteredCarData = this.sliceData(this.carData);
-        let graphData: any = [];
+    loadTelemetry(telemetry: TelemetryAny[]) {
+        this.chart.data.datasets = undefined;
+        // this.chart.redraw();
+        let color = 0;
+        let series = new Map<string, Chart.ChartDataSets>();
+        for (let label of this.screenItem.display.labels) {
+            series.set(label, {
+                label: label,
+                data: [],
+                borderColor: this.chartColors[color],
+                backgroundColor: this.chartColors[color],
+                fill: false,
+                lineTension: 0.1
+            });
+            color++;
+        }
 
-        let count: number = 0;
-        for (let key in filteredCarData) {
-            if (key != this.timeLabel) {
-                graphData.push({
-                    label: key,
-                    data: filteredCarData[key],
-                    borderColor: this.CHARTCOLORS[count],
-                    backgroundColor: this.CHARTCOLORS[count],
-                    fill: false,
-                    tension: 0.2
+        let minTime: number = 99999999999999;
+        let maxTime: number = 0;
+
+        for (let i = 0; i < telemetry.length; i++) {
+            if (series.has(telemetry[i].metadata.label)) {
+                let s = series.get(telemetry[i].metadata.label);
+                (s!.data as Chart.ChartPoint[]).push({
+                    y: telemetry[i].value,
+                    x: new Date(telemetry[i].timestamp)
                 });
-                count++;
+                minTime = Math.min(minTime, telemetry[i].timestamp.getTime());
+                maxTime = Math.max(maxTime, telemetry[i].timestamp.getTime());
             }
         }
-        const data: any = {
-            labels: filteredCarData[this.timeLabel],
-            datasets: graphData
+
+        this.sliderMin = minTime;
+        this.sliderMax = maxTime;
+
+        this.startFrom = this.sliderMax - this.viewSize;
+        this.chart.options.scales!.xAxes![0].ticks!.max! = this.startFrom + this.viewSize;
+        this.chart.options.scales!.xAxes![0].ticks!.min! = this.startFrom;
+
+        const data: Chart.ChartData = {
+            labels: this.screenItem.display.labels,
+            datasets: Array.from(series.values())
         };
 
         this.chart.data = data;
         this.chart.update();
     }
 
-    updateChartData(data: any) {
-        //clean up for loop
-        if (this.carData === undefined) {
-            //if on load
-            this.carData = data;
-            this.loadChartData();
-        } else if (Object.keys(data).length === 0) {
-            //if data is empty
+    subcribeToTelemLabels() {
+        this.ngUnsubscribeTelem.next();
+        this.ngUnsubscribeTelem.complete();
+        this.ngUnsubscribeTelem = new Subject<void>();
+        let observables = this.dataManagerService.onCustomTelemetryAsList(this.screenItem.display.labels);
+        for (let observable of observables) {
+            observable.pipe(takeUntil(this.ngUnsubscribeTelem)).subscribe((telemetry) => {
+                this.addTelemetry(telemetry);
+            });
+        }
+    }
+
+    addTelemetry(telemetry: TelemetryAny | null) {
+        if (telemetry == null) {
             return;
         }
-        this.carData = data;
-
-        let filteredCarData: any = this.sliceData(this.carData);
-        this.chart.data.labels = filteredCarData[this.timeLabel];
-        let count = 0;
-        for (let key in filteredCarData) {
-            if (this.chart.data.datasets) {
-                for (let i = 0; i < this.chart.data.datasets.length; i++) {
-                    if (this.chart.data.datasets[i].label == key) {
-                        this.chart.data.datasets[i].data = filteredCarData[key];
-                    }
-                }
-            }
+        if (this.showLive) {
+            this.chart.options.scales!.xAxes![0].ticks!.max! = telemetry.timestamp.getTime();
+            this.startFrom = telemetry.timestamp.getTime() - this.viewSize;
+            this.chart.options.scales!.xAxes![0].ticks!.min! = this.startFrom;
         }
-
+        this.sliderMax = telemetry.timestamp.getTime();
+        let chartPoint: Chart.ChartPoint = {
+            y: telemetry.value,
+            x: new Date(telemetry.timestamp)
+        };
+        let datasets = this.chart.data.datasets!.find((dataset) => dataset.label == telemetry.metadata.label)!;
+        (datasets.data as Chart.ChartPoint[]).push(chartPoint);
         this.chart.update();
     }
 
-    sliceData(carData: any) {
-        const slicedData: any = {};
-        if (this.showLive) {
-            this.startFrom = this.toInt(carData[this.timeLabel].length - this.viewSize);
-        }
-        let endFrom: number;
-        this.startFrom + this.viewSize <= carData[this.timeLabel].length ? (endFrom = this.startFrom + this.viewSize) : (endFrom = this.startFrom + (carData[this.timeLabel].length - this.startFrom));
-        for (let key of this.screenItem.display.labels) {
-            if (Object.keys(carData).includes(key)) {
-                //if carData stops having a key then wont be added
-                slicedData[key] = carData[key].slice(this.startFrom, endFrom);
-            }
-        }
-        return slicedData;
+    formatLabel(value: number) {
+        return Math.round(value / 1000);
     }
 
     setStartFrom(event: any) {
         this.startFrom = event.value;
+        this.chart.options.scales!.xAxes![0].ticks!.max! = this.startFrom + this.viewSize;
+        this.chart.options.scales!.xAxes![0].ticks!.min! = this.startFrom;
+        this.chart.update();
     }
 
     toggleShowLive() {
         this.showLive = !this.showLive;
         this.showLiveIcon = this.showLive ? this.faPause : this.faPlay;
-    }
-
-    toInt(number: any) {
-        if (number === undefined || number < 0) {
-            return 0;
-        }
-        return number;
     }
 
     resizeSlider() {

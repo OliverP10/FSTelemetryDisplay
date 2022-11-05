@@ -1,4 +1,4 @@
-import { GraphOption } from '../../app/interfaces/Display';
+import { GraphOption } from '../../app/Models/interfaces/Display';
 
 export const GRAPHOPTIONS: GraphOption = {
     type: 'line',

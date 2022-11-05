@@ -74,4 +74,6 @@
   (page)="setDefaultPageSize($event)"
   [pageSizeOptions]="[3,5,10,20]">
 </mat-paginator>
+
+<mat-spinner mode="indeterminate" class="loading-spinner" *ngIf="showLoadingSpinner" [@settingDropDown]></mat-spinner>
 </div>

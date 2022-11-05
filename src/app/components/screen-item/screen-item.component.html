@@ -19,7 +19,7 @@
 </mat-menu>
 
 <div [ngSwitch]="screenItem.display.type" class="container" #container>
-    <ng-template ngSwitchCase="graphDepricated">
+    <ng-template ngSwitchCase="graph">
         <app-display-item-graph 
         [screenItem]="screenItem"
         ></app-display-item-graph>
@@ -97,7 +97,7 @@
         ></app-display-item-console>
     </ng-template>
 
-    <ng-template ngSwitchCase="graph">
+    <ng-template ngSwitchCase="graphDepricated">
         <app-display-graph 
         [screenItem]="screenItem"
         ></app-display-graph>

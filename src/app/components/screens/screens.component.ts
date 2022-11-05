@@ -1,23 +1,24 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
-import { Display, MoveScreenItem, ResizeScreenItem } from '../../interfaces/Display';
+import { Display, MoveScreenItem, ResizeScreenItem } from '../../Models/interfaces/Display';
 import { SettingsService } from 'src/app/services/settings.service';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SocketService } from 'src/app/services/socket.service';
-import { expandContractList } from 'src/app/animations/animations';
+import { expandContract, expandContractList } from 'src/app/animations/animations';
 import { environment } from 'src/environments/environment';
-import { DBScreenItem, Screen, ScreenItem } from 'src/app/interfaces/Screen';
+import { DBScreenItem, Screen, ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { objectListToMap } from 'src/shared/utils/formatter';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddDisplayComponent } from '../add-display/add-display.component';
 import { MatDialog } from '@angular/material/dialog';
+import { LoadingSatus } from 'src/app/Models/enumerations/Telemetry';
 
 @Component({
     selector: 'app-screens',
     templateUrl: './screens.component.html',
     styleUrls: ['./screens.component.css'],
-    animations: [expandContractList]
+    animations: [expandContractList, expandContract]
 })
 export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     readonly URL = environment.ROOT_URL + environment.API_PORT;
@@ -25,6 +26,7 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     displays: Display[] = []; //All saved displays on server
     screenItems: ScreenItem[] = []; //Displays being show
     key_presses = new Set<string>();
+    showLoadingSpinner: boolean = false;
 
     private ngUnsubscribe = new Subject<void>();
 
@@ -41,6 +43,10 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
             .onSaveScreen()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(() => this.saveScreen());
+        this.socketService
+            .onTelemetryLoadingSubject()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((status: LoadingSatus) => (this.showLoadingSpinner = status == LoadingSatus.LOADING ? true : false));
     }
 
     ngOnInit(): void {

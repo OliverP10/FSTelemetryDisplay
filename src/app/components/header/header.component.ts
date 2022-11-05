@@ -2,14 +2,16 @@ import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { faPlus, faBars, faServer, faTriangleExclamation, faVolumeHigh, faVolumeMute, faPlug, faPlugCircleXmark, faFloppyDisk, faDownload, faTruckMonster } from '@fortawesome/free-solid-svg-icons';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDisplayComponent } from '../add-display/add-display.component';
-import { Display } from 'src/app/interfaces/Display';
+import { Display } from 'src/app/Models/interfaces/Display';
 import { SettingsService } from 'src/app/services/settings.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AudioService } from 'src/app/services/audio.service';
 import { environment } from 'src/environments/environment';
 import { DataManagerService } from 'src/app/services/data-manager.service';
 import { Subject, takeUntil } from 'rxjs';
-import { TelemetryBoolean } from 'src/app/interfaces/Telemetry';
+import { TelemetryBoolean } from 'src/app/Models/interfaces/Telemetry';
+import { WarningService } from 'src/app/services/warning.service';
+import { MasterWarningState, WarningState } from 'src/app/Models/enumerations/Warning';
 
 @Component({
     selector: 'app-header',
@@ -32,12 +34,22 @@ export class HeaderComponent implements OnInit {
     faDownload = faDownload;
     faTruckMonster = faTruckMonster;
 
-    volumeIcon: any = faVolumeMute;
-
     showAddDisplay: boolean = false;
-    mute: boolean = true;
+    warningDefaultColor = 'rgb(67, 79, 95)';
+    warningStateOn = WarningState.ON;
 
-    constructor(public settingsService: SettingsService, public socketService: SocketService, private audioService: AudioService) {}
+    masterWarningColor: string = this.warningDefaultColor;
+    masterWarningIterval: any;
+    masterWarningFlash: boolean = true;
+
+    constructor(public settingsService: SettingsService, public socketService: SocketService, public audioService: AudioService, public warningService: WarningService) {
+        this.warningService
+            .onMasterWarningState()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((state) => {
+                this.setMasterWarningState(state);
+            });
+    }
 
     ngOnInit(): void {}
 
@@ -64,10 +76,39 @@ export class HeaderComponent implements OnInit {
     }
 
     toggleMute() {
-        this.mute = !this.mute;
-        this.volumeIcon = this.mute ? this.faVolumeMute : this.faVolumeHigh;
-        this.audioService.setMute(this.mute);
+        this.audioService.toggleMute();
     }
 
-    setWarningStatus(show: Boolean) {}
+    acknoledgeMasterWarning() {
+        this.warningService.acknoldegeMasterWarning();
+    }
+
+    setMasterWarningState(state: MasterWarningState) {
+        switch (state) {
+            case MasterWarningState.OFF:
+                clearInterval(this.masterWarningIterval);
+                this.masterWarningColor = this.warningDefaultColor;
+                break;
+            case MasterWarningState.SILENCED:
+                clearInterval(this.masterWarningIterval);
+                this.masterWarningColor = 'red';
+                break;
+            case MasterWarningState.ON:
+                this.flashMasterWarning();
+                break;
+        }
+    }
+
+    flashMasterWarning() {
+        clearInterval(this.masterWarningIterval);
+        this.masterWarningIterval = setInterval(() => {
+            if (this.masterWarningFlash) {
+                this.masterWarningFlash = false;
+                this.masterWarningColor = 'red';
+            } else {
+                this.masterWarningFlash = true;
+                this.masterWarningColor = this.warningDefaultColor;
+            }
+        }, 500);
+    }
 }

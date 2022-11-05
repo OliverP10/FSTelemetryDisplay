@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { faTimes, faAngleLeft, faAngleRight, faLeftRight, faUpDown, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { ScreenItem } from 'src/app/interfaces/Screen';
-import { Display, MoveScreenItem, ResizeScreenItem } from '../../interfaces/Display';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
+import { Display, MoveScreenItem, ResizeScreenItem } from '../../Models/interfaces/Display';
 
 @Component({
     selector: 'app-display-item-settings',

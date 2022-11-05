@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, OnDestroy } from '@angular/core';
-import { Display } from '../../interfaces/Display';
+import { Display } from '../../Models/interfaces/Display';
 import { SocketService } from 'src/app/services/socket.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { TelemetryLocation } from 'src/app/interfaces/Telemetry';
+import { TelemetryLocation } from 'src/app/Models/interfaces/Telemetry';
 
 @Component({
     selector: 'app-display-item-map',
@@ -85,7 +85,7 @@ export class DisplayItemMapComponent implements OnInit, AfterViewInit, OnDestroy
                 this.updateCarPos(telemetry);
             });
 
-        this.image.src = 'assets/map-track.jpg';
+        this.image.src = 'assets/images/map-track.jpg';
         let self = this;
         this.image.onload = function () {
             self.loadMap();

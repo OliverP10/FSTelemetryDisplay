@@ -112,6 +112,12 @@ td:last-child {
     font-size: 10px;
 }
 
+.loading-spinner {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 
 
 

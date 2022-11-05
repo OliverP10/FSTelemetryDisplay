@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { Display } from 'src/app/interfaces/Display';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { Display } from 'src/app/Models/interfaces/Display';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { SocketService } from 'src/app/services/socket.service';
 
 @Component({

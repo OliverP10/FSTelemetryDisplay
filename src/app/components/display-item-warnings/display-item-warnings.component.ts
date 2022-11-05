@@ -5,10 +5,10 @@ import { faMinus, faTriangleExclamation } from '@fortawesome/free-solid-svg-icon
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ErrorData, Display } from 'src/app/interfaces/Display';
+import { ErrorData, Display } from 'src/app/Models/interfaces/Display';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { ScreenItem } from 'src/app/interfaces/Screen';
-import { Event } from 'src/app/interfaces/Events';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
+import { Event } from 'src/app/Models/interfaces/Events';
 
 @Component({
     selector: 'app-display-item-warnings',

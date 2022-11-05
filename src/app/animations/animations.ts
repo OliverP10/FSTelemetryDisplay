@@ -41,3 +41,28 @@ export let settingDropDown = trigger('settingDropDown', [
         )
     ])
 ]);
+
+export let expandContract = trigger('settingDropDown', [
+    transition(':enter', [
+        style({
+            transform: 'scale(0)'
+        }),
+        animate(
+            '100ms',
+            style({
+                transform: 'scale(1)'
+            })
+        )
+    ]),
+    transition(':leave', [
+        style({
+            transform: 'scale(1)'
+        }),
+        animate(
+            '200ms',
+            style({
+                transform: 'scale(0)'
+            })
+        )
+    ])
+]);

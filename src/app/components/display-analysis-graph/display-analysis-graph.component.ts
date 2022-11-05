@@ -1,14 +1,14 @@
 import { Component, Input, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { ScreenItem } from 'src/app/interfaces/Screen';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { defer, Subject, takeUntil } from 'rxjs';
 import * as Highcharts from 'highcharts/highstock';
 import * as HighchartsBoost from 'highcharts/modules/boost';
 
 import { SettingsService } from 'src/app/services/settings.service';
 import { DataManagerService } from 'src/app/services/data-manager.service';
-import { ObjectTelemetryLabels, TelemetryAny } from 'src/app/interfaces/Telemetry';
+import { ObjectTelemetryLabels, TelemetryAny } from 'src/app/Models/interfaces/Telemetry';
 import { SocketService } from 'src/app/services/socket.service';
-import { GraphData, SeriesOption } from 'src/app/interfaces/Graph';
+import { GraphData, SeriesOption } from 'src/app/Models/interfaces/Graph';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { MatSelectChange } from '@angular/material/select';
@@ -47,16 +47,13 @@ export class DisplayAnalysisGraphComponent implements OnInit {
         this.chart = chart;
     };
 
-    allLabels: string[] = [];
+    labels: string[] = [];
     selectedLabels: string[] = [];
 
     constructor(private settingsService: SettingsService, private dataManagerService: DataManagerService, private socketService: SocketService, private http: HttpClient) {}
 
     ngOnInit(): void {
-        let labelsObj = this.http.get<ObjectTelemetryLabels>(environment.ROOT_URL + environment.API_PORT + '/telemetry/getAllLabelsFromSessionStart');
-        labelsObj.subscribe((telemLabelsObj) => {
-            this.allLabels = telemLabelsObj.labels;
-        });
+        this.labels = this.dataManagerService.getUniqueLables();
         Highcharts.setOptions({
             lang: {
                 rangeSelectorZoom: ''
@@ -156,7 +153,6 @@ export class DisplayAnalysisGraphComponent implements OnInit {
                 inputEnabled: false
             },
             scrollbar: {
-                enabled: false,
                 barBackgroundColor: 'rgb(77, 84, 101)',
                 barBorderRadius: 4,
                 barBorderWidth: 0,
@@ -191,7 +187,7 @@ export class DisplayAnalysisGraphComponent implements OnInit {
             },
             plotOptions: {
                 series: {
-                    //turboThreshold: 500,
+                    turboThreshold: 0,
                     showInNavigator: true,
                     animation: false
                 }
@@ -210,19 +206,18 @@ export class DisplayAnalysisGraphComponent implements OnInit {
                 this.resizeChart();
             });
 
-        // this.socketService
-        //     .onTelemetryReady()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.loadTelemetry(telemetry);
-        //         this.subcribeToTelemLabels();
-        //     });
+        this.socketService
+            .onTelemetryReady()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.labels = this.dataManagerService.getUniqueLables();
+                this.loadTelemetry(telemetry);
+            });
     }
 
     ngAfterViewInit(): void {
         if (this.dataManagerService.getTelemetryReady()) {
             this.loadTelemetry(this.dataManagerService.telemetry);
-            this.subcribeToTelemLabels();
         }
     }
 
@@ -247,16 +242,6 @@ export class DisplayAnalysisGraphComponent implements OnInit {
         for (let s of series.values()) {
             s.data.reverse();
             this.chart.addSeries(s as Highcharts.SeriesOptionsType);
-        }
-    }
-
-    subcribeToTelemLabels() {
-        let observables = this.dataManagerService.onCustomTelemetryAsList(this.screenItem.display.labels);
-        for (let observable of observables) {
-            let self = this;
-            observable.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
-                this.addTelemetry(telemetry);
-            });
         }
     }
 

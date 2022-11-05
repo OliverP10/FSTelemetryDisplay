@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { faSquare, faArrowUp, faArrowDown, faLock, faCircleArrowUp, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
-import { Display } from 'src/app/interfaces/Display';
-import { Motors } from 'src/app/interfaces/Motors';
-import { ScreenItem } from 'src/app/interfaces/Screen';
-import { TelemetryBoolean, TelemetryNumber } from 'src/app/interfaces/Telemetry';
+import { Display } from 'src/app/Models/interfaces/Display';
+import { Motors } from 'src/app/Models/interfaces/Motors';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
+import { TelemetryBoolean, TelemetryNumber } from 'src/app/Models/interfaces/Telemetry';
 import { DataManagerService } from 'src/app/services/data-manager.service';
 import { SocketService } from 'src/app/services/socket.service';
 
