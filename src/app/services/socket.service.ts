@@ -9,17 +9,22 @@ import { ObjectTelemetry, TelemetryAny } from '../Models/interfaces/Telemetry';
 import { forkJoin } from 'rxjs';
 import { ObjectEvent, Event } from '../Models/interfaces/Events';
 import { LoadingSatus } from '../Models/enumerations/Telemetry';
+import { Status } from '../Models/enumerations/Comunication';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SocketService {
-    public serverConnected: boolean = false;
-    public vehicleConnected: boolean = false;
+    public serverConnected: Status = Status.DISCONECTED;
+    public vehicleConnected: Status = Status.DISCONECTED;
+    public vehicleWifiConnected: Status = Status.DISCONECTED;
+    public vehicleRfConnected: Status = Status.DISCONECTED;
 
     private TelemetryReady = new Subject<TelemetryAny[]>();
     private EventsReady = new Subject<Event[]>();
     private vehicleConnectionStatus = new Subject<boolean>();
+    private vehicleWifiConnectionStatus = new Subject<boolean>();
+    private vehicleRfConnectionStatus = new Subject<boolean>();
 
     private telemetryLoadingSubject = new Subject<LoadingSatus>();
     private eventsLoadingSubject = new Subject<LoadingSatus>();
@@ -30,6 +35,8 @@ export class SocketService {
         this.socket.fromEvent('connect').subscribe(() => this.setServerConnectionStatus(true));
         this.socket.fromEvent('disconnect').subscribe(() => this.setServerConnectionStatus(false));
         this.socket.fromEvent('vehicle-connection').subscribe((data: any) => this.setVehicleConnectionStatus(data));
+        this.socket.fromEvent('vehicle-wifi-connection').subscribe((data: any) => this.setVehicleWifiConnectionStatus(data));
+        this.socket.fromEvent('vehicle-rf-connection').subscribe((data: any) => this.setVehicleRfConnectionStatus(data));
     }
 
     public onServerDisconect(): Observable<unknown> {
@@ -49,7 +56,7 @@ export class SocketService {
             this.setVehicleConnectionStatus(false);
             this.audioService.playTelemLost();
         }
-        this.serverConnected = connected;
+        this.serverConnected = connected ? Status.CONNECTED : Status.DISCONECTED;
     }
 
     private connected() {
@@ -76,6 +83,7 @@ export class SocketService {
 
                 let allTelemetry: TelemetryAny[] = data.allTelemetry.telemetry;
                 this.dataManagerService.mergeTelemetry(allTelemetry);
+                this.dataManagerService.findUnqieLabels();
                 this.TelemetryReady.next(this.dataManagerService.telemetry);
                 this.telemetryLoadingSubject.next(LoadingSatus.LOADED);
             },
@@ -151,12 +159,20 @@ export class SocketService {
         this.ngUnsubscribe = new Subject<void>();
     }
 
-    public get serverConnectionSatatus(): boolean {
+    public get serverConnectionSatatus(): Status {
         return this.serverConnected;
     }
 
-    public get serverVehicleSatatus(): boolean {
+    public get serverVehicleSatatus(): Status {
         return this.vehicleConnected;
+    }
+
+    public get serverVehicleWifiSatatus(): Status {
+        return this.vehicleWifiConnected;
+    }
+
+    public get serverVehicleRfSatatus(): Status {
+        return this.vehicleRfConnected;
     }
 
     public onTelemetryReady(): Observable<TelemetryAny[]> {
@@ -175,13 +191,31 @@ export class SocketService {
         return this.vehicleConnectionStatus.asObservable();
     }
 
+    public onVehicleWifiConnectionStatus(): Observable<boolean> {
+        return this.vehicleWifiConnectionStatus.asObservable();
+    }
+
+    public onVehicleRfConnectionStatus(): Observable<boolean> {
+        return this.vehicleRfConnectionStatus.asObservable();
+    }
+
     public onTelemetryLoadingSubject(): Observable<LoadingSatus> {
         return this.telemetryLoadingSubject.asObservable();
     }
 
     private setVehicleConnectionStatus(connected: boolean) {
-        this.vehicleConnected = connected;
+        this.vehicleConnected = connected ? Status.CONNECTED : Status.DISCONECTED;
         this.vehicleConnectionStatus.next(connected);
+    }
+
+    private setVehicleWifiConnectionStatus(connected: boolean) {
+        this.vehicleWifiConnected = connected ? Status.CONNECTED : Status.DISCONECTED;
+        this.vehicleWifiConnectionStatus.next(connected);
+    }
+
+    private setVehicleRfConnectionStatus(connected: boolean) {
+        this.vehicleRfConnected = connected ? Status.CONNECTED : Status.DISCONECTED;
+        this.vehicleRfConnectionStatus.next(connected);
     }
 
     public sendKeyFrame(key: string) {

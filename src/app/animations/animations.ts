@@ -42,7 +42,7 @@ export let settingDropDown = trigger('settingDropDown', [
     ])
 ]);
 
-export let expandContract = trigger('settingDropDown', [
+export let expandContract = trigger('expandContract', [
     transition(':enter', [
         style({
             transform: 'scale(0)'
@@ -65,4 +65,20 @@ export let expandContract = trigger('settingDropDown', [
             })
         )
     ])
+]);
+
+//fix
+export let leftToRightGrow = trigger('leftToRightGrow', [
+    transition(':enter', [
+        style({
+            width: '0% !important'
+        }),
+        animate(
+            '1000ms',
+            style({
+                width: '100% !important'
+            })
+        )
+    ]),
+    transition(':leave', [style({}), animate('0ms', style({}))])
 ]);

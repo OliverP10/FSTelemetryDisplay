@@ -103,6 +103,22 @@
 
             <button 
                 class="list-item"
+                routerLink="/communications"
+                (click)="toggleSideBar()"
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-char-line fa-2x"
+                        [icon]="faSatelliteDish"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Communications
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
                 routerLink="/create-display"
                 (click)="toggleSideBar()"
                 mat-button>

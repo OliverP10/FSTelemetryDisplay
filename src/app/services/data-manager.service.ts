@@ -62,29 +62,29 @@ export class DataManagerService {
         this.telemetrySubjects.set('ROLL', this.rollSubject);
         this.telemetrySubjects.set('PITCH', this.pitchSubject);
         this.telemetrySubjects.set('YAW', this.yawSubject);
-        this.telemetrySubjects.set('arduinoConnected', this.arduinoConnectedSubject);
+        this.telemetrySubjects.set('ARDUINO_CONNECTED', this.arduinoConnectedSubject);
         this.telemetrySubjects.set('location', this.locationSubject);
-        this.telemetrySubjects.set('armEnabled', this.armEnabledSubject);
-        this.telemetrySubjects.set('armYaw', this.armYawSubject);
-        this.telemetrySubjects.set('armPitch1', this.armPitch1Subject);
-        this.telemetrySubjects.set('armPitch2', this.armPitch2Subject);
-        this.telemetrySubjects.set('armClaw', this.armClawSubject);
-        this.telemetrySubjects.set('clawStatus', this.clawStatusSubject);
-        this.telemetrySubjects.set('clawEnabled', this.clawEnabledSubject);
-        this.telemetrySubjects.set('movementEnabled', this.movementEnabledSubject);
-        this.telemetrySubjects.set('movementSpeed', this.movementSpeedSubject);
-        this.telemetrySubjects.set('motorOneEnabled', this.motorOneEnabledSubject);
-        this.telemetrySubjects.set('motorOneForwards', this.motorOneForwardsSubject);
-        this.telemetrySubjects.set('motorOneSpeed', this.motorOneSpeedSubject);
-        this.telemetrySubjects.set('motorTwoEnabled', this.motorTwoEnabledSubject);
-        this.telemetrySubjects.set('motorTwoForwards', this.motorTwoForwardsSubject);
-        this.telemetrySubjects.set('motorTwoSpeed', this.motorTwoSpeedSubject);
-        this.telemetrySubjects.set('motorThreeEnabled', this.motorThreeEnabledSubject);
-        this.telemetrySubjects.set('motorThreeForwards', this.motorThreeForwardsSubject);
-        this.telemetrySubjects.set('motorThreeSpeed', this.motorThreeSpeedSubject);
-        this.telemetrySubjects.set('motorFourEnabled', this.motorFourEnabledSubject);
-        this.telemetrySubjects.set('motorFourForwards', this.motorFourForwardsSubject);
-        this.telemetrySubjects.set('motorFourSpeed', this.motorFourSpeedSubject);
+        this.telemetrySubjects.set('ARM_ENABLED', this.armEnabledSubject);
+        this.telemetrySubjects.set('ARM_YAW', this.armYawSubject);
+        this.telemetrySubjects.set('ARM_PITCH_1', this.armPitch1Subject);
+        this.telemetrySubjects.set('ARM_PITCH_2', this.armPitch2Subject);
+        this.telemetrySubjects.set('ARM_CLAW', this.armClawSubject);
+        this.telemetrySubjects.set('CLAW_STATUS', this.clawStatusSubject);
+        this.telemetrySubjects.set('CLAW_ENABLED', this.clawEnabledSubject);
+        this.telemetrySubjects.set('MOVEMENT_ENABLED', this.movementEnabledSubject);
+        this.telemetrySubjects.set('MOVEMENT_SPEED', this.movementSpeedSubject);
+        this.telemetrySubjects.set('MOTOR_ONE_ENABLED', this.motorOneEnabledSubject);
+        this.telemetrySubjects.set('MOTOR_ONE_FORWARD', this.motorOneForwardsSubject);
+        this.telemetrySubjects.set('MOTOR_ONE_SPEED', this.motorOneSpeedSubject);
+        this.telemetrySubjects.set('MOTOR_TWO_ENABLED', this.motorTwoEnabledSubject);
+        this.telemetrySubjects.set('MOTOR_TWO_FORWARD', this.motorTwoForwardsSubject);
+        this.telemetrySubjects.set('MOTOR_TWO_SPEED', this.motorTwoSpeedSubject);
+        this.telemetrySubjects.set('MOTOR_THREE_ENABLED', this.motorThreeEnabledSubject);
+        this.telemetrySubjects.set('MOTOR_THREE_FORWARD', this.motorThreeForwardsSubject);
+        this.telemetrySubjects.set('MOTOR_THREE_SPEED', this.motorThreeSpeedSubject);
+        this.telemetrySubjects.set('MOTOR_FOUR_ENABLED', this.motorFourEnabledSubject);
+        this.telemetrySubjects.set('MOTOR_FOUR_FORWARD', this.motorFourForwardsSubject);
+        this.telemetrySubjects.set('MOTOR_FOUR_SPEED', this.motorFourSpeedSubject);
     }
 
     public getTelemetryReady(): boolean {
@@ -153,12 +153,15 @@ export class DataManagerService {
 
     public mergeTelemetry(telemetry: TelemetryAny[]) {
         let tempTelemetry = [...this.telemetry];
-        tempTelemetry = tempTelemetry;
+        this.telemetry = telemetry;
         this.telemetry = this.applyDates(telemetry);
         for (let telem of tempTelemetry) {
             if (!this.telemetry.includes(telem)) {
                 this.telemetry.push(telem);
                 console.log('Telem mergerd');
+            } else {
+                console.log('duplicate');
+                console.log(telem);
             }
         }
         this.telemetryReady = true;
@@ -208,8 +211,65 @@ export class DataManagerService {
             case 'location':
                 this.locationSubject.next(telemetry);
                 break;
-            case 'arm_pitch_1':
+            case 'ARM_ENABLED':
+                this.armEnabledSubject.next(telemetry);
+                break;
+            case 'ARM_YAW':
+                this.armYawSubject.next(telemetry);
+                break;
+            case 'ARM_PITCH_1':
                 this.armPitch1Subject.next(telemetry);
+                break;
+            case 'ARM_PITCH_2':
+                this.armPitch2Subject.next(telemetry);
+                break;
+            case 'ARM_CLAW':
+                this.armClawSubject.next(telemetry);
+                break;
+            case 'CLAW_ENABLED':
+                this.clawEnabledSubject.next(telemetry);
+                break;
+            case 'MOVEMENT_ENABLED':
+                this.movementEnabledSubject.next(telemetry);
+                break;
+            case 'MOVEMENT_SPEED':
+                this.movementSpeedSubject.next(telemetry);
+                break;
+            case 'MOTOR_ONE_ENABLED':
+                this.motorOneEnabledSubject.next(telemetry);
+                break;
+            case 'MOTOR_ONE_FORWARD':
+                this.motorOneForwardsSubject.next(telemetry);
+                break;
+            case 'MOTOR_ONE_SPEED':
+                this.motorOneSpeedSubject.next(telemetry);
+                break;
+            case 'MOTOR_TWO_ENABLED':
+                this.motorTwoEnabledSubject.next(telemetry);
+                break;
+            case 'MOTOR_TWO_FORWARD':
+                this.armEnabledSubject.next(telemetry);
+                break;
+            case 'MOTOR_TWO_SPEED':
+                this.motorTwoSpeedSubject.next(telemetry);
+                break;
+            case 'MOTOR_THREE_ENABLED':
+                this.motorThreeEnabledSubject.next(telemetry);
+                break;
+            case 'MOTOR_THREE_FORWARD':
+                this.motorThreeForwardsSubject.next(telemetry);
+                break;
+            case 'MOTOR_THREE_SPEED':
+                this.motorThreeSpeedSubject.next(telemetry);
+                break;
+            case 'MOTOR_FOUR_ENABLED':
+                this.motorFourEnabledSubject.next(telemetry);
+                break;
+            case 'MOTOR_FOUR_FORWARD':
+                this.motorFourForwardsSubject.next(telemetry);
+                break;
+            case 'MOTOR_FOUR_SPEED':
+                this.motorFourSpeedSubject.next(telemetry);
                 break;
             default:
                 console.error('No matching telemetry found for: ' + telemetry.metadata.label);

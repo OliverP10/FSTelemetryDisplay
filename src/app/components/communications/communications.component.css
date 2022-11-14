@@ -1,0 +1,175 @@
+.container{
+    margin: 0;
+    padding-top: 1px;
+    border: 1px;
+    color: rgb(238, 238, 238);
+    background-color: rgb(91, 107, 128);
+    height: 95%;
+    width: 100%;
+    border-radius: 7px;
+    text-align:center;
+}
+
+.rover {
+    width: 7%;
+    margin-top: 1%;
+}
+
+.satellite-dish-primary {
+    width: 7%;
+    margin-right: 21%;
+    margin-top: 5%;
+}
+
+.satellite-dish-primary-text {
+    position:absolute;
+    margin-left: 22.5%;
+}
+
+.satellite-dish-secondary {
+    width:7%;
+    margin-left: 21%;
+    margin-top: 5%;
+}
+
+.satellite-dish-secondary-text {
+    position:absolute;
+    margin-right: calc(25% + 10px);
+    right:0
+}
+
+.server {
+    width: 7%;
+    margin-top: 5%;
+}
+
+.connection-rover-primary {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(-30deg);
+    margin-left: 27%;
+    margin-top: 4%;
+}
+
+.connection-primary-rover {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(-210deg);
+    margin-left: 27%;
+    margin-top: 3%; 
+}
+
+.disconnection-rover-primary {
+    position:absolute;
+    margin-left: -15%;
+    margin-top: 0%;
+}
+
+.connection-rover-secondary {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(210deg);
+    margin-right: calc(27% + 10px);
+    margin-left: auto;
+    margin-top: 4%;
+    right:0;
+}
+
+.connection-secondary-rover {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(30deg);
+    margin-right: calc(27% + 10px);
+    margin-left: auto;
+    margin-top: 3%;
+    right:0;
+}
+
+.disconnection-rover-secondary {
+    position:absolute;
+    margin-left: 14%;
+    margin-top: 0%;
+}
+
+.connection-server-primary {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(30deg);
+    margin-left: 27%;
+    margin-top: 4%;
+}
+
+.connection-primary-server {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(210deg);
+    margin-left: 27%;
+    margin-top: 3%; 
+}
+
+.disconnection-server-primary {
+    position:absolute;
+    margin-left: -15%;
+    margin-top: 4%;
+}
+
+.connection-server-secondary {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(-210deg);
+    margin-right: calc(27% + 10px);
+    margin-left: auto;
+    margin-top: 4%;
+    right:0;
+}
+
+.connection-secondary-server {
+    position:absolute;
+    width: 19% !important;
+    transform: rotate(-30deg);
+    margin-right: calc(27% + 10px);
+    margin-left: auto;
+    margin-top: 3%;
+    right:0;
+}
+
+.disconnection-server-secondary {
+    position:absolute;
+    margin-left: 14%;
+    margin-top: 4%;
+}
+
+.client {
+    width: 7%;
+    margin-top: 5%;
+}
+
+.connection-server-client {
+    position:absolute;
+    width: 4% !important;
+    transform: rotate(-90deg);
+    margin-left: 48%;
+    margin-top: 2%;
+}
+
+.connection-client-server {
+    position:absolute;
+    width: 4% !important;
+    transform: rotate(90deg);
+    margin-left: 47%;
+    margin-top: 2%;
+}
+
+.disconnection-server-client {
+    position:absolute;
+    margin-left: -3%;
+    margin-top: 1%;
+}
+
+::ng-deep .mat-progress-bar-background {
+    fill: orangered !important;
+}
+
+/* ::ng-deep .mat-progress-bar .mat-progress-bar-background{
+    animation: none !important;
+} */

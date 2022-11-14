@@ -13,13 +13,13 @@ import { MTX_DATETIME_FORMATS } from '@ng-matero/extensions/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DataManagerService } from 'src/app/services/data-manager.service';
 import { LoadingSatus } from 'src/app/Models/enumerations/Telemetry';
-import { expandContract } from 'src/app/animations/animations';
+import { expandContract, expandContractList } from 'src/app/animations/animations';
 
 @Component({
     selector: 'app-data-analysis',
     templateUrl: './data-analysis.component.html',
     styleUrls: ['./data-analysis.component.css'],
-    animations: [expandContract],
+    animations: [expandContractList, expandContract],
     providers: [
         {
             provide: MTX_DATETIME_FORMATS,

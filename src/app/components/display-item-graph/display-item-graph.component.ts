@@ -3,13 +3,15 @@ import { CarData, Display, GraphOption } from '../../Models/interfaces/Display';
 import { Chart } from 'chart.js';
 import { SocketService } from 'src/app/services/socket.service';
 import { SettingsService } from 'src/app/services/settings.service';
-import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faGear } from '@fortawesome/free-solid-svg-icons';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSliderModule } from '@angular/material/slider';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { TelemetryAny } from 'src/app/Models/interfaces/Telemetry';
 import { DataManagerService } from 'src/app/services/data-manager.service';
+import { jsonConcat } from 'src/shared/utils/formatter';
+import { GraphOptions } from 'src/app/Models/interfaces/Graph';
 
 @Component({
     selector: 'app-display-item-graph',
@@ -22,6 +24,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     @ViewChild('slider') sliderElement: ElementRef;
     @Input() screenItem: ScreenItem;
 
+    faGear = faGear;
     faPlay = faPlay;
     faPause = faPause;
     private ngUnsubscribe = new Subject<void>();
@@ -45,11 +48,12 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
 
     chart: Chart;
     chartOptions: Chart.ChartConfiguration;
-    viewSize: number = 30000;
-    startFrom: number = 0;
+    graphOptions: GraphOptions;
 
-    sliderMin: number = 0;
-    sliderMax: number = 1;
+    counters = new Map<string, number>();
+
+    minTime = 999999999999999;
+    maxTime = 0;
 
     showLive: boolean = true;
     showLiveIcon = faPause;
@@ -75,23 +79,31 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
                     xAxes: [
                         {
                             display: false,
-                            type: 'time',
+                            type: 'time', //time logarithmic
                             ticks: {
                                 min: undefined,
                                 max: undefined
                             }
                         }
                     ]
+                },
+                tooltips: {
+                    mode: 'nearest',
+                    intersect: false,
+                    axis: 'x'
                 }
+                // elements: {
+                //     point: {
+                //         radius: 0
+                //     }
+                // }
             }
         };
     }
 
     ngOnInit(): void {
-        this.settingService
-            .onResizeEvent()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((data: any) => this.resizeSlider());
+        this.graphOptions = jsonConcat(this.screenItem.display.options, this.screenItem.options);
+
         this.socketService
             .onTelemetryReady()
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -106,13 +118,6 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
         if (this.dataManagerService.getTelemetryReady()) {
             this.loadTelemetry(this.dataManagerService.telemetry);
             this.subcribeToTelemLabels();
-        }
-    }
-
-    setViewSize(event: any) {
-        const num = parseInt(event.target.value);
-        if (num < 200 && num > 1) {
-            this.viewSize = num;
         }
     }
 
@@ -136,39 +141,36 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
                 borderColor: this.chartColors[color],
                 backgroundColor: this.chartColors[color],
                 fill: false,
-                lineTension: 0.1
+                lineTension: 0.01
             });
+            this.counters.set(label, 0);
             color++;
         }
 
-        let minTime: number = 99999999999999;
-        let maxTime: number = 0;
-
-        for (let i = 0; i < telemetry.length; i++) {
-            if (series.has(telemetry[i].metadata.label)) {
-                let s = series.get(telemetry[i].metadata.label);
-                (s!.data as Chart.ChartPoint[]).push({
+        for (let i = telemetry.length - 1; i > 0; i--) {
+            let label = telemetry[i].metadata.label;
+            if (series.has(label) && this.counters.get(label)! < this.graphOptions.maxPoints) {
+                let s = series.get(label);
+                (s!.data as Chart.ChartPoint[]).unshift({
                     y: telemetry[i].value,
                     x: new Date(telemetry[i].timestamp)
                 });
-                minTime = Math.min(minTime, telemetry[i].timestamp.getTime());
-                maxTime = Math.max(maxTime, telemetry[i].timestamp.getTime());
+
+                this.counters.set(label, this.counters.get(label)! + 1);
+                if (Array.from(this.counters.values()).every((counter) => counter >= this.graphOptions.maxPoints)) {
+                    break;
+                }
             }
         }
-
-        this.sliderMin = minTime;
-        this.sliderMax = maxTime;
-
-        this.startFrom = this.sliderMax - this.viewSize;
-        this.chart.options.scales!.xAxes![0].ticks!.max! = this.startFrom + this.viewSize;
-        this.chart.options.scales!.xAxes![0].ticks!.min! = this.startFrom;
 
         const data: Chart.ChartData = {
             labels: this.screenItem.display.labels,
             datasets: Array.from(series.values())
         };
-
         this.chart.data = data;
+        this.chart.options.scales!.xAxes![0].ticks!.max! = this.findMax();
+        this.chart.options.scales!.xAxes![0].ticks!.min! = this.calcMin();
+        console.log(this.chart.data.datasets);
         this.chart.update();
     }
 
@@ -188,30 +190,39 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
         if (telemetry == null) {
             return;
         }
-        if (this.showLive) {
-            this.chart.options.scales!.xAxes![0].ticks!.max! = telemetry.timestamp.getTime();
-            this.startFrom = telemetry.timestamp.getTime() - this.viewSize;
-            this.chart.options.scales!.xAxes![0].ticks!.min! = this.startFrom;
-        }
-        this.sliderMax = telemetry.timestamp.getTime();
         let chartPoint: Chart.ChartPoint = {
             y: telemetry.value,
             x: new Date(telemetry.timestamp)
         };
         let datasets = this.chart.data.datasets!.find((dataset) => dataset.label == telemetry.metadata.label)!;
+
+        if (this.counters.get(telemetry.metadata.label)! >= this.graphOptions.maxPoints) {
+            (datasets.data as Chart.ChartPoint[]).shift();
+        }
+
         (datasets.data as Chart.ChartPoint[]).push(chartPoint);
+
+        if (this.showLive) {
+            this.chart.options.scales!.xAxes![0].ticks!.max! = this.findMax();
+            this.chart.options.scales!.xAxes![0].ticks!.min! = this.calcMin();
+        }
+
         this.chart.update();
     }
 
-    formatLabel(value: number) {
-        return Math.round(value / 1000);
+    calcMin() {
+        let min: number = this.findMax() - this.graphOptions.viewSize;
+        return min;
     }
 
-    setStartFrom(event: any) {
-        this.startFrom = event.value;
-        this.chart.options.scales!.xAxes![0].ticks!.max! = this.startFrom + this.viewSize;
-        this.chart.options.scales!.xAxes![0].ticks!.min! = this.startFrom;
-        this.chart.update();
+    findMax(): number {
+        let max: number = 0;
+        for (let dataset of this.chart.data.datasets!) {
+            if (dataset.data!.length > 0) {
+                max = Math.max(max, ((dataset.data![dataset.data!.length - 1] as Chart.ChartPoint).x as Date).getTime());
+            }
+        }
+        return max;
     }
 
     toggleShowLive() {
@@ -219,12 +230,24 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
         this.showLiveIcon = this.showLive ? this.faPause : this.faPlay;
     }
 
-    resizeSlider() {
-        this.styleObj['width'] = this.containerElement.nativeElement.offsetWidth - 30 + 'px';
+    updateViewSize(event: any) {
+        this.screenItem.options['viewSize'] = event.target.value;
+        this.chart.update();
+    }
+
+    updateMaxPoints(event: any) {
+        this.screenItem.options['maxPoints'] = event.target.value;
+        this.chart.update();
+    }
+
+    stopPropagation(event: any) {
+        event.stopPropagation();
     }
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+        this.ngUnsubscribeTelem.next();
+        this.ngUnsubscribeTelem.complete();
     }
 }

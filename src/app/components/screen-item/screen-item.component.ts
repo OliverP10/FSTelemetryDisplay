@@ -21,7 +21,7 @@ export class ScreenItemComponent implements AfterViewInit, OnChanges, OnInit {
     @Output() onDeleteScreenItem: EventEmitter<ScreenItem> = new EventEmitter();
     @Output() onMoveScreenItem: EventEmitter<MoveScreenItem> = new EventEmitter();
     @Output() onResizeScreenItem: EventEmitter<ResizeScreenItem> = new EventEmitter();
-    @ViewChild('menu') matMenuTrigger: ElementRef;
+    //@ViewChild('menu') matMenuTrigger: ElementRef;
 
     dropDownIcon = faCaretDown;
     faTrashCan = faTrashCan;

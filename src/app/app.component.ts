@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SettingsService } from 'src/app/services/settings.service';
-import { faHouse, faRss, faCircleInfo, faSquarePlus, faCar, faGaugeHigh, faRocket, faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faRss, faCircleInfo, faSquarePlus, faCar, faGaugeHigh, faRocket, faChartLine, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,6 +17,7 @@ export class AppComponent {
     faGaugeHigh = faGaugeHigh;
     faRocket = faRocket;
     faChartLine = faChartLine;
+    faSatelliteDish = faSatelliteDish;
 
     title = 'UOL-Racing';
     showSidebar: boolean = false;

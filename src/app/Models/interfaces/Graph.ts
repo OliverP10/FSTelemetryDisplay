@@ -8,3 +8,8 @@ export interface GraphData {
     x: number;
     y: number;
 }
+
+export interface GraphOptions {
+    viewSize: number;
+    maxPoints: number;
+}

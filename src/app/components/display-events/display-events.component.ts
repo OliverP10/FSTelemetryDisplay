@@ -6,7 +6,7 @@ import { Event, TableEvent } from 'src/app/Models/interfaces/Events';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { DataManagerService } from 'src/app/services/data-manager.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faTriangleExclamation, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { MatPaginator } from '@angular/material/paginator';
 import { expandContract } from 'src/app/animations/animations';
 import { LoadingSatus } from 'src/app/Models/enumerations/Telemetry';
@@ -24,6 +24,7 @@ export class DisplayEventsComponent implements OnInit, AfterViewInit, OnDestroy 
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     faTriangleExclamation = faTriangleExclamation;
+    faCircleInfo = faCircleInfo;
 
     private ngUnsubscribe = new Subject<void>();
     dataSource: MatTableDataSource<TableEvent>;

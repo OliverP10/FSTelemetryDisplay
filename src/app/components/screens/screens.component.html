@@ -1,4 +1,4 @@
-<mat-progress-bar mode="indeterminate" class="loading-spinner" *ngIf="showLoadingSpinner" [@settingDropDown]></mat-progress-bar>
+<mat-progress-bar mode="indeterminate" class="loading-spinner" *ngIf="showLoadingSpinner" [@expandContract]></mat-progress-bar>
 <div class="container" #container>
     <div class="grid">
         <mat-grid-list 
@@ -6,7 +6,7 @@
             rows="4"
             rowHeight="4:1.8"
             [gutterSize]="'10px'"
-            
+            [@expandContractList]="screenItems.length"
             cdkDropList
             (cdkDropListDropped)="drop($event)">
 

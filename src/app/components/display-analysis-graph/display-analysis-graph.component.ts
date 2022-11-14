@@ -2,7 +2,14 @@ import { Component, Input, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementR
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { defer, Subject, takeUntil } from 'rxjs';
 import * as Highcharts from 'highcharts/highstock';
-import * as HighchartsBoost from 'highcharts/modules/boost';
+import HighchartsBoost from 'highcharts/modules/boost';
+import HC_exporting from 'highcharts/modules/exporting';
+import HFullScreen from 'highcharts/modules/full-screen';
+import HStockTools from 'highcharts/modules/stock-tools';
+HC_exporting(Highcharts);
+HFullScreen(Highcharts);
+HStockTools(Highcharts);
+HighchartsBoost(Highcharts);
 
 import { SettingsService } from 'src/app/services/settings.service';
 import { DataManagerService } from 'src/app/services/data-manager.service';
@@ -133,7 +140,6 @@ export class DisplayAnalysisGraphComponent implements OnInit {
                         }
                     }
                 },
-
                 buttons: [
                     {
                         count: 30,
@@ -177,7 +183,14 @@ export class DisplayAnalysisGraphComponent implements OnInit {
                 }
             },
             exporting: {
-                enabled: false
+                enabled: true,
+                buttons: {
+                    contextButton: {
+                        theme: {
+                            fill: 'rgb(202, 208, 220)'
+                        }
+                    }
+                }
             },
             accessibility: {
                 enabled: false
@@ -195,6 +208,11 @@ export class DisplayAnalysisGraphComponent implements OnInit {
             boost: {
                 useGPUTranslations: true,
                 seriesThreshold: 1
+            },
+            stockTools: {
+                gui: {
+                    enabled: true
+                }
             },
             colors: this.CHARTCOLORS
         };
