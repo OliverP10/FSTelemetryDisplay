@@ -32,6 +32,7 @@ export class CreateDisplayFormComponent implements OnInit {
     recivedLabels: string[] = [];
 
     constructor(private http: HttpClient, private fb: UntypedFormBuilder, private snackBar: MatSnackBar, private router: Router, private settingsService: SettingsService) {
+        this.settingsService.setTitle('Create Display');
         this.graphForm = this.fb.group({
             type: ['', [Validators.required]],
             title: ['', [Validators.required, Validators.minLength(3)]],

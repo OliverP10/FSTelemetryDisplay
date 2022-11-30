@@ -6,11 +6,11 @@
             <img src="/assets/images/logo.png" class="logo" alt="Logo">
 
             <button 
-                class="list-item" 
-                (click)="setView('dashboard')"
-                routerLink=""
+                class="list-item"
+                (click)="toggleSideBar()"
+                routerLink="/screens/dashboard"
                 mat-button>
-                
+
                 <div class="item-contents">
                     <fa-icon
                         class="fa-solid fa-plus fa-2x"
@@ -23,10 +23,10 @@
 
             <button 
                 class="list-item"
-                (click)="setView('controlsystems')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/control-systems"
                 mat-button>
-                
+
                 <div class="item-contents">
                     <fa-icon
                         class="fa-solid fa-signal-stream fa-2x"
@@ -39,8 +39,8 @@
 
             <button 
                 class="list-item"
-                (click)="setView('car')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/car"
                 mat-button>
                 
                 <div class="item-contents">
@@ -55,8 +55,8 @@
 
             <button 
                 class="list-item"
-                (click)="setView('performance')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/performance"
                 mat-button>
                 
                 <div class="item-contents">
@@ -71,8 +71,8 @@
 
             <button 
                 class="list-item"
-                (click)="setView('engine')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/engine"
                 mat-button>
                 
                 <div class="item-contents">
@@ -87,8 +87,8 @@
 
             <button 
                 class="list-item"
-                routerLink="/data-analysis"
                 (click)="toggleSideBar()"
+                routerLink="/data-analysis"
                 mat-button>
                 
                 <div class="item-contents">
@@ -103,8 +103,8 @@
 
             <button 
                 class="list-item"
-                routerLink="/communications"
                 (click)="toggleSideBar()"
+                routerLink="/communications"
                 mat-button>
                 
                 <div class="item-contents">
@@ -119,8 +119,8 @@
 
             <button 
                 class="list-item"
-                routerLink="/create-display"
                 (click)="toggleSideBar()"
+                routerLink="/create-display"
                 mat-button>
                 
                 <div class="item-contents">
@@ -136,8 +136,8 @@
 
             <button 
                 class="list-item about"
-                routerLink="/about"
                 (click)="toggleSideBar()"
+                routerLink="/about"
                 mat-button>
                 
                 <div class="item-contents">

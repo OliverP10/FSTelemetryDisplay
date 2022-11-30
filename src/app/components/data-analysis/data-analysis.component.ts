@@ -67,6 +67,7 @@ export class DataAnalysisComponent implements OnInit, AfterViewInit, OnDestroy {
     showLoadingSpinner: boolean = false;
 
     constructor(private settingsService: SettingsService, public socketService: SocketService, private dialogRef: MatDialog, private fb: FormBuilder, private dataManagerService: DataManagerService) {
+        this.settingsService.setTitle('Data Analysis');
         this.settingsService.setHeaderItems(['add']);
         this.settingsService
             .onToggleAddDispplay()

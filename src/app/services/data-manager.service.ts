@@ -27,10 +27,15 @@ export class DataManagerService {
     private rollSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     private pitchSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     private yawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    private swaySubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    private heaveSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    private surgeSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    private headingSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
     // Other
     private arduinoConnectedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     private locationSubject = new BehaviorSubject<TelemetryLocation | null>(null);
+    private gearSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
     // Arm
     private armEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
@@ -62,8 +67,13 @@ export class DataManagerService {
         this.telemetrySubjects.set('ROLL', this.rollSubject);
         this.telemetrySubjects.set('PITCH', this.pitchSubject);
         this.telemetrySubjects.set('YAW', this.yawSubject);
+        this.telemetrySubjects.set('SWAY', this.swaySubject);
+        this.telemetrySubjects.set('HEAVE', this.heaveSubject);
+        this.telemetrySubjects.set('SURGE', this.surgeSubject);
+        this.telemetrySubjects.set('HEADING', this.headingSubject);
         this.telemetrySubjects.set('ARDUINO_CONNECTED', this.arduinoConnectedSubject);
         this.telemetrySubjects.set('location', this.locationSubject);
+        this.telemetrySubjects.set('GEAR', this.gearSubject);
         this.telemetrySubjects.set('ARM_ENABLED', this.armEnabledSubject);
         this.telemetrySubjects.set('ARM_YAW', this.armYawSubject);
         this.telemetrySubjects.set('ARM_PITCH_1', this.armPitch1Subject);

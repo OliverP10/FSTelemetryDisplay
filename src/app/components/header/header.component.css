@@ -13,6 +13,7 @@
     position: sticky;
     top: 0;
     z-index: 99;
+    -webkit-user-select: none;
 }
 
 .add-button-container{
@@ -27,12 +28,23 @@
     
 }
 
+h3 {
+    margin-top: 7px;
+    margin-bottom: 0px;
+    color: gainsboro
+}
+
+.view {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .item{
     flex:none;
 }
 
 .warning-status {
-    margin-left: auto;
+    
     color: rgb(67, 79, 95);
 }
 

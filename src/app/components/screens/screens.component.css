@@ -16,7 +16,6 @@
 .drag-handle {
     width: 50px;
     height: 23px;
-    
     position: fixed;
     pointer-events: auto;
 }

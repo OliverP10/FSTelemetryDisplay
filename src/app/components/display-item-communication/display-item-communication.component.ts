@@ -6,6 +6,7 @@ import { SocketService } from 'src/app/services/socket.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DataManagerService } from 'src/app/services/data-manager.service';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
+import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
     selector: 'app-display-item-communication',
@@ -28,7 +29,7 @@ export class DisplayItemCommunicationComponent implements OnInit, OnDestroy {
         pushBtn: false
     };
 
-    constructor(private socketService: SocketService, private dataManagerService: DataManagerService) {}
+    constructor(private socketService: SocketService, private settingsService: SettingsService) {}
 
     ngOnInit(): void {}
 

@@ -152,6 +152,16 @@ export class DisplayAnalysisGraphComponent implements OnInit {
                         text: '1m'
                     },
                     {
+                        count: 5,
+                        type: 'minute',
+                        text: '5m'
+                    },
+                    {
+                        count: 10,
+                        type: 'minute',
+                        text: '10m'
+                    },
+                    {
                         type: 'all',
                         text: 'All'
                     }

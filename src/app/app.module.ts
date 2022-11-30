@@ -63,7 +63,8 @@ import { DisplayAnalysisGraphComponent } from './components/display-analysis-gra
 import { CommunicationsComponent } from './components/communications/communications.component';
 
 const appRoutes: Routes = [
-    { path: '', component: ScreensComponent },
+    { path: '', redirectTo: '/screens/dashboard', pathMatch: 'full' },
+    { path: 'screens/:screen', component: ScreensComponent },
     { path: 'about', component: AboutComponent },
     { path: 'create-display', component: CreateDisplayFormComponent },
     { path: 'data-analysis', component: DataAnalysisComponent },

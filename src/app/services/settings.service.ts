@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
+import { titleCase } from 'src/shared/utils/formatter';
+import { ScreenName } from '../Models/interfaces/Screen';
+import { HeaderItems } from '../Models/interfaces/Settings';
 
 @Injectable({
     providedIn: 'root'
@@ -8,11 +12,10 @@ import { Observable, Subject } from 'rxjs';
 export class SettingsService {
     private resizeSubject = new Subject<any>();
     private sidebarSubject = new Subject<any>();
-    private viewSubject = new Subject<any>();
     private toggleAddDisplaySubject = new Subject<any>();
     private saveScreenSubject = new Subject<any>();
 
-    private view: string = 'dashboard';
+    private title: ScreenName = '';
     private headerItems = new Set<string>();
 
     constructor() {}
@@ -33,20 +36,19 @@ export class SettingsService {
         return this.sidebarSubject.asObservable();
     }
 
-    getView(): string {
-        return this.view;
+    setTitle(title: ScreenName) {
+        this.title = title;
     }
 
-    setView(view: string): void {
-        this.view = view;
-        this.viewSubject.next(view);
+    setTitleFromName(title: string) {
+        this.title = <ScreenName>titleCase(title.replace('-', ' '));
     }
 
-    onSetView(): Observable<any> {
-        return this.viewSubject.asObservable();
+    getTitle() {
+        return this.title;
     }
 
-    setHeaderItems(items: string[]) {
+    setHeaderItems(items: HeaderItems[]) {
         this.headerItems.clear();
         items.forEach((item) => this.headerItems.add(item));
     }

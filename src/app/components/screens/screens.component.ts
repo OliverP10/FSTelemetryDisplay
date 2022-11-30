@@ -13,6 +13,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddDisplayComponent } from '../add-display/add-display.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingSatus } from 'src/app/Models/enumerations/Telemetry';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-screens',
@@ -30,11 +31,17 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private ngUnsubscribe = new Subject<void>();
 
-    constructor(private http: HttpClient, private settingsService: SettingsService, private socketService: SocketService, private snackBar: MatSnackBar, private dialogRef: MatDialog) {
-        this.settingsService
-            .onSetView()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((view) => this.loadScreen(view));
+    constructor(
+        private http: HttpClient,
+        private settingsService: SettingsService,
+        private socketService: SocketService,
+        private snackBar: MatSnackBar,
+        private dialogRef: MatDialog,
+        private activatedRoute: ActivatedRoute,
+        private router: Router
+    ) {
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.settingsService.setTitleFromName(this.activatedRoute.snapshot.params['screen']);
         this.settingsService
             .onToggleAddDispplay()
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -58,7 +65,7 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
         }).subscribe((data: any) => {
             this.displays = data.displays.display;
             this.screens = objectListToMap('name', data.screens.screen);
-            this.settingsService.setView('dashboard');
+            this.loadScreen(this.activatedRoute.snapshot.params['screen']);
         });
     }
 
@@ -73,6 +80,10 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
         this.settingsService.resizeEvent();
     }
 
+    updateScreens() {
+        //this.screens.set(this.settingsService.getView(), { name: this.settingsService.getView(), displayName: this.settingsService.getTitle(), screenItems: this.screenItems });
+    }
+
     addScreenItem(display: Display): void {
         if (typeof this.screenItems.find((si) => si.display._id === display._id) === 'undefined') {
             let screenItem: ScreenItem = {
@@ -84,14 +95,17 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
             this.screenItems.push(screenItem);
         }
         this.settingsService.resizeEvent();
+        this.updateScreens();
     }
 
     deleteScreenItem(screenItem: ScreenItem): void {
         this.screenItems = this.screenItems.filter((si) => si.display._id !== screenItem.display._id);
+        this.updateScreens();
     }
 
     drop(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.screenItems, event.previousIndex, event.currentIndex);
+        this.updateScreens();
     }
 
     moveScreenItem(moveScreenItem: MoveScreenItem): void {
@@ -102,6 +116,7 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
             this.screenItems[index] = this.screenItems[index + swapDirection];
             this.screenItems[index + swapDirection] = temp;
         }
+        this.updateScreens();
     }
 
     resizeScreenItem(resizeScreenItem: ResizeScreenItem): void {
@@ -112,6 +127,7 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
             this.screenItems[index].colSize += resizeScreenItem.change;
         }
         this.settingsService.resizeEvent();
+        this.updateScreens();
     }
 
     toggleAddDisplay(): void {
@@ -129,13 +145,13 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     saveScreen() {
-        if (this.settingsService.getView() == 'custom') {
-            return;
-        }
+        // if (this.settingsService.getView() == 'custom') {
+        //     return;
+        // }
         let screensItems = this.screenItems.map((s: ScreenItem) => ({ display: s.display._id, colSize: s.colSize, rowSize: s.rowSize, options: s.options }));
-        this.http.patch<ScreenItem[]>(this.URL + '/screen/update/' + this.settingsService.getView(), { screenItems: screensItems }).subscribe({
+        this.http.patch<ScreenItem[]>(this.URL + '/screen/update/' + this.activatedRoute.snapshot.params['screen'], { screenItems: screensItems }).subscribe({
             next: (v) => {
-                this.snackBar.open('Saved', 'Dismiss', { duration: 3000 });
+                this.snackBar.open(this.settingsService.getTitle() + ' saved', 'Dismiss', { duration: 3000 });
             },
             error: (e: HttpErrorResponse) => {
                 this.snackBar.open(e.error.message, 'Dismiss', {

@@ -12,6 +12,7 @@ export class AboutComponent implements OnInit {
     faBars = faBars;
 
     constructor(private settingsService: SettingsService) {
+        this.settingsService.setTitle('About');
         this.settingsService.setHeaderItems([]);
     }
 

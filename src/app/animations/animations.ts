@@ -6,7 +6,7 @@ export let expandContractList = trigger('expandContractList', [
         query(
             ':leave',
             animate(
-                '100ms ease-out',
+                '00ms ease-out', //100ms
                 style({
                     transform: 'scale(0)'
                 })

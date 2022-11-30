@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SettingsService } from 'src/app/services/settings.service';
 import { faHouse, faRss, faCircleInfo, faSquarePlus, faCar, faGaugeHigh, faRocket, faChartLine, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -22,7 +22,7 @@ export class AppComponent {
     title = 'UOL-Racing';
     showSidebar: boolean = false;
 
-    constructor(private settingsService: SettingsService) {
+    constructor(public settingsService: SettingsService) {
         settingsService.onToggleSidebar().subscribe((showSidebar) => {
             this.showSidebar = !this.showSidebar;
         });
@@ -30,10 +30,5 @@ export class AppComponent {
 
     toggleSideBar() {
         this.settingsService.toggleSidebar();
-    }
-
-    setView(view: string) {
-        this.settingsService.setView(view);
-        this.toggleSideBar();
     }
 }

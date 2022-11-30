@@ -28,6 +28,7 @@ export class CommunicationsComponent implements OnInit, OnDestroy {
     clientToServer: Status = Status.DISCONECTED;
 
     constructor(private settingsService: SettingsService, private socketService: SocketService) {
+        this.settingsService.setTitle('Communications');
         this.settingsService.setHeaderItems([]);
         this.socketService
             .onServerDisconect()
