@@ -1,124 +1,114 @@
 import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { faPlus, faBars, faSignal, faTriangleExclamation, faVolumeHigh, faVolumeMute, faPlug, faPlugCircleXmark, faFloppyDisk, faDownload, faTruckMonster} from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBars, faServer, faTriangleExclamation, faVolumeHigh, faVolumeMute, faPlug, faPlugCircleXmark, faFloppyDisk, faDownload, faTruckMonster } from '@fortawesome/free-solid-svg-icons';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDisplayComponent } from '../add-display/add-display.component';
-import { Display, ROOT_URL } from 'src/app/Display';
+import { Display } from 'src/app/Models/interfaces/Display';
 import { SettingsService } from 'src/app/services/settings.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AudioService } from 'src/app/services/audio.service';
+import { environment } from 'src/environments/environment';
+import { DataManagerService } from 'src/app/services/data-manager.service';
+import { Subject, takeUntil } from 'rxjs';
+import { TelemetryBoolean } from 'src/app/Models/interfaces/Telemetry';
+import { WarningService } from 'src/app/services/warning.service';
+import { MasterWarningState, WarningState } from 'src/app/Models/enumerations/Warning';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  @Input() allDisplays:Display[];
-  @Output() onAddDisplay:EventEmitter<Display> = new EventEmitter();
-  @Output() onSaveScreen:EventEmitter<Display> = new EventEmitter();
+    private ngUnsubscribe = new Subject<void>();
+    readonly URL = environment.ROOT_URL + environment.API_PORT;
 
-  faPlus=faPlus
-  faBars=faBars
-  faSignal=faSignal
-  faTriangleExclamation=faTriangleExclamation
-  faVolumeHigh=faVolumeHigh
-  faVolumeMute= faVolumeMute
-  faPlug=faPlug
-  faPlugCircleXmark=faPlugCircleXmark
-  faFloppyDisk=faFloppyDisk
-  faDownload=faDownload
-  faTruckMonster=faTruckMonster
+    faPlus = faPlus;
+    faBars = faBars;
+    faServer = faServer;
+    faTriangleExclamation = faTriangleExclamation;
+    faVolumeHigh = faVolumeHigh;
+    faVolumeMute = faVolumeMute;
+    faPlug = faPlug;
+    faPlugCircleXmark = faPlugCircleXmark;
+    faFloppyDisk = faFloppyDisk;
+    faDownload = faDownload;
+    faTruckMonster = faTruckMonster;
 
-  connectionColor:string;
-  vehicleConnectionColor:string = "red";
-  arduinoConnectionColor:string = "#30ad1a";
-  arduinoConnectionIcon:any = faPlug;
+    showAddDisplay: boolean = false;
+    warningDefaultColor = 'rgb(67, 79, 95)';
+    warningStateOn = WarningState.ON;
 
-  warningColor:string;
-  volumeIcon:any = faVolumeMute;
-  
+    masterWarningColor: string = this.warningDefaultColor;
+    masterWarningIterval: any;
+    masterWarningFlash: boolean = true;
 
-  showAddDisplay:boolean = false;
-  mute:boolean = true
+    constructor(public settingsService: SettingsService, public socketService: SocketService, public audioService: AudioService, public warningService: WarningService) {
+        this.warningService
+            .onMasterWarningState()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((state) => {
+                this.setMasterWarningState(state);
+            });
+    }
 
-  constructor(private dialogRef:MatDialog,private settingsService: SettingsService,private socketService: SocketService, private audioService: AudioService) { 
-    this.socketService.onConnect().subscribe(() => this.setConnectionStatus(true));
-    this.socketService.onDisconect().subscribe(() => this.setConnectionStatus(false));
-    this.socketService.onCurrentWarnings().subscribe((show:Boolean)=> this.setWarningStatus(show))
-    this.socketService.onArduinoConnectionStatus().subscribe((connected:any)=> this.setArduinoConnectionStatus(connected))
-    this.socketService.onVehicleConnectionStatus().subscribe((connected:any)=> this.setVehicleConnectionStatus(connected))
-  }
+    ngOnInit(): void {}
 
-  ngOnInit(): void {
-    this.setConnectionStatus(this.socketService.getConnectionSatatus())
-  }
+    toggleAddDisplay(): void {
+        this.settingsService.toggleAddDisplay();
+    }
 
-  toggleAddDisplay(): void{
-    const ref = this.dialogRef.open(AddDisplayComponent,{
-      height: '80%',
-      width: '50%',
-      data: {
-        allDisplays: this.allDisplays,
-      }
-    });
+    toggleSidebar() {
+        this.settingsService.toggleSidebar();
+    }
 
-    const sub = ref.componentInstance.onAddDisplay.subscribe((display:Display) => {
-      this.addDisplay(display)
-    });
-  }
+    saveScreen() {
+        this.settingsService.saveScreens();
+    }
 
-  addDisplay(display:Display):void {
-    this.onAddDisplay.emit(display);
-  }
+    downloadLogs() {
+        const link = document.createElement('a');
 
-  toggleSidebar() {
-    this.settingsService.toggleSidebar();
-  }
+        link.setAttribute('href', this.URL + '/logs');
+        link.setAttribute('download', 'server_session_logs.csv');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    }
 
-  saveScreen() {
-    this.onSaveScreen.emit()
-  }
+    toggleMute() {
+        this.audioService.toggleMute();
+    }
 
-  downloadLogs() {
-    const link = document.createElement('a');
-    
-    link.setAttribute('href', ROOT_URL+":3200/logs");
-    link.setAttribute('download', 'server_session_logs.csv');
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
+    acknoledgeMasterWarning() {
+        this.warningService.acknoldegeMasterWarning();
+    }
 
-  toggleMute() {
-    this.mute=!this.mute;
-    this.volumeIcon = (this.mute) ? this.faVolumeMute : this.faVolumeHigh
-    this.audioService.setMute(this.mute)
-  }
+    setMasterWarningState(state: MasterWarningState) {
+        switch (state) {
+            case MasterWarningState.OFF:
+                clearInterval(this.masterWarningIterval);
+                this.masterWarningColor = this.warningDefaultColor;
+                break;
+            case MasterWarningState.SILENCED:
+                clearInterval(this.masterWarningIterval);
+                this.masterWarningColor = 'red';
+                break;
+            case MasterWarningState.ON:
+                this.flashMasterWarning();
+                break;
+        }
+    }
 
-  setWarningStatus(show:Boolean) {
-    this.warningColor = (show) ? "yellow" : "rgb(62, 71, 90)";
-  }
-
-  setVehicleConnectionStatus(connected:boolean) {
-    this.vehicleConnectionColor = (connected) ? "#30ad1a" : "red";
-    
-  }
-
-  setArduinoConnectionStatus(connected:boolean) {
-    this.arduinoConnectionIcon = (connected) ? faPlug : faPlugCircleXmark;
-    this.arduinoConnectionColor = (connected) ? "#30ad1a" : "red";
-  }
-
-  setConnectionStatus(connected:boolean) {
-    this.connectionColor = (connected) ? "#30ad1a" : "red";
-
-    //as when lose of conection cant tell if arduino is connected
-    this.arduinoConnectionIcon = (connected) ? faPlug : faPlugCircleXmark;
-    this.arduinoConnectionColor = (connected) ? "#30ad1a" : "red";
-    
-    this.vehicleConnectionColor = "red";
-  }
-  
-
-  
+    flashMasterWarning() {
+        clearInterval(this.masterWarningIterval);
+        this.masterWarningIterval = setInterval(() => {
+            if (this.masterWarningFlash) {
+                this.masterWarningFlash = false;
+                this.masterWarningColor = 'red';
+            } else {
+                this.masterWarningFlash = true;
+                this.masterWarningColor = this.warningDefaultColor;
+            }
+        }, 500);
+    }
 }

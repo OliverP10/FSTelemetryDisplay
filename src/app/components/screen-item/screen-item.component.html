@@ -1,0 +1,124 @@
+<h3 class="title"
+    cdkDrag
+    cdkDragRootElement="app-screen-item"
+    cdkDragHandle
+    [matMenuTriggerFor]="menu">
+    {{screenItem.display.title}}
+</h3>
+
+<mat-menu #menu="matMenu" class="menu" > 
+    <ng-template matMenuContent >
+      <button mat-menu-item class="menu-delete" (click)="removeScreenItem(screenItem)"><fa-icon [icon]="faTrashCan" class="menu-icon"></fa-icon>Remove</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:1}, $event)"><fa-icon [icon]="faLeftRight" class="menu-icon"></fa-icon>Increase width</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:-1}, $event)"><fa-icon [icon]="faLeftRight" class="menu-icon"></fa-icon>Decrese width</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'vertical',change:1}, $event)"><fa-icon [icon]="faUpDown" class="menu-icon" ></fa-icon>Increase height</button>
+      <button mat-menu-item class="menu-button" (click)="resizeScreenItem({screenItem:screenItem,axis:'vertical',change:-1}, $event)"><fa-icon [icon]="faUpDown" class="menu-icon"></fa-icon>Decrese height</button>
+      <button mat-menu-item class="menu-button" (click)="moveScreenItem({screenItem: this.screenItem,direction:'left'})"><fa-icon [icon]="faAngleLeft" class="menu-icon"></fa-icon>Move left</button>
+      <button mat-menu-item class="menu-button" (click)="moveScreenItem({screenItem: this.screenItem,direction:'right'})"><fa-icon [icon]="faAngleRight" class="menu-icon"></fa-icon>Move right</button>
+    </ng-template> 
+</mat-menu>
+
+<div [ngSwitch]="screenItem.display.type" class="container" #container>
+    <ng-template ngSwitchCase="graph">
+        <app-display-item-graph 
+        [screenItem]="screenItem"
+        ></app-display-item-graph>
+    </ng-template>
+
+    <ng-template ngSwitchCase="radial">
+        <app-display-item-radial 
+        [screenItem]="screenItem"
+        ></app-display-item-radial>
+    </ng-template>
+
+    <ng-template ngSwitchCase="linear">
+        <app-display-item-linear 
+        [screenItem]="screenItem"
+        ></app-display-item-linear>
+    </ng-template>
+
+    <ng-template ngSwitchCase="map">
+        <app-display-item-map 
+        [screenItem]="screenItem"
+        ></app-display-item-map>
+    </ng-template>
+
+    <ng-template ngSwitchCase="warnings">
+        <app-display-item-warnings 
+        [screenItem]="screenItem"
+        ></app-display-item-warnings>
+    </ng-template>
+
+    <ng-template ngSwitchCase="camera">
+        <app-display-item-camera 
+        [screenItem]="screenItem"
+        ></app-display-item-camera>
+    </ng-template>
+
+    <ng-template ngSwitchCase="communication">
+        <app-display-item-communication 
+        [screenItem]="screenItem"
+        ></app-display-item-communication>
+    </ng-template>
+
+    <ng-template ngSwitchCase="arm">
+        <app-display-item-arm 
+        [screenItem]="screenItem"
+        ></app-display-item-arm>
+    </ng-template>
+
+    <ng-template ngSwitchCase="data">
+        <app-display-item-data 
+        [screenItem]="screenItem"
+        ></app-display-item-data>
+    </ng-template>
+
+    <ng-template ngSwitchCase="movement">
+        <app-display-item-movement 
+        [screenItem]="screenItem"
+        ></app-display-item-movement>
+    </ng-template>
+
+    <ng-template ngSwitchCase="arm-modes">
+        <app-display-item-arm-modes 
+        [screenItem]="screenItem"
+        ></app-display-item-arm-modes>
+    </ng-template>
+
+    <ng-template ngSwitchCase="claw">
+        <app-display-item-claw 
+        [screenItem]="screenItem"
+        ></app-display-item-claw>
+    </ng-template>
+
+    <ng-template ngSwitchCase="console">
+        <app-display-item-console 
+        [screenItem]="screenItem"
+        ></app-display-item-console>
+    </ng-template>
+
+    <ng-template ngSwitchCase="graphDepricated">
+        <app-display-graph 
+        [screenItem]="screenItem"
+        ></app-display-graph>
+    </ng-template>
+
+    <ng-template ngSwitchCase="events">
+        <app-display-events 
+        [screenItem]="screenItem"
+        ></app-display-events>
+    </ng-template>
+
+    <ng-template ngSwitchCase="analysis-graph">
+        <app-display-analysis-graph 
+            [screenItem]="screenItem"
+        ></app-display-analysis-graph>
+    </ng-template>
+</div>
+
+
+
+
+
+
+    

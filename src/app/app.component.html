@@ -1,15 +1,16 @@
 <mat-sidenav-container>
     <mat-sidenav [(opened)]="showSidebar">
-        <img src="/assets/logo.png" class="logo" alt="Logo">
 
         <div class="nav-item-list">
 
+            <img src="/assets/images/logo.png" class="logo" alt="Logo">
+
             <button 
-                class="list-item" 
-                (click)="setView('dashboard')"
-                routerLink=""
+                class="list-item"
+                (click)="toggleSideBar()"
+                routerLink="/screens/dashboard"
                 mat-button>
-                
+
                 <div class="item-contents">
                     <fa-icon
                         class="fa-solid fa-plus fa-2x"
@@ -22,10 +23,10 @@
 
             <button 
                 class="list-item"
-                (click)="setView('controlsystems')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/control-systems"
                 mat-button>
-                
+
                 <div class="item-contents">
                     <fa-icon
                         class="fa-solid fa-signal-stream fa-2x"
@@ -38,8 +39,8 @@
 
             <button 
                 class="list-item"
-                (click)="setView('car')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/car"
                 mat-button>
                 
                 <div class="item-contents">
@@ -54,8 +55,8 @@
 
             <button 
                 class="list-item"
-                (click)="setView('performance')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/performance"
                 mat-button>
                 
                 <div class="item-contents">
@@ -70,8 +71,8 @@
 
             <button 
                 class="list-item"
-                (click)="setView('engine')"
-                routerLink=""
+                (click)="toggleSideBar()"
+                routerLink="/screens/engine"
                 mat-button>
                 
                 <div class="item-contents">
@@ -86,8 +87,40 @@
 
             <button 
                 class="list-item"
-                routerLink="/create-display"
                 (click)="toggleSideBar()"
+                routerLink="/data-analysis"
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-char-line fa-2x"
+                        [icon]="faChartLine"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Data Analysis
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
+                (click)="toggleSideBar()"
+                routerLink="/communications"
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-char-line fa-2x"
+                        [icon]="faSatelliteDish"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Communications
+                </div>
+            </button>
+
+            <button 
+                class="list-item"
+                (click)="toggleSideBar()"
+                routerLink="/create-display"
                 mat-button>
                 
                 <div class="item-contents">
@@ -100,10 +133,11 @@
                 </div>
             </button>
 
+
             <button 
                 class="list-item about"
-                routerLink="/about"
                 (click)="toggleSideBar()"
+                routerLink="/about"
                 mat-button>
                 
                 <div class="item-contents">
@@ -122,6 +156,7 @@
 
     <mat-sidenav-content>
         <div class="container">
+            <app-header></app-header>
             <router-outlet></router-outlet>
         </div>
     </mat-sidenav-content>

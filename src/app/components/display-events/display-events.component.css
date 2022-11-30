@@ -1,0 +1,132 @@
+.event-table {
+    overflow-y: scroll;
+    max-height: calc(100% - 19px);
+    margin-top: 15px;
+}
+
+table {
+    width: 97%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(55, 63, 82);
+}
+
+table.mat-table {
+    border-spacing: 0 4px;
+}
+
+th {
+    z-index: 5;
+    text-align: left;
+    font-weight: bold;
+    color: rgb(207, 207, 207);
+    height:5px;
+    padding-left: 10px !important;
+}
+
+.mat-header-row{
+}
+
+tr.mat-header-row{
+    height: 20px !important;
+}
+
+tr.mat-row {
+    height: 38px
+}
+
+td {
+    background-color:rgb(98, 108, 132);
+}
+
+td.mat-cell:last-of-type {
+    
+}
+
+td.mat-cell:first-of-type {
+
+}
+
+td:first-child { 
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+td:last-child { 
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px; 
+}
+
+.event-symbol {
+
+}
+
+.mat-cell {
+    padding-left: 10px !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 2px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    
+    background: rgb(73, 80, 96); 
+    border-radius: 2px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(82, 90, 108); 
+}
+
+::ng-deep .mat-paginator {
+    color: black;
+    background-color: transparent;
+}
+
+.mode-btn {
+    margin-left: calc(100% - 250px);
+    position:absolute;
+    top:0;
+    height: 25px;
+    background-color: rgb(98, 108, 132);
+    font-size:11px !important;
+    line-height: 10px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.search-box {
+    margin-left: calc(100% - 150px);
+    position:absolute;
+    top:0;
+    width: 130px;
+    font-size: 10px;
+}
+
+.loading-spinner {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

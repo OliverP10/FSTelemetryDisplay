@@ -1,0 +1,148 @@
+<div class="container">
+
+    <img src="/assets/images/mars-rover.png" class="rover">
+
+    <div [ngSwitch]="wifiToRover">
+        <ng-template [ngSwitchCase]="0">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-rover-primary"
+                [icon]="faXmark"
+                [ngStyle]="{ 'color':'red'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-rover-primary" [@leftToRightGrow]></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-primary-rover"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="1">
+            <mat-progress-bar mode="buffer" class="connection-rover-primary"></mat-progress-bar>
+            <mat-progress-bar mode="buffer" class="connection-primary-rover"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="2">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-rover-primary"
+                [icon]="faQuestion"
+                [ngStyle]="{ 'color':'yellow'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-rover-primary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-primary-rover"></mat-progress-bar>
+        </ng-template>
+    </div>
+
+    <div [ngSwitch]="rfToRover">
+        <ng-template [ngSwitchCase]="0">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-rover-secondary"
+                [icon]="faXmark"
+                [ngStyle]="{ 'color':'red'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-rover-secondary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-secondary-rover"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="1">
+            <mat-progress-bar mode="buffer" class="connection-rover-secondary"></mat-progress-bar>
+            <mat-progress-bar mode="buffer" class="connection-secondary-rover"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="2">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-rover-secondary"
+                [icon]="faQuestion"
+                [ngStyle]="{ 'color':'yellow'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-rover-secondary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-secondary-rover"></mat-progress-bar>
+        </ng-template>
+    </div>
+        
+    
+    
+    <br>
+    <img src="/assets/images/satellite-dish.png" class="satellite-dish-primary">
+    <h3 class="satellite-dish-primary-text">WiFi</h3>
+    <img src="/assets/images/satellite-dish.png" class="satellite-dish-secondary">
+    <h3 class="satellite-dish-secondary-text">RF</h3>
+    
+    <br>
+
+    <div [ngSwitch]="wifiToServer">
+        <ng-template [ngSwitchCase]="0">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-server-primary"
+                [icon]="faXmark"
+                [ngStyle]="{ 'color':'red'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-server-primary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-primary-server"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="1">
+            <mat-progress-bar mode="buffer" class="connection-server-primary"></mat-progress-bar>
+            <mat-progress-bar mode="buffer" class="connection-primary-server"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="2">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-server-primary"
+                [icon]="faQuestion"
+                [ngStyle]="{ 'color':'yellow'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-server-primary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-primary-server"></mat-progress-bar>
+        </ng-template>
+    </div>
+
+    <div [ngSwitch]="rfToServer">
+        <ng-template [ngSwitchCase]="0">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-server-secondary"
+                [icon]="faXmark"
+                [ngStyle]="{ 'color':'red'}">
+                <mat-progress-bar mode="determinate" value="0" class="connection-server-secondary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-secondary-server"></mat-progress-bar>
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-server-secondary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-secondary-server"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="1">
+            <mat-progress-bar mode="buffer" class="connection-server-secondary"></mat-progress-bar>
+            <mat-progress-bar mode="buffer" class="connection-secondary-server"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="2">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-server-secondary"
+                [icon]="faQuestion"
+                [ngStyle]="{ 'color':'yellow'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-server-secondary"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-secondary-server"></mat-progress-bar>
+        </ng-template>
+    </div>
+
+    
+
+    <img src="/assets/images/server.png" class="server">
+    <br>
+    <div [ngSwitch]="clientToServer">
+        <ng-template [ngSwitchCase]="0">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-server-client"
+                [icon]="faXmark"
+                [ngStyle]="{ 'color':'red'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-server-client"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-client-server"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="1">
+            <mat-progress-bar mode="buffer" class="connection-server-client"></mat-progress-bar>
+            <mat-progress-bar mode="buffer" class="connection-client-server"></mat-progress-bar>
+        </ng-template>
+        <ng-template [ngSwitchCase]="2">
+            <fa-icon
+                class="fa-solid fa-2x disconnection-server-client"
+                [icon]="faQuestion"
+                [ngStyle]="{ 'color':'yellow'}">
+            </fa-icon>
+            <mat-progress-bar mode="determinate" value="0" class="connection-server-client"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" value="0" class="connection-client-server"></mat-progress-bar>
+        </ng-template>
+    </div>
+    <img src="/assets/images/internet.png" class="client">
+
+    
+</div>

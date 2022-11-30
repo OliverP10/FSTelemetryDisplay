@@ -104,5 +104,7 @@
       }
     }
   },
-  "defaultProject": "UOL-Racing"
+  "cli": {
+    "analytics": false
+  }
 }

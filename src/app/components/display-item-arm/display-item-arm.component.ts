@@ -1,115 +1,168 @@
 import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Display } from 'src/app/Display';
-import { faLock,faLockOpen } from '@fortawesome/free-solid-svg-icons';
+import { Display } from 'src/app/Models/interfaces/Display';
+import { faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import { SettingsService } from 'src/app/services/settings.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SocketService } from 'src/app/services/socket.service';
+import { DataManagerService } from 'src/app/services/data-manager.service';
+import { TelemetryBoolean, TelemetryNumber } from 'src/app/Models/interfaces/Telemetry';
+import { Arm } from 'src/app/Models/interfaces/Arm';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 
 @Component({
-  selector: 'app-display-item-arm',
-  templateUrl: './display-item-arm.component.html',
-  styleUrls: ['./display-item-arm.component.css']
+    selector: 'app-display-item-arm',
+    templateUrl: './display-item-arm.component.html',
+    styleUrls: ['./display-item-arm.component.css']
 })
-export class DisplayItemArmComponent implements OnInit, OnDestroy{
-  faLock=faLock
-  faLockOpen=faLockOpen
+export class DisplayItemArmComponent implements OnInit, OnDestroy {
+    @ViewChild('container') containerElement: ElementRef;
+    @Input() screenItem: ScreenItem;
 
-  @ViewChild('container') containerElement: ElementRef;
-  @Input() display: Display;
+    private ngUnsubscribe = new Subject<void>();
 
-  private ngUnsubscribe = new Subject<void>();
+    faLock = faLock;
+    faLockOpen = faLockOpen;
 
-  styleObj = {width:'400'};
-  armControlsEnabled: boolean = true;
-  armed:boolean = false;
-  manualOverride: boolean = false;
+    styleObj = { width: '400' };
+    armControlsEnabled: boolean = true;
+    armed: boolean = false;
+    manualOverride: boolean = false;
 
-  arm = {
-    yaw: {
-      value: 0,
-      min: 0,
-      max: 270,
-    },
-    pitch1: {
-      value: 0,
-      min: 0,
-      max: 180,
-    },
-    pitch2: {
-      value: 0,
-      min: 0,
-      max: 180,
-    },
-    claw: {
-      value: 0,
-      min: 0,
-      max: 180,
-    },
-  }
+    arm: Arm = {
+        yaw: {
+            value: 0,
+            min: 0,
+            max: 270
+        },
+        pitch1: {
+            value: 0,
+            min: 0,
+            max: 180
+        },
+        pitch2: {
+            value: 0,
+            min: 0,
+            max: 180
+        },
+        claw: {
+            value: 0,
+            min: 0,
+            max: 180
+        }
+    };
 
-  constructor(private settingService:SettingsService, private socketService: SocketService) {
-    socketService.onLiveData().pipe(takeUntil(this.ngUnsubscribe)).subscribe((data) => {this.updateArmStatus(data)})
-    this.settingService.onResizeEvent().pipe(takeUntil(this.ngUnsubscribe)).subscribe((data:any) => this.resizeSlider());
-  }
-
-  ngOnInit(): void {
-  }
-
-  updateArmStatus(data:any): void {
-    
-    if(data.hasOwnProperty('arm_enabled')){
-      this.armed = (data['arm_enabled']) ? true : false
+    constructor(private settingService: SettingsService, private socketService: SocketService, private dataManagerService: DataManagerService) {
+        this.settingService
+            .onResizeEvent()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((data: any) => this.resizeSlider());
+        this.dataManagerService
+            .onArmEnabled()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmEnabled(telemetry);
+            });
+        this.dataManagerService
+            .onArmManuleOverided()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmManuleOverideEnabled(telemetry);
+            });
+        this.dataManagerService
+            .onArmYaw()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmYaw(telemetry);
+            });
+        this.dataManagerService
+            .onArmPitch1()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmPitch1(telemetry);
+            });
+        this.dataManagerService
+            .onarmPitch2()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmPitch2(telemetry);
+            });
+        this.dataManagerService
+            .onArmClaw()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmClaw(telemetry);
+            });
     }
-    if(data.hasOwnProperty('arm_manual_override')){
-      this.manualOverride = data['arm_manual_override']
+
+    ngOnInit(): void {}
+
+    private updateArmEnabled(telemetry: TelemetryBoolean | null) {
+        if (telemetry != null) {
+            this.armed = telemetry.value;
+        }
     }
-    if(data.hasOwnProperty('arm_yaw')){
-      this.arm.yaw.value = data['arm_yaw']
+
+    private updateArmManuleOverideEnabled(telemetry: TelemetryBoolean | null) {
+        if (telemetry != null) {
+            this.manualOverride = telemetry.value;
+        }
     }
-    if(data.hasOwnProperty('arm_pitch1')){
-      this.arm.pitch1.value = data['arm_pitch1']
+
+    private updateArmYaw(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.arm.yaw.value = telemetry.value;
+        }
     }
-    if(data.hasOwnProperty('arm_pitch2')){
-      this.arm.pitch2.value = data['arm_pitch2']
+
+    private updateArmPitch1(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.arm.pitch1.value = telemetry.value;
+        }
     }
-    if(data.hasOwnProperty('arm_claw')){
-      this.arm.claw.value = data['arm_claw']
+
+    private updateArmPitch2(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.arm.pitch2.value = telemetry.value;
+        }
     }
-    
-  }
 
-  change(event: any): any{
-    return event.value;
-  }
-
-  update(): void {  //do validation on inputs when they are known
-    if(this.armControlsEnabled){
-      let values:any = {}
-      for(let key in this.arm) {
-        values["arm_"+key] = this.arm[key as keyof typeof this.arm].value
-      }
-      this.socketService.sendControlFrame(values)
+    private updateArmClaw(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.arm.claw.value = telemetry.value;
+        }
     }
-  }
 
-  toggleArmed(): void {
-    this.armed= !this.armed
-    this.socketService.sendControlFrame({arm_armed: this.armed})
-  }
+    change(event: any): any {
+        return event.value;
+    }
 
-  toggleManualOverride(): void {
-    this.manualOverride = !this.manualOverride
-    this.socketService.sendControlFrame({arm_override: this.manualOverride})
-  }
+    update(): void {
+        //do validation on inputs when they are known
+        if (this.armControlsEnabled) {
+            let values: any = {};
+            for (let key in this.arm) {
+                values['arm_' + key] = this.arm[key as keyof typeof this.arm].value;
+            }
+            this.socketService.sendControlFrame(values);
+        }
+    }
 
-  resizeSlider(): void {
-    this.styleObj['width'] = this.containerElement.nativeElement.offsetWidth-200+"px"
-  }
+    toggleArmed(): void {
+        this.armed = !this.armed;
+        this.socketService.sendControlFrame({ arm_armed: this.armed });
+    }
 
-  ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+    toggleManualOverride(): void {
+        this.manualOverride = !this.manualOverride;
+        this.socketService.sendControlFrame({ arm_override: this.manualOverride });
+    }
 
+    resizeSlider(): void {
+        this.styleObj['width'] = this.containerElement.nativeElement.offsetWidth - 200 + 'px';
+    }
 
+    ngOnDestroy(): void {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+    }
 }

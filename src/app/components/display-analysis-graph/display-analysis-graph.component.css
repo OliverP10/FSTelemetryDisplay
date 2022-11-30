@@ -1,0 +1,12 @@
+.display{
+    height: calc(100%);;
+}
+
+.label-selector{
+    margin-left: calc(100% - 370px);
+    position:absolute;
+    top:0;
+    width: 130px;
+    font-size: 13px;
+    z-index: 5;
+}

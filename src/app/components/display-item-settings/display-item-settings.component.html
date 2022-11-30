@@ -2,19 +2,19 @@
 
     <div class="settings-row-one">
         <fa-icon 
-            (click)="moveDisplay('left')"
+            (click)="moveScreenItem('left')"
             class="btn-move-display"
             [icon]="faAngleLeft">
         </fa-icon>
 
         <fa-icon 
-            (click)="removeDisplay(display)"
+            (click)="removeScreenItem(screenItem)"
             class="btn-remove"
             [icon]="faTimes">
         </fa-icon>
 
         <fa-icon 
-            (click)="moveDisplay('right')"
+            (click)="moveScreenItem('right')"
             class="btn-move-display"
             [icon]="faAngleRight">
         </fa-icon>
@@ -22,7 +22,7 @@
 
     <div class="settings-row-two">
         <fa-icon
-            (click)="resizeDisplay({display:display,axis:'horizontal',change:-1})"
+            (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:-1})"
             class="btn-left-right-minus"
             [icon]="faMinus">
         </fa-icon>
@@ -33,14 +33,14 @@
         </fa-icon>
 
         <fa-icon
-            (click)="resizeDisplay({display:display,axis:'horizontal',change:1})"
+            (click)="resizeScreenItem({screenItem:screenItem,axis:'horizontal',change:1})"
             class="btn-left-right-plus"
             [icon]="faPlus">
         </fa-icon>
 
 
         <fa-icon
-            (click)="resizeDisplay({display:display,axis:'vertical',change:-1})"
+            (click)="resizeScreenItem({screenItem:screenItem,axis:'vertical',change:-1})"
             class="btn-up-down-minus"
             [icon]="faMinus">
         </fa-icon>
@@ -51,13 +51,13 @@
         </fa-icon>
 
         <fa-icon
-            (click)="resizeDisplay({display:display,axis:'vertical',change:1})"
+            (click)="resizeScreenItem({screenItem:screenItem,axis:'vertical',change:1})"
             class="btn-up-down-plus"
             [icon]="faPlus">
         </fa-icon>
     </div>
 
-    <div class="settings-row-three" *ngIf="display.type=='graph'">
+    <div class="settings-row-three" *ngIf="screenItem.display.type=='graph'">
         
     </div>
 

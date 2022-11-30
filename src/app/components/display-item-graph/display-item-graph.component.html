@@ -1,23 +1,32 @@
 <div class="display" #container>
     <!-- bit scuffed implementaition interms of location - fix -->
-    <input class="graph-controller" [ngModel]="viewSize" (input)="setViewSize($event)" type="number" max=185 min=1> 
     
+    <fa-icon
+        class="graph-controller"
+        [icon]="faGear"
+        [matMenuTriggerFor]="menu"
+        [ngStyle]="{cursor:'pointer'}">
+    </fa-icon>
+
+    <mat-menu #menu="matMenu" class="menu">
+        <ng-template matMenuContent (click)="stopPropagation($event)">
+            <mat-form-field class="form" appearance="fill" (click)="stopPropagation($event)">
+                <mat-label>View Size (mili seconds)</mat-label>
+                <input matInput type="number" step="1000" [(ngModel)]="graphOptions.viewSize" autocomplete="off" placeholder="View Size" (click)="stopPropagation($event)" (input)="updateViewSize($event)">
+            </mat-form-field>
+            <mat-form-field class="form" appearance="fill" (click)="stopPropagation($event)">
+                <mat-label>Max Points</mat-label>
+                <input matInput type="number" step="5" [(ngModel)]="graphOptions.maxPoints" autocomplete="off" placeholder="View Size" (click)="stopPropagation($event)" (input)="updateMaxPoints($event)">
+            </mat-form-field>
+        </ng-template>
+    </mat-menu>
+
     <div #container class="graph-container">
         <canvas #chartCanvas></canvas>
     </div>
 
-    <mat-slider 
-        #slider
-        class="slider"
-        [thumbLabel]="true"
-        [ngStyle]="styleObj"
-        [min]="0"
-        [max]="(carData !== undefined) ? carData[timeLabel]?.length : 1"
-        (input)="setStartFrom($event)"
-        [(ngModel)]="startFrom">
-    </mat-slider>
-
     <fa-icon
+        class="play-btn"
         (click)="toggleShowLive()"
         [ngStyle]="{color:'rgba(234, 184, 3)', cursor:'pointer'}"
         [icon]="showLiveIcon">

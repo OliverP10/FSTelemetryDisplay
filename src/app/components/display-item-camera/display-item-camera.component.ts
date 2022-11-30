@@ -1,27 +1,25 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Display } from 'src/app/Display';
-import { ROOT_URL } from 'src/app/Display';
+import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 
 @Component({
-  selector: 'app-display-item-camera',
-  templateUrl: './display-item-camera.component.html',
-  styleUrls: ['./display-item-camera.component.css']
+    selector: 'app-display-item-camera',
+    templateUrl: './display-item-camera.component.html',
+    styleUrls: ['./display-item-camera.component.css']
 })
 export class DisplayItemCameraComponent implements OnInit {
-  @Input() display: Display;
+    @Input() screenItem: ScreenItem;
 
-  url: string;
-  loadingError: boolean;
+    url: string;
+    loadingError: boolean;
 
-  constructor() { }
+    constructor() {}
 
-  ngOnInit(): void {
-    this.loadingError=false;
-    this.url="http://"+this.display.options.cameraIP
-  }
+    ngOnInit(): void {
+        this.loadingError = false;
+        this.url = 'http://' + this.screenItem.display.options.cameraIP;
+    }
 
-  imgError() {
-    this.loadingError = true
-  }
-
+    imgError() {
+        this.loadingError = true;
+    }
 }
