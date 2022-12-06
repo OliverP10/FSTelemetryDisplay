@@ -47,8 +47,9 @@ export class DisplayItemRadialComponent implements OnInit, AfterViewInit, OnDest
         needleCircleSize: 7,
         needleCircleOuter: true,
         needleCircleInner: false,
-        animationDuration: 60,
-        animationRule: 'linear'
+        animationDuration: 0, //60
+        animationRule: 'linear',
+        animation: false
     };
 
     constructor(private dataManagerService: DataManagerService, private settingsService: SettingsService) {}

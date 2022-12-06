@@ -218,8 +218,26 @@ export class DataManagerService {
             case 'YAW':
                 this.yawSubject.next(telemetry);
                 break;
+            case 'HEAVE':
+                this.heaveSubject.next(telemetry);
+                break;
+            case 'SURGE':
+                this.surgeSubject.next(telemetry);
+                break;
+            case 'SWAY':
+                this.swaySubject.next(telemetry);
+                break;
+            case 'HEADING':
+                this.headingSubject.next(telemetry);
+                break;
+            case 'ARDUINO_CONNECTED':
+                this.arduinoConnectedSubject.next(telemetry);
+                break;
             case 'location':
                 this.locationSubject.next(telemetry);
+                break;
+            case 'GEAR':
+                this.gearSubject.next(telemetry);
                 break;
             case 'ARM_ENABLED':
                 this.armEnabledSubject.next(telemetry);
@@ -235,6 +253,9 @@ export class DataManagerService {
                 break;
             case 'ARM_CLAW':
                 this.armClawSubject.next(telemetry);
+                break;
+            case 'CLAW_STATUS':
+                this.clawStatusSubject.next(telemetry);
                 break;
             case 'CLAW_ENABLED':
                 this.clawEnabledSubject.next(telemetry);

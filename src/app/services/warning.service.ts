@@ -24,6 +24,8 @@ export class WarningService {
 
     public decodeEvent(event: Event) {
         switch (event.metadata.type) {
+            case 'info':
+                break;
             case 'warning':
                 this.warningSubject.next(event);
                 this.playWarning(event);
