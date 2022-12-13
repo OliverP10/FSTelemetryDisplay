@@ -61,12 +61,14 @@ import { DisplayEventsComponent } from './components/display-events/display-even
 import { DataAnalysisComponent } from './components/data-analysis/data-analysis.component';
 import { DisplayAnalysisGraphComponent } from './components/display-analysis-graph/display-analysis-graph.component';
 import { CommunicationsComponent } from './components/communications/communications.component';
+import { CreateDisplayComponent } from './components/create-display/create-display.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/screens/dashboard', pathMatch: 'full' },
     { path: 'screens/:screen', component: ScreensComponent },
     { path: 'about', component: AboutComponent },
     { path: 'create-display', component: CreateDisplayFormComponent },
+    { path: 'create-display-new', component: CreateDisplayComponent },
     { path: 'data-analysis', component: DataAnalysisComponent },
     { path: 'communications', component: CommunicationsComponent }
 ];
@@ -105,7 +107,8 @@ const config: SocketIoConfig = {
         DisplayEventsComponent,
         DataAnalysisComponent,
         DisplayAnalysisGraphComponent,
-        CommunicationsComponent
+        CommunicationsComponent,
+        CreateDisplayComponent
     ],
     imports: [
         BrowserModule,

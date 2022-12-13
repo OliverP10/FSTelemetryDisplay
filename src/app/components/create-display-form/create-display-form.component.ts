@@ -67,6 +67,7 @@ export class CreateDisplayFormComponent implements OnInit {
     }
 
     getDataLabels() {
+        return; //needs updating
         this.http.get<Post>(this.URL + '/datalabels').subscribe((data: Post) => {
             this.showDatalabels(data.datalabels);
         });

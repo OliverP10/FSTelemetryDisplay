@@ -133,6 +133,21 @@
                 </div>
             </button>
 
+            <button 
+                class="list-item"
+                (click)="toggleSideBar()"
+                routerLink="/create-display-new"
+                mat-button>
+                
+                <div class="item-contents">
+                    <fa-icon
+                        class="fa-solid fa-signal-stream fa-2x"
+                        [icon]="faSquarePlus"
+                        [ngStyle]="{ 'color':'rgb(230, 86, 46)'}">
+                    </fa-icon>
+                    Create display new
+                </div>
+            </button>
 
             <button 
                 class="list-item about"
