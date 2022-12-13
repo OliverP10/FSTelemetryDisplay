@@ -19,7 +19,7 @@ export class CreateDisplayFormComponent implements OnInit {
     faCirclePlus = faCirclePlus;
     faBars = faBars;
 
-    readonly URL = environment.ROOT_URL + environment.API_PORT;
+    readonly URL = environment.ROOT_URL + ':4000';
     graphForm: UntypedFormGroup;
     graphDatalabels: UntypedFormArray = new UntypedFormArray([]);
     guageForm: UntypedFormGroup;
@@ -101,6 +101,7 @@ export class CreateDisplayFormComponent implements OnInit {
     }
 
     async submitFormGraph() {
+        console.log(this.graphForm.value);
         return this.http.post<any>(this.URL + '/create-display-graph', this.graphForm.value).subscribe({
             next: (v) => this.sucessResponseHandler(v),
             error: (e) => this.errorResponseHandler(e)
