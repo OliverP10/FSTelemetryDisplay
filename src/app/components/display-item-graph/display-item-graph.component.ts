@@ -108,8 +108,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             .onTelemetryReady()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
-                this.loadTelemetry(telemetry);
-                this.subcribeToTelemLabels();
+                this.setup(telemetry);
             });
     }
 
@@ -119,6 +118,18 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             this.loadTelemetry(this.dataManagerService.telemetry);
             this.subcribeToTelemLabels();
         }
+    }
+
+    setup(telemetry: TelemetryAny[]) {
+        this.loadTelemetry(telemetry);
+        this.subcribeToTelemLabels();
+
+        this.dataManagerService
+            .onTelemetryComplete()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(() => {
+                this.chart.update();
+            });
     }
 
     createChart() {
@@ -207,7 +218,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             this.chart.options.scales!.xAxes![0].ticks!.min! = this.calcMin();
         }
 
-        this.chart.update();
+        // this.chart.update();
     }
 
     calcMin() {
