@@ -10,6 +10,7 @@ import { WarningService } from './warning.service';
 })
 export class DataManagerService {
     private telemetrySubject = new Subject<TelemetryAny>();
+    private telemetryCompleteSubject = new Subject<null>();
     private eventSubject = new Subject<Event[]>();
     private logsSubject = new Subject<string>();
 
@@ -109,6 +110,10 @@ export class DataManagerService {
         return this.telemetrySubject.asObservable();
     }
 
+    public onTelemetryComplete(): Observable<null> {
+        return this.telemetryCompleteSubject.asObservable();
+    }
+
     public onEvents(): Observable<Event[]> {
         return this.eventSubject.asObservable();
     }
@@ -147,6 +152,7 @@ export class DataManagerService {
             this.telemetrySubject.next(telem);
             this.decodeTelemetry(telem);
         }
+        this.telemetryCompleteSubject.next(null);
     }
 
     public addEvents(events: Event[]) {
