@@ -117,6 +117,13 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
         if (this.dataManagerService.getTelemetryReady()) {
             this.loadTelemetry(this.dataManagerService.telemetry);
             this.subcribeToTelemLabels();
+            
+            this.dataManagerService
+            .onTelemetryComplete()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(() => {
+                this.chart.update();
+            });
         }
     }
 
