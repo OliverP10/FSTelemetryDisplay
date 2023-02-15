@@ -29,6 +29,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     faPause = faPause;
     private ngUnsubscribe = new Subject<void>();
     private ngUnsubscribeTelem = new Subject<void>();
+    updateChartOnNextComplete:boolean = false;
 
     chartColors = [
         'rgba(234, 184, 3)',
@@ -122,7 +123,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             .onTelemetryComplete()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(() => {
-                this.chart.update();
+                this.updateChart()
             });
         }
     }
@@ -135,7 +136,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             .onTelemetryComplete()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(() => {
-                this.chart.update();
+                this.updateChart()
             });
     }
 
@@ -224,8 +225,15 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             this.chart.options.scales!.xAxes![0].ticks!.max! = this.findMax();
             this.chart.options.scales!.xAxes![0].ticks!.min! = this.calcMin();
         }
-
+        this.updateChartOnNextComplete = true;   
         // this.chart.update();
+    }
+
+    updateChart() {
+        if(this.updateChartOnNextComplete) {
+            this.chart.update();
+            this.updateChartOnNextComplete = false;
+        }
     }
 
     calcMin() {
