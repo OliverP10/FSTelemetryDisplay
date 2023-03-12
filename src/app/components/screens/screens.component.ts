@@ -57,7 +57,7 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.settingsService.setHeaderItems(['add', 'save']);
+        this.settingsService.setHeaderItems(['add', 'save', 'keyboard', 'connectionRoute']);
 
         forkJoin({
             displays: this.http.get<Display[]>(this.URL + '/display/get'),
@@ -169,7 +169,8 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     @HostListener('document:keydown', ['$event'])
     handleKeyboardDownEvent(event: KeyboardEvent) {
         if (!this.key_presses.has(event.key)) {
-            this.socketService.sendKeyFrame(event.key + '_d');
+            console.log();
+            this.socketService.sendControlFrame({ '102': event.key.charCodeAt(0) });
             this.key_presses.add(event.key);
         }
     }
@@ -177,7 +178,7 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     @HostListener('document:keyup', ['$event'])
     handleKeyboardUpEvent(event: KeyboardEvent) {
         if (this.key_presses.has(event.key)) {
-            this.socketService.sendKeyFrame(event.key + '_u');
+            this.socketService.sendControlFrame({ '103': event.key.charCodeAt(0) });
             this.key_presses.delete(event.key);
         }
     }

@@ -1,5 +1,20 @@
 import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { faPlus, faBars, faServer, faTriangleExclamation, faVolumeHigh, faVolumeMute, faPlug, faPlugCircleXmark, faFloppyDisk, faDownload, faTruckMonster } from '@fortawesome/free-solid-svg-icons';
+import {
+    faPlus,
+    faBars,
+    faServer,
+    faTriangleExclamation,
+    faVolumeHigh,
+    faVolumeMute,
+    faPlug,
+    faPlugCircleXmark,
+    faFloppyDisk,
+    faDownload,
+    faTruckMonster,
+    faKeyboard,
+    faWifi,
+    faTowerBroadcast
+} from '@fortawesome/free-solid-svg-icons';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDisplayComponent } from '../add-display/add-display.component';
 import { Display } from 'src/app/Models/interfaces/Display';
@@ -33,6 +48,9 @@ export class HeaderComponent implements OnInit {
     faFloppyDisk = faFloppyDisk;
     faDownload = faDownload;
     faTruckMonster = faTruckMonster;
+    faKeyboard = faKeyboard;
+    faWifi = faWifi;
+    faTowerBroadcast = faTowerBroadcast;
 
     showAddDisplay: boolean = false;
     warningDefaultColor = 'rgb(67, 79, 95)';

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { titleCase } from 'src/shared/utils/formatter';
 import { ScreenName } from '../Models/interfaces/Screen';
-import { HeaderItems } from '../Models/interfaces/Settings';
+import { ConnectionRoute, HeaderItems } from '../Models/interfaces/Settings';
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +17,7 @@ export class SettingsService {
 
     private title: ScreenName = '';
     private headerItems = new Set<string>();
+    private keyboardEnabled = false;
 
     constructor() {}
 
@@ -46,6 +47,14 @@ export class SettingsService {
 
     getTitle() {
         return this.title;
+    }
+
+    setKeyboard(enabled: boolean) {
+        this.keyboardEnabled = enabled;
+    }
+
+    isKeyboardEnabled() {
+        return this.keyboardEnabled;
     }
 
     setHeaderItems(items: HeaderItems[]) {

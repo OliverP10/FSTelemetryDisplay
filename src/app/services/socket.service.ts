@@ -10,6 +10,9 @@ import { forkJoin } from 'rxjs';
 import { ObjectEvent, Event } from '../Models/interfaces/Events';
 import { LoadingSatus } from '../Models/enumerations/Telemetry';
 import { Status } from '../Models/enumerations/Comunication';
+import { SettingsService } from './settings.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConnectionRoute } from '../Models/interfaces/Settings';
 
 @Injectable({
     providedIn: 'root'
@@ -25,18 +28,27 @@ export class SocketService {
     private vehicleConnectionStatus = new Subject<boolean>();
     private vehicleWifiConnectionStatus = new Subject<boolean>();
     private vehicleRfConnectionStatus = new Subject<boolean>();
+    public connectionRoute: ConnectionRoute = 'wifi';
 
     private telemetryLoadingSubject = new Subject<LoadingSatus>();
     private eventsLoadingSubject = new Subject<LoadingSatus>();
     private ngUnsubscribe = new Subject<void>();
     private loadLatest: boolean = true;
 
-    constructor(private socket: Socket, private dataManagerService: DataManagerService, private http: HttpClient, private audioService: AudioService) {
+    constructor(
+        private socket: Socket,
+        private dataManagerService: DataManagerService,
+        private http: HttpClient,
+        private audioService: AudioService,
+        private settingsService: SettingsService,
+        private snackBar: MatSnackBar
+    ) {
         this.socket.fromEvent('connect').subscribe(() => this.setServerConnectionStatus(true));
         this.socket.fromEvent('disconnect').subscribe(() => this.setServerConnectionStatus(false));
         this.socket.fromEvent('vehicle-connection').subscribe((data: any) => this.setVehicleConnectionStatus(data));
         this.socket.fromEvent('vehicle-wifi-connection').subscribe((data: any) => this.setVehicleWifiConnectionStatus(data));
         this.socket.fromEvent('vehicle-rf-connection').subscribe((data: any) => this.setVehicleRfConnectionStatus(data));
+        this.socket.fromEvent('connecntion-route').subscribe((data: any) => (this.connectionRoute = data));
     }
 
     public onServerDisconect(): Observable<unknown> {
@@ -57,6 +69,15 @@ export class SocketService {
             this.audioService.playTelemLost();
         }
         this.serverConnected = connected ? Status.CONNECTED : Status.DISCONECTED;
+    }
+
+    public setConnectionRoute(connectionRoute: ConnectionRoute) {
+        this.connectionRoute = connectionRoute;
+        this.socket.emit('connecntion-route', connectionRoute);
+    }
+
+    public getConnectionRoute(): ConnectionRoute {
+        return this.connectionRoute;
     }
 
     private connected() {
@@ -218,11 +239,15 @@ export class SocketService {
         this.vehicleRfConnectionStatus.next(connected);
     }
 
-    public sendKeyFrame(key: string) {
-        this.socket.emit('key-frame', key);
-    }
-
-    public sendControlFrame(frame: any) {
-        this.socket.emit('control-frame', frame);
+    public sendControlFrame(frame: any): boolean {
+        if (this.settingsService.isKeyboardEnabled()) {
+            this.socket.emit('control-frame', frame);
+            return true;
+        } else {
+            this.snackBar.open('Cant send control frame while controls are disabeled', 'Dismiss', {
+                duration: 3000
+            });
+            return false;
+        }
     }
 }

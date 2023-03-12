@@ -29,7 +29,7 @@ export class CommunicationsComponent implements OnInit, OnDestroy {
 
     constructor(private settingsService: SettingsService, private socketService: SocketService) {
         this.settingsService.setTitle('Communications');
-        this.settingsService.setHeaderItems([]);
+        this.settingsService.setHeaderItems(['connectionRoute']);
         this.socketService
             .onServerDisconect()
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -44,6 +44,12 @@ export class CommunicationsComponent implements OnInit, OnDestroy {
             });
         this.socketService
             .onVehicleWifiConnectionStatus()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((connected) => {
+                this.setCurrentState();
+            });
+        this.socketService
+            .onVehicleRfConnectionStatus()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((connected) => {
                 this.setCurrentState();
