@@ -4,15 +4,15 @@ import { faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import { SettingsService } from 'src/app/services/settings.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SocketService } from 'src/app/services/socket.service';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { TelemetryBoolean, TelemetryNumber } from 'src/app/Models/interfaces/Telemetry';
 import { Arm } from 'src/app/Models/interfaces/Arm';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 
 @Component({
-    selector: 'app-display-item-arm',
-    templateUrl: './display-item-arm.component.html',
-    styleUrls: ['./display-item-arm.component.css']
+    selector: 'app-display-arm',
+    templateUrl: './display-arm.component.html',
+    styleUrls: ['./display-arm.component.css']
 })
 export class DisplayItemArmComponent implements OnInit, OnDestroy {
     @ViewChild('container') containerElement: ElementRef;
@@ -56,38 +56,38 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
             .onResizeEvent()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data: any) => this.resizeSlider());
-        this.dataManagerService
-            .onArmEnabled()
+        this.dataManagerService.armEnabledSubject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateArmEnabled(telemetry);
             });
-        this.dataManagerService
-            .onArmManuleOverided()
+        this.dataManagerService.armManuleOveridedSubject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateArmManuleOverideEnabled(telemetry);
             });
-        this.dataManagerService
-            .onArmYaw()
+        this.dataManagerService.yawSubject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateArmYaw(telemetry);
             });
-        this.dataManagerService
-            .onArmPitch1()
+        this.dataManagerService.armPitch1Subject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateArmPitch1(telemetry);
             });
-        this.dataManagerService
-            .onarmPitch2()
+        this.dataManagerService.armPitch2Subject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateArmPitch2(telemetry);
             });
-        this.dataManagerService
-            .onArmClaw()
+        this.dataManagerService.armClawSubject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateArmClaw(telemetry);

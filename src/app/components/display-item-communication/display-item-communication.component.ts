@@ -4,7 +4,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgStyle } from '@angular/common';
 import { SocketService } from 'src/app/services/socket.service';
 import { Subject, takeUntil } from 'rxjs';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { SettingsService } from 'src/app/services/settings.service';
 

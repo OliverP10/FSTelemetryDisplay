@@ -50,10 +50,10 @@ import { DisplayItemMapComponent } from './components/display-item-map/display-i
 import { DisplayItemWarningsComponent } from './components/display-item-warnings/display-item-warnings.component';
 import { DisplayItemCameraComponent } from './components/display-item-camera/display-item-camera.component';
 import { DisplayItemCommunicationComponent } from './components/display-item-communication/display-item-communication.component';
-import { DisplayItemArmComponent } from './components/display-item-arm/display-item-arm.component';
+import { DisplayItemArmComponent } from './components/display-arm/display-arm.component';
 import { DisplayItemDataComponent } from './components/display-item-data/display-item-data.component';
 import { DisplayItemMovementComponent } from './components/display-item-movement/display-item-movement.component';
-import { DisplayItemArmModesComponent } from './components/display-item-arm-modes/display-item-arm-modes.component';
+import { DisplayItemArmModesComponent } from './components/display-arm-modes/display-arm-modes.component';
 import { DisplayItemClawComponent } from './components/display-item-claw/display-item-claw.component';
 import { DisplayItemConsoleComponent } from './components/display-item-console/display-item-console.component';
 import { DisplayGraphComponent } from './components/display-graph/display-graph.component';

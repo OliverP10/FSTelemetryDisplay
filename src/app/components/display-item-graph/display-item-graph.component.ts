@@ -9,7 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MatSliderModule } from '@angular/material/slider';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { TelemetryAny } from 'src/app/Models/interfaces/Telemetry';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { jsonConcat } from 'src/shared/utils/formatter';
 import { GraphOptions } from 'src/app/Models/interfaces/Graph';
 
@@ -29,7 +29,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     faPause = faPause;
     private ngUnsubscribe = new Subject<void>();
     private ngUnsubscribeTelem = new Subject<void>();
-    updateChartOnNextComplete:boolean = false;
+    updateChartOnNextComplete: boolean = false;
 
     chartColors = [
         'rgba(234, 184, 3)',
@@ -118,13 +118,13 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
         if (this.dataManagerService.getTelemetryReady()) {
             this.loadTelemetry(this.dataManagerService.telemetry);
             this.subcribeToTelemLabels();
-            
+
             this.dataManagerService
-            .onTelemetryComplete()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(() => {
-                this.updateChart()
-            });
+                .onTelemetryComplete()
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe(() => {
+                    this.updateChart();
+                });
         }
     }
 
@@ -136,7 +136,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             .onTelemetryComplete()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(() => {
-                this.updateChart()
+                this.updateChart();
             });
     }
 
@@ -225,12 +225,12 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
             this.chart.options.scales!.xAxes![0].ticks!.max! = this.findMax();
             this.chart.options.scales!.xAxes![0].ticks!.min! = this.calcMin();
         }
-        this.updateChartOnNextComplete = true;   
+        this.updateChartOnNextComplete = true;
         // this.chart.update();
     }
 
     updateChart() {
-        if(this.updateChartOnNextComplete) {
+        if (this.updateChartOnNextComplete) {
             this.chart.update();
             this.updateChartOnNextComplete = false;
         }

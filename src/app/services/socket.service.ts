@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AudioService } from './audio.service';
-import { DataManagerService } from './data-manager.service';
+import DataManagerService from './data-manager.service';
 import { environment } from 'src/environments/environment';
 import { ObjectTelemetry, TelemetryAny } from '../Models/interfaces/Telemetry';
 import { forkJoin } from 'rxjs';
@@ -74,6 +74,9 @@ export class SocketService {
     public setConnectionRoute(connectionRoute: ConnectionRoute) {
         this.connectionRoute = connectionRoute;
         this.socket.emit('connecntion-route', connectionRoute);
+        this.snackBar.open('Rerouting data through ' + connectionRoute, 'Dismiss', {
+            duration: 3000
+        });
     }
 
     public getConnectionRoute(): ConnectionRoute {
@@ -244,9 +247,9 @@ export class SocketService {
             this.socket.emit('control-frame', frame);
             return true;
         } else {
-            this.snackBar.open('Cant send control frame while controls are disabeled', 'Dismiss', {
-                duration: 3000
-            });
+            // this.snackBar.open('Cant send control frame while controls are disabeled', 'Dismiss', {
+            //     duration: 3000
+            // });
             return false;
         }
     }

@@ -8,7 +8,7 @@ import { WarningService } from './warning.service';
 @Injectable({
     providedIn: 'root'
 })
-export class DataManagerService {
+export default class DataManagerService {
     private telemetrySubject = new Subject<TelemetryAny>();
     private telemetryCompleteSubject = new Subject<null>();
     private eventSubject = new Subject<Event[]>();
@@ -25,44 +25,60 @@ export class DataManagerService {
     public telemetrySubjects = new Map<string, BehaviorSubject<TelemetryAny | null>>();
 
     // Gyro
-    private rollSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private pitchSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private yawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private swaySubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private heaveSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private surgeSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private headingSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public rollSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public pitchSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public yawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public swaySubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public heaveSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public surgeSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public oilPressureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public knockSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public steeringAngleSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public chasisDeflectionSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public suspensionDeflectionSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public fulePressureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public longitudeSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public latititudeSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public exaustTempratureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public oilPressureAdvancedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public diffuserPitotTubeSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public flWheelSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public frWheelSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public blWheelSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public brWheelSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public flSuspensrionTravelSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public frSuspensrionTravelSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public blSuspensrionTravelSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public brSuspensrionTravelSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
-    // Other
-    private arduinoConnectedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private locationSubject = new BehaviorSubject<TelemetryLocation | null>(null);
-    private gearSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-
-    // Arm
-    private armEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private armManuleOveridedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private armYawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private armPitch1Subject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private armPitch2Subject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private armClawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private clawStatusSubject = new BehaviorSubject<TelemetryString | null>(null);
-    private clawEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-
-    // Movement
-    private movementEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private movementSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private motorOneEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorOneForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorOneSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private motorTwoEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorTwoForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorTwoSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private motorThreeEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorThreeForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorThreeSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    private motorFourEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorFourForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    private motorFourSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    // rover
+    public arduinoConnectedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public armEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public armManuleOveridedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public armYawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armPitch1Subject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armPitch2Subject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armClawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public clawStatusSubject = new BehaviorSubject<TelemetryString | null>(null);
+    public clawEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public movementEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public movementSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public motorOneEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorOneForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorOneSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public motorTwoEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorTwoForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorTwoSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public motorThreeEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorThreeForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorThreeSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public motorFourEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorFourForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public motorFourSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public frRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public flRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public brRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public blRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
     constructor(private warningService: WarningService) {
         this.telemetrySubjects.set('ROLL', this.rollSubject);
@@ -71,11 +87,34 @@ export class DataManagerService {
         this.telemetrySubjects.set('SWAY', this.swaySubject);
         this.telemetrySubjects.set('HEAVE', this.heaveSubject);
         this.telemetrySubjects.set('SURGE', this.surgeSubject);
-        this.telemetrySubjects.set('HEADING', this.headingSubject);
+        this.telemetrySubjects.set('OIL_PRESSURE', this.oilPressureSubject);
+        this.telemetrySubjects.set('KNOCK', this.knockSubject);
+        this.telemetrySubjects.set('STEERING_ANGLE', this.steeringAngleSubject);
+        this.telemetrySubjects.set('CHASIS_DEFLECTION', this.chasisDeflectionSubject);
+        this.telemetrySubjects.set('SUSPENSION_DEFLECTION', this.suspensionDeflectionSubject);
+        this.telemetrySubjects.set('FUEL_PRESSURE', this.fulePressureSubject);
+        this.telemetrySubjects.set('LATITUDE', this.longitudeSubject);
+        this.telemetrySubjects.set('LONGITUDE', this.latititudeSubject);
+        this.telemetrySubjects.set('EXAUST_TEMPRATURE', this.exaustTempratureSubject);
+        this.telemetrySubjects.set('OIL_PRESSURE_ADVANCED', this.oilPressureAdvancedSubject);
+        this.telemetrySubjects.set('DIFFUSER_PITOT_TUBE', this.diffuserPitotTubeSubject);
+        this.telemetrySubjects.set('DIFFUSER_PRESSURE_TAPPINGS', this.diffuserPitotTubeSubject);
+        this.telemetrySubjects.set('FL_WHEEL_SPEED', this.flWheelSpeedSubject);
+        this.telemetrySubjects.set('FR_WHEEL_SPEED', this.frWheelSpeedSubject);
+        this.telemetrySubjects.set('BL_WHEEL_SPEED', this.blWheelSpeedSubject);
+        this.telemetrySubjects.set('BR_WHEEL_SPEED', this.brWheelSpeedSubject);
+        this.telemetrySubjects.set('FL_SUSPENSION_TRAVEL', this.flSuspensrionTravelSubject);
+        this.telemetrySubjects.set('FR_SUSPENSION_TRAVEL', this.frSuspensrionTravelSubject);
+        this.telemetrySubjects.set('BL_SUSPENSION_TRAVEL', this.blSuspensrionTravelSubject);
+        this.telemetrySubjects.set('BR_SUSPENSION_TRAVEL', this.brSuspensrionTravelSubject);
+        this.telemetrySubjects.set('FR_RIDE_HIGHT', this.frRideHightSubject);
+        this.telemetrySubjects.set('FL_RIDE_HIGHT', this.flRideHightSubject);
+        this.telemetrySubjects.set('BR_RIDE_HIGHT', this.brRideHightSubject);
+        this.telemetrySubjects.set('BL_RIDE_HIGHT', this.blRideHightSubject);
+
         this.telemetrySubjects.set('ARDUINO_CONNECTED', this.arduinoConnectedSubject);
-        this.telemetrySubjects.set('location', this.locationSubject);
-        this.telemetrySubjects.set('GEAR', this.gearSubject);
         this.telemetrySubjects.set('ARM_ENABLED', this.armEnabledSubject);
+        this.telemetrySubjects.set('ARM_MANULE_OVERIDE', this.armManuleOveridedSubject);
         this.telemetrySubjects.set('ARM_YAW', this.armYawSubject);
         this.telemetrySubjects.set('ARM_PITCH_1', this.armPitch1Subject);
         this.telemetrySubjects.set('ARM_PITCH_2', this.armPitch2Subject);
@@ -214,102 +253,10 @@ export class DataManagerService {
     }
 
     private decodeTelemetry(telemetry: TelemetryAny) {
-        switch (telemetry.metadata.label) {
-            case 'ROLL':
-                this.rollSubject.next(telemetry);
-                break;
-            case 'PITCH':
-                this.pitchSubject.next(telemetry);
-                break;
-            case 'YAW':
-                this.yawSubject.next(telemetry);
-                break;
-            case 'HEAVE':
-                this.heaveSubject.next(telemetry);
-                break;
-            case 'SURGE':
-                this.surgeSubject.next(telemetry);
-                break;
-            case 'SWAY':
-                this.swaySubject.next(telemetry);
-                break;
-            case 'HEADING':
-                this.headingSubject.next(telemetry);
-                break;
-            case 'ARDUINO_CONNECTED':
-                this.arduinoConnectedSubject.next(telemetry);
-                break;
-            case 'location':
-                this.locationSubject.next(telemetry);
-                break;
-            case 'GEAR':
-                this.gearSubject.next(telemetry);
-                break;
-            case 'ARM_ENABLED':
-                this.armEnabledSubject.next(telemetry);
-                break;
-            case 'ARM_YAW':
-                this.armYawSubject.next(telemetry);
-                break;
-            case 'ARM_PITCH_1':
-                this.armPitch1Subject.next(telemetry);
-                break;
-            case 'ARM_PITCH_2':
-                this.armPitch2Subject.next(telemetry);
-                break;
-            case 'ARM_CLAW':
-                this.armClawSubject.next(telemetry);
-                break;
-            case 'CLAW_STATUS':
-                this.clawStatusSubject.next(telemetry);
-                break;
-            case 'CLAW_ENABLED':
-                this.clawEnabledSubject.next(telemetry);
-                break;
-            case 'MOVEMENT_ENABLED':
-                this.movementEnabledSubject.next(telemetry);
-                break;
-            case 'MOVEMENT_SPEED':
-                this.movementSpeedSubject.next(telemetry);
-                break;
-            case 'MOTOR_ONE_ENABLED':
-                this.motorOneEnabledSubject.next(telemetry);
-                break;
-            case 'MOTOR_ONE_FORWARD':
-                this.motorOneForwardsSubject.next(telemetry);
-                break;
-            case 'MOTOR_ONE_SPEED':
-                this.motorOneSpeedSubject.next(telemetry);
-                break;
-            case 'MOTOR_TWO_ENABLED':
-                this.motorTwoEnabledSubject.next(telemetry);
-                break;
-            case 'MOTOR_TWO_FORWARD':
-                this.armEnabledSubject.next(telemetry);
-                break;
-            case 'MOTOR_TWO_SPEED':
-                this.motorTwoSpeedSubject.next(telemetry);
-                break;
-            case 'MOTOR_THREE_ENABLED':
-                this.motorThreeEnabledSubject.next(telemetry);
-                break;
-            case 'MOTOR_THREE_FORWARD':
-                this.motorThreeForwardsSubject.next(telemetry);
-                break;
-            case 'MOTOR_THREE_SPEED':
-                this.motorThreeSpeedSubject.next(telemetry);
-                break;
-            case 'MOTOR_FOUR_ENABLED':
-                this.motorFourEnabledSubject.next(telemetry);
-                break;
-            case 'MOTOR_FOUR_FORWARD':
-                this.motorFourForwardsSubject.next(telemetry);
-                break;
-            case 'MOTOR_FOUR_SPEED':
-                this.motorFourSpeedSubject.next(telemetry);
-                break;
-            default:
-                console.error('No matching telemetry found for: ' + telemetry.metadata.label);
+        if (this.telemetrySubjects.has(telemetry.metadata.label)) {
+            this.telemetrySubjects.get(telemetry.metadata.label)?.next(telemetry);
+        } else {
+            console.error('No matching telemetry found for: ' + telemetry.metadata.label);
         }
     }
 
@@ -323,113 +270,5 @@ export class DataManagerService {
             telemetryObservables.push(this.telemetrySubjects.get(label)!.asObservable());
         }
         return telemetryObservables;
-    }
-
-    public onRoll(): Observable<TelemetryNumber | null> {
-        return this.rollSubject.asObservable();
-    }
-
-    public onPitch(): Observable<TelemetryNumber | null> {
-        return this.pitchSubject.asObservable();
-    }
-
-    public onYaw(): Observable<TelemetryNumber | null> {
-        return this.yawSubject.asObservable();
-    }
-
-    public onArduinoConnected(): Observable<TelemetryBoolean | null> {
-        return this.arduinoConnectedSubject.asObservable();
-    }
-
-    public onArmEnabled(): Observable<TelemetryBoolean | null> {
-        return this.armEnabledSubject.asObservable();
-    }
-
-    public onArmManuleOverided(): Observable<TelemetryBoolean | null> {
-        return this.armManuleOveridedSubject.asObservable();
-    }
-
-    public onArmYaw(): Observable<TelemetryNumber | null> {
-        return this.armYawSubject.asObservable();
-    }
-
-    public onArmPitch1(): Observable<TelemetryNumber | null> {
-        return this.armPitch1Subject.asObservable();
-    }
-
-    public onarmPitch2(): Observable<TelemetryNumber | null> {
-        return this.armPitch2Subject.asObservable();
-    }
-
-    public onArmClaw(): Observable<TelemetryNumber | null> {
-        return this.armClawSubject.asObservable();
-    }
-
-    public onClawStatus(): Observable<TelemetryString | null> {
-        return this.clawStatusSubject.asObservable();
-    }
-
-    public onClawEnabled(): Observable<TelemetryBoolean | null> {
-        return this.clawEnabledSubject.asObservable();
-    }
-
-    public onLocation(): Observable<TelemetryLocation | null> {
-        return this.locationSubject.asObservable();
-    }
-
-    public onMovementEnabled(): Observable<TelemetryBoolean | null> {
-        return this.movementEnabledSubject.asObservable();
-    }
-
-    public onMovementSpeed(): Observable<TelemetryNumber | null> {
-        return this.movementSpeedSubject.asObservable();
-    }
-
-    public onMotorOneEnabled(): Observable<TelemetryBoolean | null> {
-        return this.motorOneEnabledSubject.asObservable();
-    }
-
-    public onMotorOneForward(): Observable<TelemetryBoolean | null> {
-        return this.motorOneForwardsSubject.asObservable();
-    }
-
-    public onMotorOneSpeed(): Observable<TelemetryNumber | null> {
-        return this.motorOneSpeedSubject.asObservable();
-    }
-
-    public onMotorTwoEnabled(): Observable<TelemetryBoolean | null> {
-        return this.motorTwoEnabledSubject.asObservable();
-    }
-
-    public onMotorTwoForward(): Observable<TelemetryBoolean | null> {
-        return this.motorTwoForwardsSubject.asObservable();
-    }
-
-    public onMotorTwoSpeed(): Observable<TelemetryNumber | null> {
-        return this.motorTwoSpeedSubject.asObservable();
-    }
-
-    public onMotorThreeEnabled(): Observable<TelemetryBoolean | null> {
-        return this.motorThreeEnabledSubject.asObservable();
-    }
-
-    public onMotorThreeForward(): Observable<TelemetryBoolean | null> {
-        return this.motorThreeForwardsSubject.asObservable();
-    }
-
-    public onMotorThreeSpeed(): Observable<TelemetryNumber | null> {
-        return this.motorThreeSpeedSubject.asObservable();
-    }
-
-    public onMotorFourEnabled(): Observable<TelemetryBoolean | null> {
-        return this.motorFourEnabledSubject.asObservable();
-    }
-
-    public onMotorFourForward(): Observable<TelemetryBoolean | null> {
-        return this.motorFourForwardsSubject.asObservable();
-    }
-
-    public onMotorFourSpeed(): Observable<TelemetryNumber | null> {
-        return this.motorFourSpeedSubject.asObservable();
     }
 }

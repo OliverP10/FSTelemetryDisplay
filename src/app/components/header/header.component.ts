@@ -22,7 +22,7 @@ import { SettingsService } from 'src/app/services/settings.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { AudioService } from 'src/app/services/audio.service';
 import { environment } from 'src/environments/environment';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { Subject, takeUntil } from 'rxjs';
 import { TelemetryBoolean } from 'src/app/Models/interfaces/Telemetry';
 import { WarningService } from 'src/app/services/warning.service';

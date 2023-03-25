@@ -1,14 +1,15 @@
 import { Component, Input, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
-import { defer, Subject, takeUntil } from 'rxjs';
-import * as Highcharts from 'highcharts/highstock';
-import * as HighchartsBoost from 'highcharts/modules/boost';
+import { Subject, takeUntil } from 'rxjs';
+import { faPlay, faPause, faGear } from '@fortawesome/free-solid-svg-icons';
 
 import { SettingsService } from 'src/app/services/settings.service';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { TelemetryAny } from 'src/app/Models/interfaces/Telemetry';
 import { SocketService } from 'src/app/services/socket.service';
-import { GraphData, SeriesOption } from 'src/app/Models/interfaces/Graph';
+import { GraphData, GraphOptions, SeriesOption } from 'src/app/Models/interfaces/Graph';
+import { jsonConcat } from 'src/shared/utils/formatter';
+import Dygraph from 'dygraphs';
 
 @Component({
     selector: 'app-display-graph',
@@ -16,236 +17,124 @@ import { GraphData, SeriesOption } from 'src/app/Models/interfaces/Graph';
     styleUrls: ['./display-graph.component.css']
 })
 export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
+    @ViewChild('container') containerElement: ElementRef;
+    @ViewChild('graph') graphElement: ElementRef;
     @Input() screenItem: ScreenItem;
+
+    faGear = faGear;
+    faPlay = faPlay;
+    faPause = faPause;
     private ngUnsubscribe = new Subject<void>();
     private ngUnsubscribeTelem = new Subject<void>();
+    updateChartOnNextComplete: boolean = false;
 
-    CHARTCOLORS = [
-        'rgb(234, 184, 3)',
-        'rgb(235, 30, 190)',
-        'rgb(237, 72, 31)',
-        'rgb(34, 186, 36)',
-        'rgb(247, 247, 247)',
-        'rgb(107, 52, 235)',
-        'rgb(0, 81, 255)',
-        'rgb(201, 203, 207)',
-        'rgb(255, 205, 86)',
-        'rgb(50, 168, 82)',
-        'rgb(235, 52, 174)',
-        'rgb(235, 64, 52)',
-        'rgb(52, 64, 235)'
+    chartColors = [
+        'rgba(234, 184, 3)',
+        'rgba(235, 30, 190)',
+        'rgba(237, 72, 31)',
+        'rgba(34, 186, 36)',
+        'rgba(247, 247, 247)',
+        'rgba(107, 52, 235)',
+        'rgba(0, 81, 255)',
+        'rgba(201, 203, 207)',
+        'rgba(255, 205, 86)',
+        'rgba(50, 168, 82)',
+        'rgba(235, 52, 174)',
+        'rgba(235, 64, 52)',
+        'rgba(52, 64, 235)'
     ];
-    maxPoints = 150;
 
-    chart: Highcharts.Chart;
-    Highcharts: typeof Highcharts = Highcharts;
-    chartOptions: Highcharts.Options;
+    graphOptions: GraphOptions;
+    data: any = [];
+    chart: Dygraph;
 
-    chartCallback: Highcharts.ChartCallbackFunction = (chart) => {
-        this.chart = chart;
-    };
+    series: string[] = ['time'];
 
-    constructor(private settingsService: SettingsService, private dataManagerService: DataManagerService, private socketService: SocketService) {}
+    minTime = 999999999999999;
+    maxTime = 0;
+
+    showLive: boolean = true;
+    showLiveIcon = faPause;
+
+    constructor(private socketService: SocketService, private settingsService: SettingsService, private dataManagerService: DataManagerService) {}
 
     ngOnInit(): void {
-        Highcharts.setOptions({
-            lang: {
-                rangeSelectorZoom: ''
-            }
-        });
-        this.chartOptions = {
-            series: [],
-            chart: {
-                backgroundColor: 'transparent',
-                style: {
-                    fontFamily: 'monospace',
-                    color: 'rgb(202, 208, 220)',
-                    fontSize: '10px'
-                },
-                animation: {
-                    duration: 0
-                }
-            },
-            title: {
-                text: ''
-            },
-            legend: {
-                itemStyle: {
-                    color: 'rgb(202, 208, 220)'
-                }
-            },
-            yAxis: [
-                {
-                    labels: {
-                        style: {
-                            color: 'rgb(202, 208, 220)'
-                        }
-                    },
-                    gridLineColor: 'rgb(98, 108, 132)'
-                }
-            ],
-            xAxis: {
-                labels: {
-                    style: {
-                        color: 'rgb(202, 208, 220)'
-                    }
-                },
-                gridLineColor: 'rgb(98, 108, 132)',
-                ordinal: false
-            },
-            rangeSelector: {
-                selected: 0,
-                verticalAlign: 'top',
-                buttonPosition: {
-                    align: 'right',
-                    x: 0,
-                    y: 0
-                },
-                inputPosition: {
-                    align: 'left',
-                    x: 0,
-                    y: 0
-                },
-                buttonTheme: {
-                    style: {
-                        color: 'black'
-                    },
-                    fill: 'rgb(98, 108, 132)',
-                    states: {
-                        hover: {
-                            stroke: 'none',
-                            fill: 'rgb(117, 117, 117)',
-                            style: {}
-                        },
-                        select: {
-                            stroke: 'none',
-                            fill: '#666666',
-                            style: {
-                                color: 'rgb(202, 208, 220)'
-                            }
-                        }
-                    }
-                },
-
-                buttons: [
-                    {
-                        count: 30,
-                        type: 'second',
-                        text: '30s'
-                    },
-                    {
-                        count: 1,
-                        type: 'minute',
-                        text: '1m'
-                    },
-                    {
-                        type: 'all',
-                        text: 'All'
-                    }
-                ],
-                inputEnabled: false
-            },
-            scrollbar: {
-                enabled: false,
-                barBackgroundColor: 'rgb(77, 84, 101)',
-                barBorderRadius: 4,
-                barBorderWidth: 0,
-                buttonBackgroundColor: 'rgb(77, 84, 101)',
-                buttonBorderWidth: 0,
-                buttonArrowColor: 'rgb(202, 208, 220)',
-                buttonBorderRadius: 4,
-                rifleColor: 'rgb(202, 208, 220)',
-                trackBackgroundColor: 'rgb(91, 107, 128)',
-                trackBorderWidth: 1,
-                trackBorderColor: 'rgb(202, 208, 220)',
-                trackBorderRadius: 4
-            },
-            navigator: {
-                handles: {
-                    backgroundColor: 'rgb(202, 208, 220)',
-                    borderColor: 'rgb(98, 108, 132)'
-                },
-                series: {
-                    lineWidth: 1,
-                    fillOpacity: 0
-                }
-            },
-            exporting: {
-                enabled: false
-            },
-            accessibility: {
-                enabled: false
-            },
-            time: {
-                useUTC: false
-            },
-            plotOptions: {
-                series: {
-                    //turboThreshold: 500,
-                    showInNavigator: true,
-                    animation: false
-                }
-            },
-            boost: {
-                useGPUTranslations: true,
-                seriesThreshold: 1
-            },
-            colors: this.CHARTCOLORS
-        };
-
-        this.settingsService
-            .onResizeEvent()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(() => {
-                this.resizeChart();
-            });
+        this.graphOptions = jsonConcat(this.screenItem.display.options, this.screenItem.options);
 
         this.socketService
             .onTelemetryReady()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
-                this.loadTelemetry(telemetry);
-                this.subcribeToTelemLabels();
+                this.setup(telemetry);
             });
     }
 
     ngAfterViewInit(): void {
+        this.createChart();
+        this.settingsService
+            .onResizeEvent()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(() => {
+                this.resizeGraph();
+            });
         if (this.dataManagerService.getTelemetryReady()) {
             this.loadTelemetry(this.dataManagerService.telemetry);
             this.subcribeToTelemLabels();
+
+            this.dataManagerService
+                .onTelemetryComplete()
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe(() => {
+                    this.updateChart();
+                });
         }
     }
 
+    setup(telemetry: TelemetryAny[]) {
+        this.loadTelemetry(telemetry);
+        this.subcribeToTelemLabels();
+
+        this.dataManagerService
+            .onTelemetryComplete()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe(() => {
+                this.updateChart();
+            });
+    }
+
+    createChart() {
+        this.chart = new Dygraph(this.graphElement.nativeElement, this.data, {
+            legend: 'always',
+            rollPeriod: 14,
+            width: 500,
+            height: 200
+        });
+    }
+
     loadTelemetry(telemetry: TelemetryAny[]) {
-        while (this.chart.series.length) {
-            this.chart.series[0].remove();
-        }
-        this.chart.redraw();
-        let series = new Map<string, SeriesOption>();
-        for (let label of this.screenItem.display.labels) {
-            series.set(label, { name: label, data: [], type: 'line' });
-        }
-
-        let pointCounter = 0;
+        this.series.push(...this.screenItem.display.labels);
         for (let i = telemetry.length - 1; i > 0; i--) {
-            if (series.has(telemetry[i].metadata.label)) {
-                let s = series.get(telemetry[i].metadata.label);
-                s!.data.push({
-                    y: telemetry[i].value,
-                    x: new Date(telemetry[i].timestamp).getTime()
-                });
-
-                if (pointCounter > this.maxPoints * this.screenItem.display.labels.length) {
-                    break;
+            let collumn = this.series.indexOf(telemetry[i].metadata.label);
+            if (collumn != -1) {
+                // check if the row above is same timestamp uf it is dont create new row
+                if (this.data.length && this.data[0][0].getTime() == telemetry[i].timestamp.getTime()) {
+                    this.data[0][collumn] = telemetry[i].value;
                 } else {
-                    pointCounter++;
+                    let row = new Array(this.series.length).fill(null);
+                    row[0] = new Date(telemetry[i].timestamp);
+                    row[collumn] = telemetry[i].value;
+                    this.data.unshift(row);
+                }
+
+                if (this.data.length > this.graphOptions.maxPoints) {
+                    break;
                 }
             }
         }
-        for (let s of series.values()) {
-            s.data.reverse();
-            this.chart.addSeries(s as Highcharts.SeriesOptionsType);
-        }
+        this.chart.updateOptions({
+            labels: this.series,
+            file: this.data
+        });
     }
 
     subcribeToTelemLabels() {
@@ -264,26 +153,61 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
         if (telemetry == null) {
             return;
         }
-        let graphPlot: GraphData = {
-            y: telemetry.value,
-            x: new Date(telemetry.timestamp).getTime()
-        };
-        let series = this.chart.series.find((series) => series.name == telemetry.metadata.label);
-        this.chart.series[0].data.length > this.maxPoints ? series!.addPoint(graphPlot, true, true, false) : series!.addPoint(graphPlot);
-    }
 
-    autoRemove() {
-        let pointsToRemove = this.chart.series[0].data.length - this.maxPoints;
-        for (let i = 0; i < pointsToRemove; i++) {
-            for (const series of this.chart.series) {
-                series.removePoint(i, false);
-            }
+        let collumn = this.series.indexOf(telemetry.metadata.label);
+
+        if (this.data[this.data.length - 1][0] == telemetry.timestamp) {
+            this.data[this.data.length - 1][collumn] = telemetry.value;
+        } else {
+            let row = new Array(this.series.length).fill(null);
+            row[0] = new Date(telemetry.timestamp);
+            row[collumn] = telemetry.value;
+            this.data.push(row);
         }
-        this.chart.redraw();
+
+        if (this.data.length > this.graphOptions.maxPoints) {
+            this.data.shift();
+        }
+
+        this.updateChartOnNextComplete = true;
+        // this.chart.update();
     }
 
-    resizeChart() {
-        this.chart.reflow();
+    updateChart() {
+        if (this.updateChartOnNextComplete) {
+            if (this.showLive) {
+                this.chart.updateOptions({
+                    file: this.data,
+                    dateWindow: [this.data[this.data.length - 1][0].getTime() - this.graphOptions.viewSize, this.data[this.data.length - 1][0]]
+                });
+            } else {
+                this.chart.updateOptions({
+                    file: this.data
+                });
+            }
+            this.updateChartOnNextComplete = false;
+        }
+    }
+
+    toggleShowLive() {
+        this.showLive = !this.showLive;
+        this.showLiveIcon = this.showLive ? this.faPause : this.faPlay;
+    }
+
+    updateViewSize(event: any) {
+        this.screenItem.options['viewSize'] = event.target.value;
+    }
+
+    updateMaxPoints(event: any) {
+        this.screenItem.options['maxPoints'] = event.target.value;
+    }
+
+    stopPropagation(event: any) {
+        event.stopPropagation();
+    }
+
+    resizeGraph() {
+        this.chart.resize(this.containerElement.nativeElement.offsetWidth, this.containerElement.nativeElement.offsetHeight);
     }
 
     ngOnDestroy() {

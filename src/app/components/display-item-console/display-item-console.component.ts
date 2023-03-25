@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, View
 import { Subject, takeUntil } from 'rxjs';
 import { Display } from 'src/app/Models/interfaces/Display';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { SocketService } from 'src/app/services/socket.service';
 
 @Component({

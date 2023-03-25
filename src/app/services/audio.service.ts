@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Priority, Type } from '../Models/enumerations/Audio';
 import { Sound } from '../Models/interfaces/Audio';
-import { DataManagerService } from './data-manager.service';
+import DataManagerService from './data-manager.service';
 
 @Injectable({
     providedIn: 'root'

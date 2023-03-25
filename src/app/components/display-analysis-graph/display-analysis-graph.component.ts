@@ -12,7 +12,7 @@ HStockTools(Highcharts);
 HighchartsBoost(Highcharts);
 
 import { SettingsService } from 'src/app/services/settings.service';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { ObjectTelemetryLabels, TelemetryAny } from 'src/app/Models/interfaces/Telemetry';
 import { SocketService } from 'src/app/services/socket.service';
 import { GraphData, SeriesOption } from 'src/app/Models/interfaces/Graph';

@@ -11,7 +11,7 @@ import { UntypedFormControl, Validators } from '@angular/forms';
 import { MtxCalendarView, MtxDatetimepickerInput, MtxDatetimepickerInputEvent, MtxDatetimepickerMode, MtxDatetimepickerType } from '@ng-matero/extensions/datetimepicker';
 import { MTX_DATETIME_FORMATS } from '@ng-matero/extensions/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { LoadingSatus } from 'src/app/Models/enumerations/Telemetry';
 import { expandContract, expandContractList } from 'src/app/animations/animations';
 

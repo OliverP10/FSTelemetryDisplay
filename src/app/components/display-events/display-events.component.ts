@@ -4,7 +4,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil, timestamp } from 'rxjs';
 import { Event, TableEvent } from 'src/app/Models/interfaces/Events';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { faTriangleExclamation, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { MatPaginator } from '@angular/material/paginator';

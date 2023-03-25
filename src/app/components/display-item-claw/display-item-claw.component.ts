@@ -4,7 +4,7 @@ import { Display } from 'src/app/Models/interfaces/Display';
 import { SocketService } from 'src/app/services/socket.service';
 import { faMaximize, faMinimize } from '@fortawesome/free-solid-svg-icons';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { TelemetryBoolean, TelemetryString } from 'src/app/Models/interfaces/Telemetry';
 
 @Component({
@@ -24,14 +24,14 @@ export class DisplayItemClawComponent implements OnInit, OnDestroy {
     private ngUnsubscribe = new Subject<void>();
 
     constructor(private socketService: SocketService, private dataManagerService: DataManagerService) {
-        this.dataManagerService
-            .onClawStatus()
+        this.dataManagerService.clawStatusSubject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateClawStatus(telemetry);
             });
-        this.dataManagerService
-            .onArmEnabled()
+        this.dataManagerService.armEnabledSubject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateClawEnabled(telemetry);

@@ -5,7 +5,7 @@ import { SettingsService } from 'src/app/services/settings.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { TelemetryLocation } from 'src/app/Models/interfaces/Telemetry';
 
 @Component({
@@ -34,6 +34,8 @@ export class DisplayItemMapComponent implements OnInit, AfterViewInit, OnDestroy
 
     carRelativePosX: number = 0;
     carRelativePosY: number = 0;
+    carLatitude: number = 0;
+    carLongitdue: number = 0;
 
     presets = {
         //right click google maps//52.621691714945534
@@ -78,11 +80,23 @@ export class DisplayItemMapComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe(() => {
                 this.resizeGuage();
             });
-        this.dataManagerService
-            .onCustomTelemetry(this.screenItem.display.labels[0])
+        this.dataManagerService.latititudeSubject
+            .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
-                this.updateCarPos(telemetry);
+                if (telemetry) {
+                    this.carLatitude = telemetry.value;
+                    this.updateCarPos();
+                }
+            });
+        this.dataManagerService.longitudeSubject
+            .asObservable()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                if (telemetry) {
+                    this.carLongitdue = telemetry.value;
+                    this.updateCarPos();
+                }
             });
 
         this.image.src = 'assets/images/map-track.jpg';
@@ -132,16 +146,14 @@ export class DisplayItemMapComponent implements OnInit, AfterViewInit, OnDestroy
         this.ctx.stroke();
     }
 
-    updateCarPos(telemetry: TelemetryLocation | null) {
-        if (telemetry != null) {
-            this.carRelativePosY = (telemetry.value.latitude - this.presets.imageTopLeftLat) / (this.presets.imageBottomRightLat - this.presets.imageTopLeftLat);
-            this.carRelativePosX = (telemetry.value.longitude - this.presets.imageTopLeftLon) / (this.presets.imageBottomRightLon - this.presets.imageTopLeftLon);
+    updateCarPos() {
+        this.carRelativePosY = (this.carLatitude - this.presets.imageTopLeftLat) / (this.presets.imageBottomRightLat - this.presets.imageTopLeftLat);
+        this.carRelativePosX = (this.carLongitdue - this.presets.imageTopLeftLon) / (this.presets.imageBottomRightLon - this.presets.imageTopLeftLon);
 
-            this.drawMap();
-            this.drawCarPos();
-            if (this.userGPSEnabled && navigator.geolocation) {
-                this.drawUserPos();
-            }
+        this.drawMap();
+        this.drawCarPos();
+        if (this.userGPSEnabled && navigator.geolocation) {
+            this.drawUserPos();
         }
     }
 

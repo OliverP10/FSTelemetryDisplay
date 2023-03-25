@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { ErrorData, Display } from 'src/app/Models/interfaces/Display';
-import { DataManagerService } from 'src/app/services/data-manager.service';
+import DataManagerService from 'src/app/services/data-manager.service';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
 import { Event } from 'src/app/Models/interfaces/Events';
 
