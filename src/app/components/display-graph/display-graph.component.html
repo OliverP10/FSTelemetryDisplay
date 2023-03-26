@@ -1,4 +1,30 @@
 <div class="display" #container>
+    <div id="legend" class="legend"></div>
     <div #graph class="graph"></div>
+    <fa-icon
+        class="play-btn"
+        (click)="toggleShowLive()"
+        [ngStyle]="{color:'rgba(234, 184, 3)', cursor:'pointer'}"
+        [icon]="showLiveIcon">
+    </fa-icon>
+    <mat-menu #menu="matMenu" class="menu">
+        <ng-template matMenuContent (click)="stopPropagation($event)">
+            <mat-form-field class="form" appearance="fill" (click)="stopPropagation($event)">
+                <mat-label>View Size (mili seconds)</mat-label>
+                <input matInput type="number" step="1000" [(ngModel)]="graphOptions.viewSize" autocomplete="off" placeholder="View Size" (click)="stopPropagation($event)" (input)="updateViewSize($event)">
+            </mat-form-field>
+            <mat-form-field class="form" appearance="fill" (click)="stopPropagation($event)">
+                <mat-label>Max Points</mat-label>
+                <input matInput type="number" step="5" [(ngModel)]="graphOptions.maxPoints" autocomplete="off" placeholder="View Size" (click)="stopPropagation($event)" (input)="updateMaxPoints($event)">
+            </mat-form-field>
+        </ng-template>
+    </mat-menu>
+    
+    <fa-icon
+        class="graph-controller"
+        [icon]="faGear"
+        [matMenuTriggerFor]="menu"
+        [ngStyle]="{cursor:'pointer'}">
+    </fa-icon>
 </div>
 

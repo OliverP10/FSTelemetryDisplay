@@ -50,6 +50,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     chart: Chart;
     chartOptions: Chart.ChartConfiguration;
     graphOptions: GraphOptions;
+    telemLoaded: Boolean = false;
 
     counters = new Map<string, number>();
 
@@ -92,12 +93,13 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
                     mode: 'nearest',
                     intersect: false,
                     axis: 'x'
+                },
+                elements: {
+                    point: {
+                        radius: 1,
+                        hoverRadius: 1
+                    }
                 }
-                // elements: {
-                //     point: {
-                //         radius: 0
-                //     }
-                // }
             }
         };
     }
@@ -129,8 +131,8 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     }
 
     setup(telemetry: TelemetryAny[]) {
-        this.loadTelemetry(telemetry);
         this.subcribeToTelemLabels();
+        this.loadTelemetry(telemetry);
 
         this.dataManagerService
             .onTelemetryComplete()
@@ -149,6 +151,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     }
 
     loadTelemetry(telemetry: TelemetryAny[]) {
+        this.telemLoaded = true;
         this.chart.data.datasets = undefined;
         // this.chart.redraw();
         let color = 0;
@@ -160,7 +163,8 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
                 borderColor: this.chartColors[color],
                 backgroundColor: this.chartColors[color],
                 fill: false,
-                lineTension: 0.01
+                lineTension: 0.01,
+                borderWidth: 2
             });
             this.counters.set(label, 0);
             color++;
@@ -206,7 +210,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
     }
 
     addTelemetry(telemetry: TelemetryAny | null) {
-        if (telemetry == null) {
+        if (telemetry == null || this.telemLoaded == false) {
             return;
         }
         let chartPoint: Chart.ChartPoint = {

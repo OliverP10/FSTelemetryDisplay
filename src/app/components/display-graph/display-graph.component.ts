@@ -46,7 +46,7 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
 
     graphOptions: GraphOptions;
     data: any = [];
-    chart: Dygraph;
+    chart: any;
 
     series: string[] = ['time'];
 
@@ -91,8 +91,8 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     setup(telemetry: TelemetryAny[]) {
-        this.loadTelemetry(telemetry);
         this.subcribeToTelemLabels();
+        this.loadTelemetry(telemetry);
 
         this.dataManagerService
             .onTelemetryComplete()
@@ -105,13 +105,20 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
     createChart() {
         this.chart = new Dygraph(this.graphElement.nativeElement, this.data, {
             legend: 'always',
-            rollPeriod: 14,
+            labelsDiv: 'legend',
+            showLabelsOnHighlight: true,
+            hideOverlayOnMouseOut: true,
+            axisLabelWidth: 50,
+            interactionModel: null,
+            connectSeparatedPoints: true,
+            rollPeriod: 1,
             width: 500,
             height: 200
         });
     }
 
     loadTelemetry(telemetry: TelemetryAny[]) {
+        this.data = [];
         this.series.push(...this.screenItem.display.labels);
         for (let i = telemetry.length - 1; i > 0; i--) {
             let collumn = this.series.indexOf(telemetry[i].metadata.label);
@@ -131,10 +138,18 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
         }
+
         this.chart.updateOptions({
-            labels: this.series,
-            file: this.data
+            labels: this.series
         });
+
+        if (this.data.length) {
+            this.chart.updateOptions({
+                labels: this.series,
+                file: this.data,
+                dateWindow: [this.data[this.data.length - 1][0].getTime() - this.graphOptions.viewSize, this.data[this.data.length - 1][0]]
+            });
+        }
     }
 
     subcribeToTelemLabels() {
@@ -156,7 +171,9 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
 
         let collumn = this.series.indexOf(telemetry.metadata.label);
 
-        if (this.data[this.data.length - 1][0] == telemetry.timestamp) {
+        let time1 = this.data.length && this.data[this.data.length - 1][0].getTime();
+        let time2 = telemetry.timestamp.getTime();
+        if (this.data.length && this.data[this.data.length - 1][0].getTime() == telemetry.timestamp.getTime()) {
             this.data[this.data.length - 1][collumn] = telemetry.value;
         } else {
             let row = new Array(this.series.length).fill(null);
@@ -170,7 +187,6 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         this.updateChartOnNextComplete = true;
-        // this.chart.update();
     }
 
     updateChart() {
