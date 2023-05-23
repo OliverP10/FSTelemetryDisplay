@@ -1,24 +1,24 @@
 <div class="container">
     <div class="item">
         <fa-icon
-            [ngStyle]="(this.buttons.boxBtn) ? this.styleOn : this.styleOff"
+            [ngStyle]="(this.buttonState == 1) ? this.styleOn : this.styleOff"
             [icon]="faCircle">
         </fa-icon>
-        <button mat-button class="button" (click)="setButton('boxBtn')">Box</button>
+        <button mat-button class="button" (click)="setButton(1)">Box</button>
     </div>
     <div class="item">
         <fa-icon
-            [ngStyle]="(this.buttons.slowBtn) ? this.styleOn : this.styleOff"
+            [ngStyle]="(this.buttonState == 2) ? this.styleOn : this.styleOff"
             [icon]="faCircle">
         </fa-icon>
-        <button mat-button class="button" (click)="setButton('slowBtn')">Slow</button>
+        <button mat-button class="button" (click)="setButton(2)">Slow</button>
     </div>
     <div class="item">
         <fa-icon
-            [ngStyle]="(this.buttons.pushBtn) ? this.styleOn : this.styleOff"
+            [ngStyle]="(this.buttonState == 3) ? this.styleOn : this.styleOff"
             [icon]="faCircle">
         </fa-icon>
-        <button mat-button class="button" (click)="setButton('pushBtn')">Push</button>
+        <button mat-button class="button" (click)="setButton(3)">Push</button>
     </div>
 
 </div>

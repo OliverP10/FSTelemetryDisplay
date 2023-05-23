@@ -25,6 +25,8 @@ export default class DataManagerService {
     public telemetrySubjects = new Map<string, BehaviorSubject<TelemetryAny | null>>();
 
     // Gyro
+    public rfRadioConnected = new BehaviorSubject<TelemetryNumber | null>(null);
+    public synchonizeRadio = new BehaviorSubject<TelemetryNumber | null>(null);
     public rollSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public pitchSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public yawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
@@ -50,6 +52,11 @@ export default class DataManagerService {
     public frSuspensrionTravelSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public blSuspensrionTravelSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public brSuspensrionTravelSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public frRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public flRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public brRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public blRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public driverInstructions = new BehaviorSubject<TelemetryNumber | null>(null);
 
     // rover
     public arduinoConnectedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
@@ -75,12 +82,10 @@ export default class DataManagerService {
     public motorFourEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public motorFourForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public motorFourSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    public frRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    public flRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    public brRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    public blRideHightSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
     constructor(private warningService: WarningService) {
+        this.telemetrySubjects.set('RF_RADIO_CONNECTED', this.rfRadioConnected);
+        this.telemetrySubjects.set('SYNCHRONIZE_RADIO', this.synchonizeRadio);
         this.telemetrySubjects.set('ROLL', this.rollSubject);
         this.telemetrySubjects.set('PITCH', this.pitchSubject);
         this.telemetrySubjects.set('YAW', this.yawSubject);
@@ -111,6 +116,7 @@ export default class DataManagerService {
         this.telemetrySubjects.set('FL_RIDE_HIGHT', this.flRideHightSubject);
         this.telemetrySubjects.set('BR_RIDE_HIGHT', this.brRideHightSubject);
         this.telemetrySubjects.set('BL_RIDE_HIGHT', this.blRideHightSubject);
+        this.telemetrySubjects.set('DRIVER_INSTRUCTIONS', this.driverInstructions);
 
         this.telemetrySubjects.set('ARDUINO_CONNECTED', this.arduinoConnectedSubject);
         this.telemetrySubjects.set('ARM_ENABLED', this.armEnabledSubject);

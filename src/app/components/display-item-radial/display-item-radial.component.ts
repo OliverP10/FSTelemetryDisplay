@@ -46,7 +46,7 @@ export class DisplayItemRadialComponent implements OnInit, AfterViewInit, OnDest
         needleCircleSize: 7,
         needleCircleOuter: true,
         needleCircleInner: false,
-        animationDuration: 0, //60
+        animationDuration: 30, //60
         animationRule: 'linear',
         animation: false
     };

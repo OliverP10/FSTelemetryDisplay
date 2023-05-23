@@ -28,7 +28,7 @@ export class SocketService {
     private vehicleConnectionStatus = new Subject<boolean>();
     private vehicleWifiConnectionStatus = new Subject<boolean>();
     private vehicleRfConnectionStatus = new Subject<boolean>();
-    public connectionRoute: ConnectionRoute = 'wifi';
+    public connectionRoute: ConnectionRoute = 'rf';
 
     private telemetryLoadingSubject = new Subject<LoadingSatus>();
     private eventsLoadingSubject = new Subject<LoadingSatus>();

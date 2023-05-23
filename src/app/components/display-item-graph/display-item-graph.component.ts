@@ -193,7 +193,7 @@ export class DisplayItemGraphComponent implements AfterViewInit, OnDestroy, OnIn
         this.chart.data = data;
         this.chart.options.scales!.xAxes![0].ticks!.max! = this.findMax();
         this.chart.options.scales!.xAxes![0].ticks!.min! = this.calcMin();
-        console.log(this.chart.data.datasets);
+        //console.log(this.chart.data.datasets);
         this.chart.update();
     }
 

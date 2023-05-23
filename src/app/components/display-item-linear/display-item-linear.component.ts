@@ -47,8 +47,11 @@ export class DisplayItemLinearComponent implements OnInit, AfterViewInit, OnDest
         needleCircleSize: 7,
         needleCircleOuter: true,
         needleCircleInner: false,
-        animationDuration: 300,
-        animationRule: 'linear'
+        animationDuration: 30,
+        animationRule: 'linear',
+        animation: false,
+        barBeginCircle: false,
+        numberSide: 'left'
     };
 
     constructor(private settingsService: SettingsService, private dataManagerService: DataManagerService) {}

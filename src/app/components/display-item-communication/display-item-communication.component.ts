@@ -23,37 +23,24 @@ export class DisplayItemCommunicationComponent implements OnInit, OnDestroy {
     styleOff: any = { color: 'rgb(62, 71, 90)' };
     styleOn: any = { color: 'rgb(29, 163, 52)' };
 
-    buttons = {
-        boxBtn: false,
-        slowBtn: false,
-        pushBtn: false
-    };
+    buttonState = 0;
 
-    constructor(private socketService: SocketService, private settingsService: SettingsService) {}
+    constructor(private socketService: SocketService, private settingsService: SettingsService, private dataManagerService: DataManagerService) {}
 
-    ngOnInit(): void {}
-
-    setButton(button: string) {
-        for (let key in this.buttons) {
-            if (key == button) {
-                this.buttons[key as keyof typeof this.buttons] = !this.buttons[key as keyof typeof this.buttons];
-            } else {
-                this.buttons[key as keyof typeof this.buttons] = false;
-            }
-        }
-        this.socketService.sendControlFrame(this.buttons);
+    ngOnInit(): void {
+        this.dataManagerService
+            .onCustomTelemetry('DRIVER_INSTRUCTIONS')
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                if (telemetry != null) {
+                    this.buttonState = telemetry!.value;
+                }
+            });
     }
 
-    updateButtons(data: any) {
-        if (data.hasOwnProperty('boxBtn')) {
-            this.buttons.boxBtn = data['boxBtn'] ? true : false;
-        }
-        if (data.hasOwnProperty('slowBtn')) {
-            this.buttons.slowBtn = data['slowBtn'] ? true : false;
-        }
-        if (data.hasOwnProperty('pushBtn')) {
-            this.buttons.pushBtn = data['pushBtn'] ? true : false;
-        }
+    setButton(button: number) {
+        this.buttonState = button == this.buttonState ? 0 : button;
+        this.socketService.sendControlFrame({ 2: this.buttonState }); // adds offset 2 to avoid the reserved radio keys
     }
 
     ngOnDestroy() {

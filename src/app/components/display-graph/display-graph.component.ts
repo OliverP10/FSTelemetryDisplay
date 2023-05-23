@@ -119,7 +119,7 @@ export class DisplayGraphComponent implements OnInit, OnDestroy, AfterViewInit {
 
     loadTelemetry(telemetry: TelemetryAny[]) {
         this.data = [];
-        this.series.push(...this.screenItem.display.labels);
+        this.series = ['time', ...this.screenItem.display.labels];
         for (let i = telemetry.length - 1; i > 0; i--) {
             let collumn = this.series.indexOf(telemetry[i].metadata.label);
             if (collumn != -1) {
