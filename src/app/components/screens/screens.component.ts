@@ -26,7 +26,6 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     screens: Map<string, Screen> = new Map<string, Screen>(); //key is a screen and value is a list of display ids
     displays: Display[] = []; //All saved displays on server
     screenItems: ScreenItem[] = []; //Displays being show
-    key_presses = new Set<string>();
     showLoadingSpinner: boolean = false;
 
     private ngUnsubscribe = new Subject<void>();
@@ -164,23 +163,6 @@ export class ScreensComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
-    }
-
-    @HostListener('document:keydown', ['$event'])
-    handleKeyboardDownEvent(event: KeyboardEvent) {
-        if (!this.key_presses.has(event.key)) {
-            console.log();
-            this.socketService.sendControlFrame({ '102': event.key.charCodeAt(0) });
-            this.key_presses.add(event.key);
-        }
-    }
-
-    @HostListener('document:keyup', ['$event'])
-    handleKeyboardUpEvent(event: KeyboardEvent) {
-        if (this.key_presses.has(event.key)) {
-            this.socketService.sendControlFrame({ '103': event.key.charCodeAt(0) });
-            this.key_presses.delete(event.key);
-        }
     }
 
     @HostListener('window:resize', ['$event'])

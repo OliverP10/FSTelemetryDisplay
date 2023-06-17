@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Display } from 'src/app/Models/interfaces/Display';
 import { ScreenItem } from 'src/app/Models/interfaces/Screen';
@@ -16,9 +16,7 @@ export class DisplayItemConsoleComponent implements OnInit, AfterViewChecked, On
 
     private ngUnsubscribe = new Subject<void>();
 
-    logs: string[] = [];
-
-    constructor(private dataManagerService: DataManagerService) {
+    constructor(public dataManagerService: DataManagerService) {
         this.dataManagerService
             .onLogs()
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -27,16 +25,13 @@ export class DisplayItemConsoleComponent implements OnInit, AfterViewChecked, On
             });
     }
 
-    ngOnInit(): void {
-        this.logs = this.dataManagerService.logs;
-    }
+    ngOnInit(): void {}
 
     ngAfterViewChecked() {
         this.scrollToBottom();
     }
 
     updateLogs(data: any) {
-        this.logs.push(data);
         this.scrollToBottom();
     }
 

@@ -256,8 +256,8 @@
                     step="0.01"
                     placeholder="Speed"
                     autocomplete="off"
-                    [ngModel]="speed"
-                    (change)="updateSpeed($event)">
+                    [(ngModel)]="speed"
+                    (change)="sendSpeedTelemetry($event)">
             </mat-form-field>
 
             

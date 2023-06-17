@@ -61,6 +61,7 @@ import { DisplayEventsComponent } from './components/display-events/display-even
 import { DataAnalysisComponent } from './components/data-analysis/data-analysis.component';
 import { DisplayAnalysisGraphComponent } from './components/display-analysis-graph/display-analysis-graph.component';
 import { CommunicationsComponent } from './components/communications/communications.component';
+import { DisplayKeyboardControlComponent } from './components/display-keyboard-control/display-keyboard-control.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/screens/dashboard', pathMatch: 'full' },
@@ -105,7 +106,8 @@ const config: SocketIoConfig = {
         DisplayEventsComponent,
         DataAnalysisComponent,
         DisplayAnalysisGraphComponent,
-        CommunicationsComponent
+        CommunicationsComponent,
+        DisplayKeyboardControlComponent
     ],
     imports: [
         BrowserModule,

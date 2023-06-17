@@ -26,6 +26,7 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
 
     armed: boolean = true;
     speed: number = 0;
+    previousSpeed: number = 0;
     motors: Motors = {
         motorOne: {
             enabled: false,
@@ -50,81 +51,64 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
     };
 
     constructor(private socketService: SocketService, private dataManagerService: DataManagerService) {
-        // this.dataManagerService
-        //     .onMotorOneEnabled()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorOneEnabled(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorOneForward()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorOneForwards(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorOneSpeed()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorOneSpeed(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorTwoEnabled()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorTwoEnabled(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorTwoForward()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorTwoForwards(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorTwoSpeed()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorTwoSpeed(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorThreeEnabled()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorThreeEnabled(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorThreeForward()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorThreeForwards(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorThreeSpeed()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorThreeSpeed(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorFourEnabled()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorFourEnabled(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorFourForward()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorFourForwards(telemetry);
-        //     });
-        // this.dataManagerService
-        //     .onMotorFourSpeed()
-        //     .pipe(takeUntil(this.ngUnsubscribe))
-        //     .subscribe((telemetry) => {
-        //         this.updateMotorFourSpeed(telemetry);
-        //     });
+        this.dataManagerService.motorOneEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorOneEnabled(telemetry);
+        });
+        this.dataManagerService.motorOneForwardsSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorOneForwards(telemetry);
+        });
+        this.dataManagerService.motorOneSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorOneSpeed(telemetry);
+        });
+        this.dataManagerService.motorTwoEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorTwoEnabled(telemetry);
+        });
+        this.dataManagerService.motorTwoForwardsSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorTwoForwards(telemetry);
+        });
+        this.dataManagerService.motorTwoSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorTwoSpeed(telemetry);
+        });
+        this.dataManagerService.motorThreeEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorThreeEnabled(telemetry);
+        });
+        this.dataManagerService.motorThreeForwardsSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorThreeForwards(telemetry);
+        });
+        this.dataManagerService.motorThreeSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorThreeSpeed(telemetry);
+        });
+        this.dataManagerService.motorFourEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorFourEnabled(telemetry);
+        });
+        this.dataManagerService.motorFourForwardsSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorFourForwards(telemetry);
+        });
+        this.dataManagerService.motorFourSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateMotorFourSpeed(telemetry);
+        });
+        this.dataManagerService.movementEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateArmed(telemetry);
+        });
+        this.dataManagerService.movementSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateSpeed(telemetry);
+        });
     }
 
     ngOnInit(): void {}
+
+    private updateArmed(telemetry: TelemetryBoolean | null) {
+        if (telemetry != null) {
+            this.armed = telemetry.value;
+        }
+    }
+
+    private updateSpeed(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.speed = telemetry.value;
+            this.previousSpeed = this.speed;
+        }
+    }
 
     private updateMotorOneEnabled(telemetry: TelemetryBoolean | null) {
         if (telemetry != null) {
@@ -199,15 +183,15 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
     }
 
     toggleArmed(): void {
-        this.armed = !this.armed;
-        this.socketService.sendControlFrame({ movement_armed: this.armed });
+        this.socketService.sendControlFrame({ '2': Number(!this.armed) });
     }
 
-    updateSpeed(event: any): void {
+    sendSpeedTelemetry(event: any): void {
         let speed: number = parseFloat(event.target.value);
         if (speed >= 0 && speed <= 1) {
-            this.socketService.sendControlFrame({ movement_speed: speed });
+            this.socketService.sendControlFrame({ '1': speed });
         }
+        this.speed = this.previousSpeed;
     }
 
     ngOnDestroy() {

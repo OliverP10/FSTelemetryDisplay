@@ -162,18 +162,18 @@ export class SocketService {
         this.socket
             .fromEvent('telemetry')
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((data: any) => this.dataManagerService.addTelemetry(data)); //for guages that only want the most recent
+            .subscribe((data: any) => this.dataManagerService.addTelemetry(data));
         this.socket
             .fromEvent('events')
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data: any) => {
                 this.dataManagerService.addEvents(data);
-            }); //for guages that only want the most recent
+            });
         this.socket
             .fromEvent('log')
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data: any) => {
-                //this.appendLogs(data);
+                this.dataManagerService.appendLogs(data);
             });
     }
 
@@ -247,9 +247,9 @@ export class SocketService {
             this.socket.emit('control-frame', frame);
             return true;
         } else {
-            // this.snackBar.open('Cant send control frame while controls are disabeled', 'Dismiss', {
-            //     duration: 3000
-            // });
+            this.snackBar.open('Cant send control frame while controls are disabeled', 'Dismiss', {
+                duration: 3000
+            });
             return false;
         }
     }
