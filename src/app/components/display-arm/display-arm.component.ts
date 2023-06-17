@@ -31,21 +31,25 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
     arm: Arm = {
         yaw: {
             value: 0,
+            oldValue: 0,
             min: 0,
             max: 270
         },
         pitch1: {
             value: 0,
+            oldValue: 0,
             min: 0,
             max: 180
         },
         pitch2: {
             value: 0,
+            oldValue: 0,
             min: 0,
             max: 180
         },
-        claw: {
+        roll: {
             value: 0,
+            oldValue: 0,
             min: 0,
             max: 180
         }
@@ -68,7 +72,7 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
             .subscribe((telemetry) => {
                 this.updateArmManuleOverideEnabled(telemetry);
             });
-        this.dataManagerService.yawSubject
+        this.dataManagerService.armYawSubject
             .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
@@ -86,11 +90,11 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
             .subscribe((telemetry) => {
                 this.updateArmPitch2(telemetry);
             });
-        this.dataManagerService.armClawSubject
+        this.dataManagerService.armRollSubject
             .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
-                this.updateArmClaw(telemetry);
+                this.updateArmRoll(telemetry);
             });
     }
 
@@ -111,50 +115,67 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
     private updateArmYaw(telemetry: TelemetryNumber | null) {
         if (telemetry != null) {
             this.arm.yaw.value = telemetry.value;
+            this.arm.yaw.oldValue = telemetry.value;
         }
     }
 
     private updateArmPitch1(telemetry: TelemetryNumber | null) {
         if (telemetry != null) {
             this.arm.pitch1.value = telemetry.value;
+            this.arm.pitch1.oldValue = telemetry.value;
         }
     }
 
     private updateArmPitch2(telemetry: TelemetryNumber | null) {
         if (telemetry != null) {
             this.arm.pitch2.value = telemetry.value;
+            this.arm.pitch2.oldValue = telemetry.value;
         }
     }
 
-    private updateArmClaw(telemetry: TelemetryNumber | null) {
+    private updateArmRoll(telemetry: TelemetryNumber | null) {
         if (telemetry != null) {
-            this.arm.claw.value = telemetry.value;
+            this.arm.roll.value = telemetry.value;
+            this.arm.roll.oldValue = telemetry.value;
         }
     }
 
-    change(event: any): any {
-        return event.value;
-    }
+    change(event: any): any {}
 
-    update(): void {
-        //do validation on inputs when they are known
+    sendYawTelemetry(): void {
         if (this.armControlsEnabled) {
-            let values: any = {};
-            for (let key in this.arm) {
-                values['arm_' + key] = this.arm[key as keyof typeof this.arm].value;
-            }
-            this.socketService.sendControlFrame(values);
+            this.socketService.sendControlFrame({ '10': this.arm.yaw.value });
         }
+        this.arm.yaw.value = this.arm.yaw.oldValue;
+    }
+
+    sendPitch1Telemetry(): void {
+        if (this.armControlsEnabled) {
+            this.socketService.sendControlFrame({ '9': this.arm.pitch1.value });
+        }
+        this.arm.pitch1.value = this.arm.pitch1.oldValue;
+    }
+
+    sendPitch2Telemetry(): void {
+        if (this.armControlsEnabled) {
+            this.socketService.sendControlFrame({ '8': this.arm.pitch2.value });
+        }
+        this.arm.pitch2.value = this.arm.pitch2.oldValue;
+    }
+
+    sendRollTelemetry(): void {
+        if (this.armControlsEnabled) {
+            this.socketService.sendControlFrame({ '7': this.arm.roll.value });
+        }
+        this.arm.roll.value = this.arm.roll.oldValue;
     }
 
     toggleArmed(): void {
-        this.armed = !this.armed;
-        this.socketService.sendControlFrame({ arm_armed: this.armed });
+        this.socketService.sendControlFrame({ '5': Number(!this.armed) });
     }
 
     toggleManualOverride(): void {
-        this.manualOverride = !this.manualOverride;
-        this.socketService.sendControlFrame({ arm_override: this.manualOverride });
+        this.socketService.sendControlFrame({ '4': Number(!this.manualOverride) });
     }
 
     resizeSlider(): void {

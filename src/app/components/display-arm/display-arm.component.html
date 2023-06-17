@@ -22,7 +22,7 @@
             [disabled]="!armControlsEnabled"
             [(ngModel)]="arm.yaw.value"
             
-            (input)="arm.yaw.value=change($event)">
+            (input)="change($event)">
         </mat-slider>
         <mat-form-field class="numberInput">
             <input matInput 
@@ -34,7 +34,7 @@
                 autocomplete="off"
                 [(ngModel)]="arm.yaw.value"
                 [disabled]="!armControlsEnabled"
-                (change)="update()">
+                (change)="sendYawTelemetry()">
         </mat-form-field>
     </div>
 
@@ -64,7 +64,7 @@
                 autocomplete="off"
                 [(ngModel)]="arm.pitch1.value"
                 [disabled]="!armControlsEnabled"
-                (change)="update()">
+                (change)="sendPitch1Telemetry()">
         </mat-form-field>
     </div>
 
@@ -93,36 +93,36 @@
                 autocomplete="off"
                 [(ngModel)]="arm.pitch2.value"
                 [disabled]="!armControlsEnabled"
-                (change)="update()">
+                (change)="sendPitch2Telemetry()">
         </mat-form-field>
     </div>
 
     <div class="item">
         <div class="text">
-            <h3>Claw</h3>
+            <h3>Roll</h3>
         </div>
         <mat-slider 
             class="slider"
             [thumbLabel]="true"
             [ngStyle]="styleObj"
-            [min]="arm.claw.min"
-            [max]="arm.claw.max"
+            [min]="arm.roll.min"
+            [max]="arm.roll.max"
             [disabled]="!armControlsEnabled"
-            [(ngModel)]="arm.claw.value"
+            [(ngModel)]="arm.roll.value"
             
-            (input)="arm.claw.value=change($event)">
+            (input)="arm.roll.value=change($event)">
         </mat-slider>
         <mat-form-field class="numberInput">
             <input matInput 
                 class="number"
                 type="number"
-                [min]="arm.claw.min"
-                [max]="arm.claw.max"
-                placeholder="Claw"
+                [min]="arm.roll.min"
+                [max]="arm.roll.max"
+                placeholder="Roll"
                 autocomplete="off"
-                [(ngModel)]="arm.claw.value"
+                [(ngModel)]="arm.roll.value"
                 [disabled]="!armControlsEnabled"
-                (change)="update()">
+                (change)="sendRollTelemetry()">
         </mat-form-field>
     </div>
 
