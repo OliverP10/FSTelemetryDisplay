@@ -142,30 +142,34 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
 
     change(event: any): any {}
 
-    sendYawTelemetry(): void {
+    sendYawTelemetry(value: string | number): void {
         if (this.armControlsEnabled) {
-            this.socketService.sendControlFrame({ '10': this.arm.yaw.value });
+            value = Number(value);
+            this.socketService.sendControlFrame({ '10': value });
         }
         this.arm.yaw.value = this.arm.yaw.oldValue;
     }
 
-    sendPitch1Telemetry(): void {
+    sendPitch1Telemetry(value: string | number): void {
         if (this.armControlsEnabled) {
-            this.socketService.sendControlFrame({ '9': this.arm.pitch1.value });
+            value = Number(value);
+            this.socketService.sendControlFrame({ '9': value });
         }
         this.arm.pitch1.value = this.arm.pitch1.oldValue;
     }
 
-    sendPitch2Telemetry(): void {
+    sendPitch2Telemetry(value: string | number): void {
         if (this.armControlsEnabled) {
-            this.socketService.sendControlFrame({ '8': this.arm.pitch2.value });
+            value = Number(value);
+            this.socketService.sendControlFrame({ '8': value });
         }
         this.arm.pitch2.value = this.arm.pitch2.oldValue;
     }
 
-    sendRollTelemetry(): void {
+    sendRollTelemetry(value: string | number): void {
         if (this.armControlsEnabled) {
-            this.socketService.sendControlFrame({ '7': this.arm.roll.value });
+            value = Number(value);
+            this.socketService.sendControlFrame({ '7': value });
         }
         this.arm.roll.value = this.arm.roll.oldValue;
     }

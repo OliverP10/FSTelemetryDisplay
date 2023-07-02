@@ -13,7 +13,8 @@
             <h3>Yaw</h3>
         </div>
         <!-- (input)="update()" -->
-        <mat-slider 
+        <mat-slider
+            #yawSlider
             class="slider"
             [thumbLabel]="true"
             [ngStyle]="styleObj"
@@ -21,11 +22,12 @@
             [max]="arm.yaw.max"
             [disabled]="!armControlsEnabled"
             [(ngModel)]="arm.yaw.value"
-            
-            (input)="change($event)">
+            (slideend)="sendYawTelemetry(yawSlider.value)"
+            (pointerup)="sendYawTelemetry(yawSlider.value)">
         </mat-slider>
         <mat-form-field class="numberInput">
-            <input matInput 
+            <input matInput
+                #yawInput
                 class="number"
                 type="number"
                 [min]="arm.yaw.min"
@@ -34,7 +36,7 @@
                 autocomplete="off"
                 [(ngModel)]="arm.yaw.value"
                 [disabled]="!armControlsEnabled"
-                (change)="sendYawTelemetry()">
+                (change)="sendYawTelemetry(yawInput.value)">
         </mat-form-field>
     </div>
 
@@ -43,7 +45,8 @@
             <h3>Pitch 1</h3>
         </div>
 
-        <mat-slider 
+        <mat-slider
+            #pitch1Slider
             class="slider"
             [thumbLabel]="true"
             [ngStyle]="styleObj"
@@ -51,11 +54,12 @@
             [max]="arm.pitch1.max"
             [disabled]="!armControlsEnabled"
             [(ngModel)]="arm.pitch1.value"
-            
-            (input)="arm.pitch1.value=change($event)">
+            (slideend)="sendPitch1Telemetry(pitch1Slider.value)"
+            (pointerup)="sendPitch1Telemetry(pitch1Slider.value)">
         </mat-slider>
         <mat-form-field class="numberInput">
-            <input matInput 
+            <input matInput
+                #pitch1Input
                 class="number"
                 type="number"
                 [min]="arm.pitch1.min"
@@ -64,7 +68,7 @@
                 autocomplete="off"
                 [(ngModel)]="arm.pitch1.value"
                 [disabled]="!armControlsEnabled"
-                (change)="sendPitch1Telemetry()">
+                (change)="sendPitch1Telemetry(pitch1Input.value)">
         </mat-form-field>
     </div>
 
@@ -72,7 +76,8 @@
         <div class="text">
             <h3>Pitch 2</h3>
         </div>
-        <mat-slider 
+        <mat-slider
+            #pitch2Slider
             class="slider"
             [thumbLabel]="true"
             [ngStyle]="styleObj"
@@ -80,11 +85,12 @@
             [max]="arm.pitch2.max"
             [disabled]="!armControlsEnabled"
             [(ngModel)]="arm.pitch2.value"
-            
-            (input)="arm.pitch2.value=change($event)">
+            (slideend)="sendPitch2Telemetry(pitch2Slider.value)"
+            (pointerup)="sendPitch2Telemetry(pitch2Slider.value)">
         </mat-slider>
         <mat-form-field class="numberInput">
-            <input matInput 
+            <input matInput
+                #pitch2Input
                 class="number"
                 type="number"
                 [min]="arm.pitch2.min"
@@ -93,7 +99,7 @@
                 autocomplete="off"
                 [(ngModel)]="arm.pitch2.value"
                 [disabled]="!armControlsEnabled"
-                (change)="sendPitch2Telemetry()">
+                (change)="sendPitch2Telemetry(pitch2Input.value)">
         </mat-form-field>
     </div>
 
@@ -101,7 +107,8 @@
         <div class="text">
             <h3>Roll</h3>
         </div>
-        <mat-slider 
+        <mat-slider
+            #rollSlider
             class="slider"
             [thumbLabel]="true"
             [ngStyle]="styleObj"
@@ -109,11 +116,12 @@
             [max]="arm.roll.max"
             [disabled]="!armControlsEnabled"
             [(ngModel)]="arm.roll.value"
-            
-            (input)="arm.roll.value=change($event)">
+            (slideend)="sendRollTelemetry(rollSlider.value)"
+            (pointerup)="sendRollTelemetry(rollSlider.value)">
         </mat-slider>
         <mat-form-field class="numberInput">
-            <input matInput 
+            <input matInput
+                #rollInput
                 class="number"
                 type="number"
                 [min]="arm.roll.min"
@@ -122,7 +130,7 @@
                 autocomplete="off"
                 [(ngModel)]="arm.roll.value"
                 [disabled]="!armControlsEnabled"
-                (change)="sendRollTelemetry()">
+                (change)="sendRollTelemetry(rollInput.value)">
         </mat-form-field>
     </div>
 

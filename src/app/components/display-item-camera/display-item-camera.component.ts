@@ -20,6 +20,7 @@ export class DisplayItemCameraComponent implements OnInit {
     }
 
     imgError() {
+        console.log('Image error');
         this.loadingError = true;
     }
 }

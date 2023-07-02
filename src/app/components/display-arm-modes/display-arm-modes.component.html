@@ -1,13 +1,18 @@
 <div class="container">
     <div class="item">
-        <button mat-button class="button" (click)="sendArmCommand(0)" >Store</button>
-        <!-- <button mat-button class="button" (click)="sendArmCommand(0)" 
-        [ngStyle]="{ 'background-color': prm.PackageCount ? 'green' : 'red' }">Store</button> -->
+        <button mat-button class="button" (click)="sendArmCommand(0)"
+        [ngStyle]="storeBtnStyle"
+        >Store</button>
+        
     </div>
     <div class="item">
-        <button mat-button class="button" (click)="sendArmCommand(1)">Deploy</button>
+        <button mat-button class="button" (click)="sendArmCommand(1)"
+        [ngStyle]="deployBtnStyle"
+        >Deploy</button>
     </div>
     <div class="item">
-        <button mat-button class="button" (click)="sendArmCommand(2)">Stow</button>
+        <button mat-button class="button" (click)="sendArmCommand(2)"
+        [ngStyle]="stowBtnStyle"
+        >Stow</button>
     </div>
 </div>
