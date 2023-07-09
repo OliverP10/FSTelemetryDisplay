@@ -134,6 +134,69 @@
         </mat-form-field>
     </div>
 
+
+    <div class="item">
+        <div class="text">
+            <h3>Claw</h3>
+        </div>
+        <mat-slider
+            #clawSlider
+            class="slider"
+            [thumbLabel]="true"
+            [ngStyle]="styleObj"
+            [min]="arm.claw.min"
+            [max]="arm.claw.max"
+            [disabled]="!armControlsEnabled"
+            [(ngModel)]="arm.claw.value"
+            (slideend)="sendClawTelemetry(clawSlider.value)"
+            (pointerup)="sendClawTelemetry(clawSlider.value)">
+        </mat-slider>
+        <mat-form-field class="numberInput">
+            <input matInput
+                #clawInput
+                class="number"
+                type="number"
+                [min]="arm.claw.min"
+                [max]="arm.claw.max"
+                placeholder="Claw"
+                autocomplete="off"
+                [(ngModel)]="arm.claw.value"
+                [disabled]="!armControlsEnabled"
+                (change)="sendClawTelemetry(clawInput.value)">
+        </mat-form-field>
+    </div>
+
+    <div class="item">
+        <div class="text">
+            <h3>Hatch</h3>
+        </div>
+        <mat-slider
+            #hatchSlider
+            class="slider"
+            [thumbLabel]="true"
+            [ngStyle]="styleObj"
+            [min]="arm.hatch.min"
+            [max]="arm.hatch.max"
+            [disabled]="!armControlsEnabled"
+            [(ngModel)]="arm.hatch.value"
+            (slideend)="sendHatchTelemetry(hatchSlider.value)"
+            (pointerup)="sendHatchTelemetry(hatchSlider.value)">
+        </mat-slider>
+        <mat-form-field class="numberInput">
+            <input matInput
+                #hatchInput
+                class="number"
+                type="number"
+                [min]="arm.hatch.min"
+                [max]="arm.hatch.max"
+                placeholder="Hatch"
+                autocomplete="off"
+                [(ngModel)]="arm.hatch.value"
+                [disabled]="!armControlsEnabled"
+                (change)="sendHatchTelemetry(hatchInput.value)">
+        </mat-form-field>
+    </div>
+
     <div class="item">
         <button mat-flat-button 
             color="warn"

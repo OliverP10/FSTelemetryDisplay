@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="item text">
+        STOMP
+    </div>
+
+    <div class="item">
+        <button mat-flat-button
+            color="warn"
+            (click)="toggleArmed()"
+            [ngStyle]="(armed) ? {'background-color': 'rgb(28, 138, 55)'} : {'background-color': 'rgb(244,67,54)'}">
+            {{(armed ? 'Activated' : 'Deactivated')}}
+        </button>
+    </div>
+
+    <div class="item">
+        <fa-icon
+            class="fa-solid fa-2x"
+            [icon]="faCircleExclamation"
+            [ngStyle]="(showWarning) ? {'color': 'rgb(244,67,54)'} : {'color': 'transparent'}">
+        </fa-icon>
+    </div>
+
+    <div class="item">
+        {{warningTrigger}}
+    </div>
+
+</div>

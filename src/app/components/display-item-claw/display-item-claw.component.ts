@@ -30,7 +30,7 @@ export class DisplayItemClawComponent implements OnInit, OnDestroy {
             .subscribe((telemetry) => {
                 this.updateClawStatus(telemetry);
             });
-        this.dataManagerService.clawEnabledSubject
+        this.dataManagerService.armClawEnabledSubject
             .asObservable()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
@@ -41,7 +41,6 @@ export class DisplayItemClawComponent implements OnInit, OnDestroy {
     ngOnInit(): void {}
 
     private updateClawStatus(telemetry: TelemetryNumber | null) {
-        console.log;
         if (telemetry != null) {
             this.state = telemetry.value;
         }

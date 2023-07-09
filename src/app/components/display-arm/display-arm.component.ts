@@ -52,6 +52,18 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
             oldValue: 0,
             min: 0,
             max: 180
+        },
+        claw: {
+            value: 0,
+            oldValue: 0,
+            min: 0,
+            max: 180
+        },
+        hatch: {
+            value: 0,
+            oldValue: 0,
+            min: 0,
+            max: 180
         }
     };
 
@@ -95,6 +107,19 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((telemetry) => {
                 this.updateArmRoll(telemetry);
+            });
+
+        this.dataManagerService.armClawSubject
+            .asObservable()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmClaw(telemetry);
+            });
+        this.dataManagerService.hatchSubject
+            .asObservable()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((telemetry) => {
+                this.updateArmHatch(telemetry);
             });
     }
 
@@ -140,6 +165,20 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
         }
     }
 
+    private updateArmClaw(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.arm.claw.value = telemetry.value;
+            this.arm.claw.oldValue = telemetry.value;
+        }
+    }
+
+    private updateArmHatch(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.arm.hatch.value = telemetry.value;
+            this.arm.hatch.oldValue = telemetry.value;
+        }
+    }
+
     change(event: any): any {}
 
     sendYawTelemetry(value: string | number): void {
@@ -172,6 +211,22 @@ export class DisplayItemArmComponent implements OnInit, OnDestroy {
             this.socketService.sendControlFrame({ '7': value });
         }
         this.arm.roll.value = this.arm.roll.oldValue;
+    }
+
+    sendClawTelemetry(value: string | number): void {
+        if (this.armControlsEnabled) {
+            value = Number(value);
+            this.socketService.sendControlFrame({ '14': value });
+        }
+        this.arm.claw.value = this.arm.claw.oldValue;
+    }
+
+    sendHatchTelemetry(value: string | number): void {
+        if (this.armControlsEnabled) {
+            value = Number(value);
+            this.socketService.sendControlFrame({ '15': value });
+        }
+        this.arm.hatch.value = this.arm.hatch.oldValue;
     }
 
     toggleArmed(): void {

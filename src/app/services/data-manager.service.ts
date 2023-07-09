@@ -59,6 +59,8 @@ export default class DataManagerService {
     public driverInstructions = new BehaviorSubject<TelemetryNumber | null>(null);
 
     // rover
+    public stompEventSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public stompEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public arduinoConnectedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public armEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public armManuleOveridedSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
@@ -68,10 +70,10 @@ export default class DataManagerService {
     public armPitch1Subject = new BehaviorSubject<TelemetryNumber | null>(null);
     public armPitch2Subject = new BehaviorSubject<TelemetryNumber | null>(null);
     public armRollSubject = new BehaviorSubject<TelemetryNumber | null>(null);
-    public clawEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    public clawDirectionSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
-    public clawSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armClawEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
+    public armClawSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public clawStatusSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public hatchSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public movementEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public movementSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public motorOneEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
@@ -86,6 +88,20 @@ export default class DataManagerService {
     public motorFourEnabledSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public motorFourForwardsSubject = new BehaviorSubject<TelemetryBoolean | null>(null);
     public motorFourSpeedSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+
+    public armYawCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armPitch1CurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armPitch2CurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armRollCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armClawCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public hatchCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armYawTemperatureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armPitch1TemperatureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armPitch2TemperatureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armRollTemperatureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public armClawTemperatureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public hatchTemperatureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public batteryVoltageSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
     constructor(private warningService: WarningService) {
         this.telemetrySubjects.set('RF_RADIO_CONNECTED', this.rfRadioConnected);
@@ -122,6 +138,8 @@ export default class DataManagerService {
         this.telemetrySubjects.set('BL_RIDE_HIGHT', this.blRideHightSubject);
         this.telemetrySubjects.set('DRIVER_INSTRUCTIONS', this.driverInstructions);
 
+        this.telemetrySubjects.set('STOMP_EVENT', this.stompEventSubject);
+        this.telemetrySubjects.set('STOMP_ENABLED', this.stompEnabledSubject);
         this.telemetrySubjects.set('ARDUINO_CONNECTED', this.arduinoConnectedSubject);
         this.telemetrySubjects.set('ARM_ENABLED', this.armEnabledSubject);
         this.telemetrySubjects.set('ARM_MANULE_OVERIDE', this.armManuleOveridedSubject);
@@ -131,9 +149,9 @@ export default class DataManagerService {
         this.telemetrySubjects.set('ARM_PITCH_1', this.armPitch1Subject);
         this.telemetrySubjects.set('ARM_PITCH_2', this.armPitch2Subject);
         this.telemetrySubjects.set('ARM_ROLL', this.armRollSubject);
-        this.telemetrySubjects.set('CLAW_ENABLED', this.clawEnabledSubject);
-        this.telemetrySubjects.set('CLAW_FORWARD', this.clawDirectionSubject);
-        this.telemetrySubjects.set('CLAW_SPEED', this.clawSpeedSubject);
+        this.telemetrySubjects.set('CLAW_ENABLED', this.armClawEnabledSubject);
+        this.telemetrySubjects.set('ARM_CLAW', this.armClawSubject);
+        this.telemetrySubjects.set('HATCH', this.hatchSubject);
         this.telemetrySubjects.set('CLAW_STATUS', this.clawStatusSubject);
         this.telemetrySubjects.set('MOVEMENT_ENABLED', this.movementEnabledSubject);
         this.telemetrySubjects.set('MOVEMENT_SPEED', this.movementSpeedSubject);
@@ -149,6 +167,20 @@ export default class DataManagerService {
         this.telemetrySubjects.set('MOTOR_FOUR_ENABLED', this.motorFourEnabledSubject);
         this.telemetrySubjects.set('MOTOR_FOUR_FORWARD', this.motorFourForwardsSubject);
         this.telemetrySubjects.set('MOTOR_FOUR_SPEED', this.motorFourSpeedSubject);
+
+        this.telemetrySubjects.set('ARM_YAW_CURRENT', this.armYawCurrentSubject);
+        this.telemetrySubjects.set('ARM_PITCH_1_CURRENT', this.armPitch1CurrentSubject);
+        this.telemetrySubjects.set('ARM_PITCH_2_CURRENT', this.armPitch2CurrentSubject);
+        this.telemetrySubjects.set('ARM_ROLL_CURRENT', this.armRollCurrentSubject);
+        this.telemetrySubjects.set('ARM_CLAW_CURRENT', this.armClawCurrentSubject);
+        this.telemetrySubjects.set('HATCH_CURRENT', this.hatchCurrentSubject);
+        this.telemetrySubjects.set('ARM_YAW_TEMPERATURE', this.armYawTemperatureSubject);
+        this.telemetrySubjects.set('ARM_PITCH_1_TEMPERATURE', this.armPitch1TemperatureSubject);
+        this.telemetrySubjects.set('ARM_PITCH_2_TEMPERATURE', this.armPitch2TemperatureSubject);
+        this.telemetrySubjects.set('ARM_ROLL_TEMPERATURE', this.armRollTemperatureSubject);
+        this.telemetrySubjects.set('ARM_CLAW_TEMPERATURE', this.armClawTemperatureSubject);
+        this.telemetrySubjects.set('HATCH_TEMPERATURE', this.hatchTemperatureSubject);
+        this.telemetrySubjects.set('BATTERY_VOLTAGE', this.batteryVoltageSubject);
     }
 
     public getTelemetryReady(): boolean {

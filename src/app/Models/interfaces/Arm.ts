@@ -3,6 +3,8 @@ export interface Arm {
     pitch1: Joint;
     pitch2: Joint;
     roll: Joint;
+    claw: Joint;
+    hatch: Joint;
 }
 
 export interface Joint {
