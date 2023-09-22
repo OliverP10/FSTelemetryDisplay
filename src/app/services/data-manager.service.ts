@@ -103,6 +103,23 @@ export default class DataManagerService {
     public hatchTemperatureSubject = new BehaviorSubject<TelemetryNumber | null>(null);
     public batteryVoltageSubject = new BehaviorSubject<TelemetryNumber | null>(null);
 
+    public wheelServoOneAngleSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public wheelServoTwoAngleSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public wheelServoThreeAngleSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public wheelServoFourAngleSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public movementModeSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+
+    public wheelServoOneCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public wheelServoTwoCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public wheelServoThreeCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public wheelServoFourCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+
+    public motorOneCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public motorTwoCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public motorThreeCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    public motorFourCurrentSubject = new BehaviorSubject<TelemetryNumber | null>(null);
+    
+
     constructor(private warningService: WarningService) {
         this.telemetrySubjects.set('RF_RADIO_CONNECTED', this.rfRadioConnected);
         this.telemetrySubjects.set('SYNCHRONIZE_RADIO', this.synchonizeRadio);
@@ -181,6 +198,22 @@ export default class DataManagerService {
         this.telemetrySubjects.set('ARM_CLAW_TEMPERATURE', this.armClawTemperatureSubject);
         this.telemetrySubjects.set('HATCH_TEMPERATURE', this.hatchTemperatureSubject);
         this.telemetrySubjects.set('BATTERY_VOLTAGE', this.batteryVoltageSubject);
+
+        this.telemetrySubjects.set('WHEEL_SERVO_ONE_ANGLE', this.wheelServoOneAngleSubject);
+        this.telemetrySubjects.set('WHEEL_SERVO_TWO_ANGLE', this.wheelServoTwoAngleSubject);
+        this.telemetrySubjects.set('WHEEL_SERVO_THREE_ANGLE', this.wheelServoThreeAngleSubject);
+        this.telemetrySubjects.set('WHEEL_SERVO_FOUR_ANGLE', this.wheelServoFourAngleSubject);
+        this.telemetrySubjects.set('MOVEMENT_MODE', this.movementModeSubject);
+
+        this.telemetrySubjects.set('WHEEL_SERVO_ONE_CURRENT', this.wheelServoOneCurrentSubject);
+        this.telemetrySubjects.set('WHEEL_SERVO_TWO_CURRENT', this.wheelServoTwoCurrentSubject);
+        this.telemetrySubjects.set('WHEEL_SERVO_THREE_CURRENT', this.wheelServoThreeCurrentSubject);
+        this.telemetrySubjects.set('WHEEL_SERVO_FOUR_CURRENT', this.wheelServoFourCurrentSubject);
+
+        this.telemetrySubjects.set('MOTOR_ONE_CURRENT', this.motorOneCurrentSubject);
+        this.telemetrySubjects.set('MOTOR_TWO_CURRENT', this.motorTwoCurrentSubject);
+        this.telemetrySubjects.set('MOTOR_THREE_CURRENT', this.motorThreeCurrentSubject);
+        this.telemetrySubjects.set('MOTOR_FOUR_CURRENT', this.motorFourCurrentSubject);
     }
 
     public getTelemetryReady(): boolean {
@@ -284,7 +317,7 @@ export default class DataManagerService {
         this.eventsReady = true;
     }
 
-    applyDates(telemetry: TelemetryAny[]) {
+    public applyDates(telemetry: TelemetryAny[]) {
         for (let index = 0; index < telemetry.length; index++) {
             telemetry[index].timestamp = new Date(telemetry[index].timestamp);
         }

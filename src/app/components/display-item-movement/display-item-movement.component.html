@@ -12,6 +12,7 @@
             <fa-icon
                 *ngIf="motors.motorOne.forwards&&motors.motorOne.speed>0&&motors.motorOne.enabled"
                 [icon]="faArrowUp"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorOne.rotation-135)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -27,6 +28,7 @@
             <fa-icon
                 *ngIf="motors.motorTwo.forwards&&motors.motorTwo.speed>0&&motors.motorTwo.enabled"
                 [icon]="faArrowUp"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorTwo.rotation-45)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -56,8 +58,11 @@
             [rowspan]="1">
             <!-- wheel -->
             <fa-icon 
-                [icon]="faSquare"
-                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                [icon]="faSquareCaretUp"
+                [ngStyle]="{
+                    'color': 'rgb(255,215,64)',
+                    'transform': 'rotate('+(motors.motorOne.rotation-135)+'deg)'
+                    }"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -72,8 +77,10 @@
             [rowspan]="1">
             <!-- wheel -->
             <fa-icon 
-                [icon]="faSquare"
-                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                [icon]="faSquareCaretUp"
+                [ngStyle]="{'color': 'rgb(255,215,64)',
+                'transform': 'rotate('+(motors.motorTwo.rotation-45)+'deg)'
+                }"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -105,6 +112,7 @@
             <fa-icon
                 *ngIf="(!motors.motorOne.forwards)&&motors.motorOne.speed>0&&motors.motorOne.enabled"
                 [icon]="faArrowDown"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorOne.rotation-135)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -126,6 +134,7 @@
             <fa-icon
                 *ngIf="(!motors.motorTwo.forwards)&&motors.motorTwo.speed>0&&motors.motorTwo.enabled"
                 [icon]="faArrowDown"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorTwo.rotation-45)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -146,6 +155,7 @@
             <fa-icon
                 *ngIf="motors.motorThree.forwards&&motors.motorThree.speed>0&&motors.motorThree.enabled"
                 [icon]="faArrowUp"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorThree.rotation-135)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -162,6 +172,7 @@
             <fa-icon
                 *ngIf="motors.motorFour.forwards&&motors.motorFour.speed>0&&motors.motorFour.enabled"
                 [icon]="faArrowUp"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorFour.rotation-45)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -191,8 +202,10 @@
             [rowspan]="1">
             <!-- wheel -->
             <fa-icon 
-                [icon]="faSquare"
-                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                [icon]="faSquareCaretUp"
+                [ngStyle]="{'color': 'rgb(255,215,64)',
+                'transform': 'rotate('+(motors.motorThree.rotation-135)+'deg)'
+                }"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -207,8 +220,10 @@
             [rowspan]="1">
             <!-- wheel -->
             <fa-icon 
-                [icon]="faSquare"
-                [ngStyle]="{'color': 'rgb(255,215,64)'}"
+                [icon]="faSquareCaretUp"
+                [ngStyle]="{'color': 'rgb(255,215,64)',
+                'transform': 'rotate('+(motors.motorFour.rotation-45)+'deg)'
+                }"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -240,6 +255,7 @@
             <fa-icon
                 *ngIf="(!motors.motorThree.forwards)&&motors.motorThree.speed>0&&motors.motorThree.enabled"
                 [icon]="faArrowDown"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorThree.rotation-135)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>
@@ -270,6 +286,7 @@
             <fa-icon
                 *ngIf="(!motors.motorFour.forwards)&&motors.motorFour.speed>0&&motors.motorFour.enabled"
                 [icon]="faArrowDown"
+                [ngStyle]="{'transform': 'rotate('+(motors.motorFour.rotation-45)+'deg)'}"
                 size="3x">
             </fa-icon>
         </mat-grid-tile>

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, HostListener } from '@angular/core';
-import { faSquare, faArrowUp, faArrowDown, faLock, faCircleArrowUp, faLockOpen } from '@fortawesome/free-solid-svg-icons';
+import { faSquareCaretUp, faArrowUp, faArrowDown, faLock, faCircleArrowUp, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import { Subject, takeUntil } from 'rxjs';
 import { Display } from 'src/app/Models/interfaces/Display';
 import { Motors } from 'src/app/Models/interfaces/Motors';
@@ -16,7 +16,7 @@ import { SocketService } from 'src/app/services/socket.service';
 export class DisplayItemMovementComponent implements OnInit, OnDestroy {
     @Input() screenItem: ScreenItem;
 
-    faSquare = faSquare;
+    faSquareCaretUp = faSquareCaretUp;
     faArrowUp = faArrowUp;
     faArrowDown = faArrowDown;
     faLock = faLock;
@@ -31,22 +31,26 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
         motorOne: {
             enabled: false,
             forwards: true,
-            speed: 0.2
+            speed: 0.2,
+            rotation: 0
         },
         motorTwo: {
             enabled: false,
             forwards: true,
-            speed: 0.2
+            speed: 0.2,
+            rotation: 0
         },
         motorThree: {
             enabled: false,
             forwards: true,
-            speed: 0.2
+            speed: 0.2,
+            rotation: 0
         },
         motorFour: {
             enabled: false,
             forwards: true,
-            speed: 0.2
+            speed: 0.2,
+            rotation: 0
         }
     };
 
@@ -60,6 +64,9 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
         this.dataManagerService.motorOneSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateMotorOneSpeed(telemetry);
         });
+        this.dataManagerService.wheelServoOneAngleSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateWheelOneRotaition(telemetry);
+        });
         this.dataManagerService.motorTwoEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateMotorTwoEnabled(telemetry);
         });
@@ -68,6 +75,9 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
         });
         this.dataManagerService.motorTwoSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateMotorTwoSpeed(telemetry);
+        });
+        this.dataManagerService.wheelServoTwoAngleSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateWheelTwoRotaition(telemetry);
         });
         this.dataManagerService.motorThreeEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateMotorThreeEnabled(telemetry);
@@ -78,6 +88,9 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
         this.dataManagerService.motorThreeSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateMotorThreeSpeed(telemetry);
         });
+        this.dataManagerService.wheelServoThreeAngleSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateWheelThreeRotaition(telemetry);
+        });
         this.dataManagerService.motorFourEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateMotorFourEnabled(telemetry);
         });
@@ -86,6 +99,9 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
         });
         this.dataManagerService.motorFourSpeedSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateMotorFourSpeed(telemetry);
+        });
+        this.dataManagerService.wheelServoFourAngleSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
+            this.updateWheelFourRotaition(telemetry);
         });
         this.dataManagerService.movementEnabledSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe((telemetry) => {
             this.updateArmed(telemetry);
@@ -128,6 +144,12 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
         }
     }
 
+    private updateWheelOneRotaition(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.motors.motorOne.rotation = telemetry.value+0;
+        }
+    }
+
     private updateMotorTwoEnabled(telemetry: TelemetryBoolean | null) {
         if (telemetry != null) {
             this.motors.motorTwo.enabled = telemetry.value;
@@ -143,6 +165,12 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
     private updateMotorTwoSpeed(telemetry: TelemetryNumber | null) {
         if (telemetry != null) {
             this.motors.motorTwo.speed = telemetry.value;
+        }
+    }
+
+    private updateWheelTwoRotaition(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.motors.motorTwo.rotation = telemetry.value-0;
         }
     }
 
@@ -164,6 +192,12 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
         }
     }
 
+    private updateWheelThreeRotaition(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.motors.motorThree.rotation = telemetry.value-0;
+        }
+    }
+
     private updateMotorFourEnabled(telemetry: TelemetryBoolean | null) {
         if (telemetry != null) {
             this.motors.motorFour.enabled = telemetry.value;
@@ -179,6 +213,12 @@ export class DisplayItemMovementComponent implements OnInit, OnDestroy {
     private updateMotorFourSpeed(telemetry: TelemetryNumber | null) {
         if (telemetry != null) {
             this.motors.motorFour.speed = telemetry.value;
+        }
+    }
+
+    private updateWheelFourRotaition(telemetry: TelemetryNumber | null) {
+        if (telemetry != null) {
+            this.motors.motorFour.rotation = telemetry.value+0;
         }
     }
 

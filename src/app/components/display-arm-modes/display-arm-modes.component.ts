@@ -17,9 +17,10 @@ export class DisplayItemArmModesComponent implements OnInit, OnDestroy {
     private ngUnsubscribe = new Subject<void>();
     armMode: number = 0;
     nextArmMode: number = 2;
-    storeBtnStyle: any = {};
     deployBtnStyle: any = {};
     stowBtnStyle: any = {};
+    leftGrabBtnStyle: any = {};
+    rightGrabBtnStyle: any = {};
 
     constructor(private socketService: SocketService, private dataManagerService: DataManagerService) {
         this.dataManagerService.armStatusSubject
@@ -57,9 +58,10 @@ export class DisplayItemArmModesComponent implements OnInit, OnDestroy {
     }
 
     updateAllBtnStyle() {
-        this.setButtonStyle(this.storeBtnStyle, 0);
+        this.setButtonStyle(this.stowBtnStyle, 0);
         this.setButtonStyle(this.deployBtnStyle, 1);
-        this.setButtonStyle(this.stowBtnStyle, 2);
+        this.setButtonStyle(this.leftGrabBtnStyle, 2);
+        this.setButtonStyle(this.rightGrabBtnStyle, 3);
     }
 
     setButtonStyle(styles: any, button: number) {

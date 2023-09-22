@@ -63,6 +63,7 @@ import { DisplayAnalysisGraphComponent } from './components/display-analysis-gra
 import { CommunicationsComponent } from './components/communications/communications.component';
 import { DisplayKeyboardControlComponent } from './components/display-keyboard-control/display-keyboard-control.component';
 import { DisplaySensorMonitoringComponent } from './components/display-sensor-monitoring/display-sensor-monitoring.component';
+import { DisplayMovementModesComponent } from './components/display-movement-modes/display-movement-modes.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/screens/dashboard', pathMatch: 'full' },
@@ -109,7 +110,8 @@ const config: SocketIoConfig = {
         DisplayAnalysisGraphComponent,
         CommunicationsComponent,
         DisplayKeyboardControlComponent,
-        DisplaySensorMonitoringComponent
+        DisplaySensorMonitoringComponent,
+        DisplayMovementModesComponent,
     ],
     imports: [
         BrowserModule,

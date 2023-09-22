@@ -118,13 +118,19 @@
     <ng-template ngSwitchCase="keyboard-control">
         <app-display-keyboard-control 
             [screenItem]="screenItem"
-        ></app-display-keyboard-control >
+        ></app-display-keyboard-control>
     </ng-template>
 
     <ng-template ngSwitchCase="sensor-monitoring">
         <app-display-sensor-monitoring 
             [screenItem]="screenItem"
-        ></app-display-sensor-monitoring  >
+        ></app-display-sensor-monitoring>
+    </ng-template>
+
+    <ng-template ngSwitchCase="movement-modes">
+        <app-display-movement-modes
+            [screenItem]="screenItem"
+        ></app-display-movement-modes >
     </ng-template>
 </div>
 

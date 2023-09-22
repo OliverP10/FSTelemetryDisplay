@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="item">
+        <fa-icon
+            [icon]="faCar"
+            [ngStyle]="{}"
+            size="2x">
+        </fa-icon>
+        <button mat-button class="button" (click)="sendMovementModeCommand(0)"
+        [ngStyle]="(movementMode==0) ? {'background-color': 'rgb(56, 152, 255)'} : {'background-color': 'rgb(255,215,64)'}"
+        >Normal</button>
+    </div>
+    <div class="item">
+        <fa-icon
+            [icon]="faGroupArrowsRotate"
+            [ngStyle]="{}"
+            size="2x">
+        </fa-icon>
+        <button mat-button class="button" (click)="sendMovementModeCommand(1)"
+        [ngStyle]="(movementMode==1) ? {'background-color': 'rgb(56, 152, 255)'} : {'background-color': 'rgb(255,215,64)'}"
+        >Spin</button>
+    </div>
+    <div class="item">
+        <fa-icon
+            [icon]="faArrowsUpDownLeftRight"
+            [ngStyle]="{}"
+            size="2x">
+        </fa-icon>
+        <button mat-button class="button" (click)="sendMovementModeCommand(2)"
+        [ngStyle]="(movementMode==2) ? {'background-color': 'rgb(56, 152, 255)'} : {'background-color': 'rgb(255,215,64)'}"
+        >Free</button>
+    </div>
+</div>

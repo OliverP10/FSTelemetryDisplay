@@ -1,8 +1,8 @@
 <div class="container">
     <div class="item">
         <button mat-button class="button" (click)="sendArmCommand(0)"
-        [ngStyle]="storeBtnStyle"
-        >Store</button>
+        [ngStyle]="stowBtnStyle"
+        >Stow</button>
         
     </div>
     <div class="item">
@@ -12,7 +12,12 @@
     </div>
     <div class="item">
         <button mat-button class="button" (click)="sendArmCommand(2)"
-        [ngStyle]="stowBtnStyle"
-        >Stow</button>
+        [ngStyle]="leftGrabBtnStyle"
+        >Left Grab</button>
+    </div>
+    <div class="item">
+        <button mat-button class="button" (click)="sendArmCommand(4)"
+        [ngStyle]="rightGrabBtnStyle"
+        >Right Grab</button>
     </div>
 </div>
