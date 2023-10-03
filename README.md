@@ -1,4 +1,4 @@
-# Webapp
+# Telemetry Display
 Telemetry display is an angular web app that interacts with the server to deliver highly customizable live data visualization displays.
 
 ## Repos
